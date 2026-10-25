@@ -1,0 +1,98 @@
+<?php
+
+return [
+    'app' => ['name' => 'Baby Tracker'],
+
+    'common' => [
+        'continue' => 'Continuar',
+        'back' => 'Atrás',
+        'save' => 'Guardar',
+        'logout' => 'Cerrar sesión',
+        'optional' => 'opcional',
+        'baby' => 'Bebé',
+        'select_baby' => 'Cambiar de bebé',
+        'ready' => 'Listo',
+    ],
+
+    'setup' => [
+        'title' => 'Configuración inicial',
+        'step_of' => 'Paso :current de :total',
+        'family' => [
+            'title' => 'Tu familia',
+            'intro' => 'Estos datos solo se guardan en tu propio servidor.',
+            'name' => 'Nombre de la familia',
+            'name_placeholder' => 'Familia Martínez',
+            'language' => 'Idioma',
+        ],
+        'security' => [
+            'title' => 'Seguridad',
+            'intro' => 'Crea tu PIN. Cada cuidador tendrá el suyo; podrás añadirlos después.',
+            'admin_name' => 'Tu nombre',
+            'pin' => 'PIN (4 a 10 números)',
+            'pin_confirmation' => 'Repite el PIN',
+            'pin_hint' => 'Evita PIN fáciles como 123456 o 111222.',
+        ],
+        'baby' => [
+            'title' => 'Tu bebé',
+            'intro' => 'Podrás añadir más bebés más adelante.',
+            'first_name' => 'Nombre del bebé',
+            'birth_date' => 'Fecha de nacimiento',
+            'gender' => 'Sexo',
+            'female' => 'Niña',
+            'male' => 'Niño',
+            'unspecified' => 'Prefiero no decirlo',
+            'feed_warning' => 'Avisar si pasan sin comer (minutos)',
+            'diaper_warning' => 'Avisar si pasan sin cambio de pañal (minutos)',
+            'finish' => 'Terminar y entrar',
+        ],
+    ],
+
+    'auth' => [
+        'login_title' => 'Entrar',
+        'who' => '¿Quién eres?',
+        'pin' => 'PIN',
+        'enter' => 'Entrar',
+        'invalid' => 'PIN incorrecto.',
+        'locked' => 'Demasiados intentos. Prueba de nuevo en :minutes min.',
+        'family_code' => 'Código de la familia',
+        'family_code_help' => 'Es la parte final de tu enlace de acceso.',
+        'no_caretakers' => 'Esta familia no tiene cuidadores activos.',
+        'pin_changed' => 'PIN actualizado.',
+        'change_pin' => 'Cambiar PIN',
+        'current_pin' => 'PIN actual',
+    ],
+
+    'home' => [
+        'title' => 'Inicio',
+        'hello' => 'Hola, :name',
+        'placeholder' => 'Aquí irá el panel del día.',
+    ],
+
+    'fields' => [
+        'family_name' => 'nombre de la familia',
+        'language' => 'idioma',
+        'admin_name' => 'tu nombre',
+        'pin' => 'PIN',
+        'current_pin' => 'PIN actual',
+        'baby_first_name' => 'nombre del bebé',
+        'baby_birth_date' => 'fecha de nacimiento',
+        'baby_gender' => 'sexo',
+        'feed_warning_minutes' => 'aviso de alimentación',
+        'diaper_warning_minutes' => 'aviso de pañal',
+    ],
+
+    'validation' => [
+        'required' => 'Falta :attribute.',
+        'string' => 'El valor de :attribute no es válido.',
+        'max' => 'El valor de :attribute es demasiado largo.',
+        'regex' => 'El PIN debe tener entre 4 y 10 números.',
+        'confirmed' => 'Los PIN no coinciden.',
+        'not_in' => 'Ese PIN es demasiado fácil de adivinar.',
+        'date' => 'La fecha no es válida.',
+        'before_or_equal' => 'La fecha no puede ser futura.',
+        'between' => 'Debe estar entre :min y :max.',
+        'integer' => 'Debe ser un número entero.',
+        'in' => 'La opción elegida no es válida.',
+        'enum' => 'La opción elegida no es válida.',
+    ],
+];

@@ -1,0 +1,96 @@
+<?php
+
+return [
+    'common' => [
+        'continue' => 'Continue',
+        'back' => 'Back',
+        'save' => 'Save',
+        'logout' => 'Log out',
+        'optional' => 'optional',
+        'baby' => 'Baby',
+        'select_baby' => 'Switch baby',
+        'ready' => 'Done',
+    ],
+
+    'setup' => [
+        'title' => 'Initial setup',
+        'step_of' => 'Step :current of :total',
+        'family' => [
+            'title' => 'Your family',
+            'intro' => 'This information only lives on your own server.',
+            'name' => 'Family name',
+            'name_placeholder' => 'The Martinez family',
+            'language' => 'Language',
+        ],
+        'security' => [
+            'title' => 'Security',
+            'intro' => 'Create your PIN. Each caretaker gets their own; you can add them later.',
+            'admin_name' => 'Your name',
+            'pin' => 'PIN (4 to 10 digits)',
+            'pin_confirmation' => 'Repeat the PIN',
+            'pin_hint' => 'Avoid easy PINs like 123456 or 111222.',
+        ],
+        'baby' => [
+            'title' => 'Your baby',
+            'intro' => 'You can add more babies later.',
+            'first_name' => 'Baby\'s name',
+            'birth_date' => 'Date of birth',
+            'gender' => 'Sex',
+            'female' => 'Girl',
+            'male' => 'Boy',
+            'unspecified' => 'Prefer not to say',
+            'feed_warning' => 'Warn after this long without feeding (minutes)',
+            'diaper_warning' => 'Warn after this long without a diaper change (minutes)',
+            'finish' => 'Finish and enter',
+        ],
+    ],
+
+    'auth' => [
+        'login_title' => 'Sign in',
+        'who' => 'Who are you?',
+        'pin' => 'PIN',
+        'enter' => 'Sign in',
+        'invalid' => 'Wrong PIN.',
+        'locked' => 'Too many attempts. Try again in :minutes min.',
+        'family_code' => 'Family code',
+        'family_code_help' => 'The last part of your sign-in link.',
+        'no_caretakers' => 'This family has no active caretakers.',
+        'pin_changed' => 'PIN updated.',
+        'change_pin' => 'Change PIN',
+        'current_pin' => 'Current PIN',
+    ],
+
+    'home' => [
+        'title' => 'Home',
+        'hello' => 'Hello, :name',
+        'placeholder' => 'The daily dashboard will go here.',
+    ],
+
+    'fields' => [
+        'family_name' => 'family name',
+        'language' => 'language',
+        'admin_name' => 'your name',
+        'pin' => 'PIN',
+        'current_pin' => 'current PIN',
+        'baby_first_name' => 'baby\'s name',
+        'baby_birth_date' => 'date of birth',
+        'baby_gender' => 'sex',
+        'feed_warning_minutes' => 'feeding warning',
+        'diaper_warning_minutes' => 'diaper warning',
+    ],
+
+    'validation' => [
+        'required' => 'The :attribute is missing.',
+        'string' => 'The :attribute is not valid.',
+        'max' => 'The :attribute is too long.',
+        'regex' => 'The PIN must be 4 to 10 digits.',
+        'confirmed' => 'The PINs do not match.',
+        'not_in' => 'That PIN is too easy to guess.',
+        'date' => 'The date is not valid.',
+        'before_or_equal' => 'The date cannot be in the future.',
+        'between' => 'Must be between :min and :max.',
+        'integer' => 'Must be a whole number.',
+        'in' => 'The selected option is not valid.',
+        'enum' => 'The selected option is not valid.',
+    ],
+];

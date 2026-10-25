@@ -29,6 +29,13 @@ Proyecto: Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 - Rutas en `routes/web.php`; lógica en controladores delgados + servicios/acciones en `app/`.
 - Iconos: Lucide (`lucide-react`).
 
+## Autenticación
+
+- No hay usuarios con correo: quien inicia sesión es un **cuidador** (`Caretaker`) con PIN de 4 a 10 dígitos, guardado cifrado. Cinco intentos fallidos bloquean 5 minutos (`App\Support\PinThrottle`).
+- Primer arranque: `/configuracion` (asistente de 3 pasos: familia, PIN del administrador, bebé). Solo existe mientras no haya familia.
+- Cambio rápido de cuidador: se vuelve a `/entrar` y se elige otro con su PIN.
+- Textos de interfaz en `lang/{es,en}/ui.php` (es es el respaldo); el frontend los lee con `useT()`.
+
 ## Comandos
 
 - Pruebas: `php artisan test` (usan SQLite en memoria). Estilo: `vendor/bin/pint` (CI corre `--test`).

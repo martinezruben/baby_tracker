@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Middleware\EnsureSetupState;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\SetLocale;
+use App\Models\Family;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,7 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias(['setup' => EnsureSetupState::class]);
+        $middleware->redirectGuestsTo(fn () => Family::query()->exists() ? route('login') : route('setup.show'));
         $middleware->web(append: [
+            SetLocale::class,
             HandleInertiaRequests::class,
         ]);
     })

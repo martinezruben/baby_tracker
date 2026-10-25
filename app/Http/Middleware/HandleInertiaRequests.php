@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\UiTranslations;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,9 +36,24 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $caretaker = $request->user();
+        $family = $caretaker?->family;
+        $babies = $family?->babies()->orderBy('birth_date')->get(['id', 'first_name', 'last_name', 'birth_date', 'gender']);
+        $activeBaby = $babies?->firstWhere('id', $request->session()->get('baby_id')) ?? $babies?->first();
+
+        $locale = app()->getLocale();
+
         return [
             ...parent::share($request),
-            //
+            'locale' => $locale,
+            't' => fn () => UiTranslations::for($locale),
+            'auth' => [
+                'caretaker' => $caretaker?->only(['id', 'name', 'role', 'badge_color']),
+            ],
+            'family' => $family?->only(['name', 'slug']),
+            'babies' => $babies,
+            'activeBabyId' => $activeBaby?->id,
+            'flash' => ['status' => fn () => $request->session()->get('status')],
         ];
     }
 }
