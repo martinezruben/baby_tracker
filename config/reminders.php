@@ -1,11 +1,12 @@
 <?php
 
 use App\Services\Notifications\Channels\LogChannel;
+use App\Services\Notifications\Channels\WebPushChannel;
 
 return [
-    // Canal => clase que lo envía. 'push' usará Web Push cuando se conecte el paquete.
+    // Canal => clase que lo envía. 'push' = Web Push; 'log' solo escribe en el log (útil en desarrollo).
     'channels' => [
-        'push' => LogChannel::class,
+        'push' => WebPushChannel::class,
         'log' => LogChannel::class,
     ],
 

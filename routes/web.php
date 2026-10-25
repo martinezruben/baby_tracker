@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BabySelectionController;
 use App\Http\Controllers\CaretakerPinController;
+use App\Http\Controllers\PushSubscriptionController;
+use App\Http\Controllers\ReminderActionController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SetupController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +23,13 @@ Route::middleware('setup:required')->group(function () {
         Route::get('/', fn () => Inertia::render('Inicio'))->name('inicio');
         Route::post('/salir', [SessionController::class, 'destroy'])->name('logout');
         Route::put('/cuidador/pin', [CaretakerPinController::class, 'update'])->name('caretaker.pin');
+        Route::post('/push/suscripciones', [PushSubscriptionController::class, 'store'])->name('push.store');
+        Route::delete('/push/suscripciones', [PushSubscriptionController::class, 'destroy'])->name('push.destroy');
         Route::post('/bebes/{baby}/seleccionar', [BabySelectionController::class, 'store'])->name('babies.select');
     });
 });
+
+// Botones Confirmar/Posponer de los avisos: enlace firmado y con caducidad, sin sesión.
+Route::post('/avisos/{target}/accion', ReminderActionController::class)
+    ->middleware('signed:relative')
+    ->name('reminders.act');

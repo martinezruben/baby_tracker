@@ -62,6 +62,18 @@ return [
         'current_pin' => 'PIN actual',
     ],
 
+    'push' => [
+        'ack' => 'Confirmar',
+        'snooze' => 'Posponer :minutes min',
+        'enable' => 'Activar avisos en este dispositivo',
+        'disable' => 'Desactivar avisos en este dispositivo',
+        'enabled' => 'Avisos activados en este dispositivo.',
+        'denied' => 'Los avisos están bloqueados en el navegador. Actívalos en los ajustes del sitio.',
+        'unsupported' => 'Este navegador no admite avisos. En iPhone, instala la app en la pantalla de inicio.',
+        'unconfigured' => 'Los avisos no están configurados en el servidor (faltan las claves VAPID).',
+        'error' => 'No se pudieron activar los avisos. Inténtalo de nuevo.',
+    ],
+
     'home' => [
         'title' => 'Inicio',
         'hello' => 'Hola, :name',

@@ -60,6 +60,18 @@ return [
         'current_pin' => 'Current PIN',
     ],
 
+    'push' => [
+        'ack' => 'Confirm',
+        'snooze' => 'Snooze :minutes min',
+        'enable' => 'Turn on alerts on this device',
+        'disable' => 'Turn off alerts on this device',
+        'enabled' => 'Alerts are on for this device.',
+        'denied' => 'Alerts are blocked in your browser. Turn them on in the site settings.',
+        'unsupported' => 'This browser does not support alerts. On iPhone, add the app to your home screen.',
+        'unconfigured' => 'Alerts are not set up on the server (VAPID keys missing).',
+        'error' => 'Could not turn on alerts. Please try again.',
+    ],
+
     'home' => [
         'title' => 'Home',
         'hello' => 'Hello, :name',

@@ -36,6 +36,14 @@ Proyecto: Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 - Cambio rápido de cuidador: se vuelve a `/entrar` y se elige otro con su PIN.
 - Textos de interfaz en `lang/{es,en}/ui.php` (es es el respaldo); el frontend los lee con `useT()`.
 
+## Notificaciones (Web Push)
+
+- Canal `push` = `WebPushChannel` (librería `minishlink/web-push`); el cliente de envío es `PushClient` (se sustituye por un falso en las pruebas).
+- Claves VAPID: `php artisan webpush:vapid` (imprime) o `--write` (las guarda en el `.env` si no existen). Nunca en el repo.
+- El service worker es `public/sw.js`. Los botones del aviso (Confirmar / Posponer) llaman a enlaces **firmados y con caducidad** (`reminders.act`), sin sesión ni CSRF.
+- El aviso solo lleva el título y el texto de la regla: nunca fotos ni ubicación.
+- iPhone: los avisos solo funcionan con la app instalada en la pantalla de inicio (falta el manifest PWA).
+
 ## Comandos
 
 - Pruebas: `php artisan test` (usan SQLite en memoria). Estilo: `vendor/bin/pint` (CI corre `--test`).

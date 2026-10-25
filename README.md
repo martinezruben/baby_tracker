@@ -33,6 +33,14 @@ php artisan key:generate && php artisan migrate
 npm run dev & php artisan serve
 ```
 
+## Avisos push
+
+```bash
+php artisan webpush:vapid --write   # genera las claves VAPID y las guarda en .env (solo si no existen)
+```
+
+Los avisos necesitan HTTPS (o `localhost`). Cada cuidador activa los avisos en su dispositivo desde la pantalla de inicio. El programador envía los avisos pendientes cada minuto: en producción añade `* * * * * php artisan schedule:run` al cron (con Sail: `sail artisan schedule:work`).
+
 ## Pruebas y estilo
 
 ```bash

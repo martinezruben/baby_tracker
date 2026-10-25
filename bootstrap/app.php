@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Los botones de los avisos llevan enlaces firmados y no tienen sesión ni token CSRF.
+        $middleware->validateCsrfTokens(except: ['avisos/*']);
         $middleware->alias(['setup' => EnsureSetupState::class]);
         $middleware->redirectGuestsTo(fn () => Family::query()->exists() ? route('login') : route('setup.show'));
         $middleware->web(append: [

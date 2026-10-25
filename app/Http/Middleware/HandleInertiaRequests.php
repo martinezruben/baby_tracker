@@ -46,6 +46,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'locale' => $locale,
+            'vapidPublicKey' => config('webpush.vapid.public_key'),
             't' => fn () => UiTranslations::for($locale),
             'auth' => [
                 'caretaker' => $caretaker?->only(['id', 'name', 'role', 'badge_color']),

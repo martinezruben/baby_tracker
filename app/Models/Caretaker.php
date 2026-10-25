@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CaretakerRole;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -30,6 +31,11 @@ class Caretaker extends Authenticatable
     public function getAuthPassword(): string
     {
         return (string) $this->pin;
+    }
+
+    public function pushSubscriptions(): HasMany
+    {
+        return $this->hasMany(PushSubscription::class);
     }
 
     public function family(): BelongsTo
