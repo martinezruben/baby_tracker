@@ -37,7 +37,7 @@ function save(GdImage $im, string $path): void
 $dir = __DIR__.'/../public';
 $bgArr = [$br, $bgc, $bb];
 
-// Solo el carrito (el nombre "KiDu baby tracker" va como texto), con fondo transparente
+// Solo el carrito (el nombre "Kidu Baby Tracker" va como texto), con fondo transparente
 $mark = crop($src, 380, 115, 275, 270, true, $bgArr);
 save($mark, "$dir/brand/kidu-mark.png");
 

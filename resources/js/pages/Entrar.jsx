@@ -68,7 +68,7 @@ export default function Entrar({ needsFamily, family, caretakers }) {
                                         <span
                                             aria-hidden="true"
                                             className="size-3 rounded-full ring-2 ring-white"
-                                            style={{ backgroundColor: c.badge_color ?? '#087873' }}
+                                            style={{ backgroundColor: c.badge_color ?? '#8B6340' }}
                                         />
                                         {c.name}
                                     </button>

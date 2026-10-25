@@ -9,24 +9,24 @@
     --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
 
     /* Base */
-    --color-canvas: #f2f6f7;
-    --color-surface-base: #f2f6f7;
+    --color-canvas: #f5f1ea;
+    --color-surface-base: #f5f1ea;
     --color-surface: #ffffff;
-    --color-ink: #172033;
-    --color-ink-mid: #3e4757;
-    --color-ink-soft: #5b6576;
-    --color-line: #dce3e8;
-    --color-track: #eef2f4;
-    --color-neutral-tile: #e7ecef;
+    --color-ink: #2e2a25;
+    --color-ink-mid: #4f473e;
+    --color-ink-soft: #675d52;
+    --color-line: #e4dccf;
+    --color-track: #efe9df;
+    --color-neutral-tile: #ebe4d8;
 
-    /* Marca */
-    --color-primary: #087873;
-    --color-primary-dark: #065e5a;
-    --color-accent: #2cc5bd;
-    --color-accent-ink: #0b2a3d;
-    --color-night: #123b57;
-    --color-night-1: #1a4c6d;
-    --color-night-2: #1e587c;
+    /* Marca: paleta del logo (beige, tostado y marrón) */
+    --color-primary: #8b6340;
+    --color-primary-dark: #6f4e31;
+    --color-accent: #ccaf87;
+    --color-accent-ink: #2e2a25;
+    --color-night: #5a4632;
+    --color-night-1: #6a5340;
+    --color-night-2: #7a614b;
 
     /* Estado */
     --color-danger: #e0533d;
@@ -52,9 +52,9 @@
     --color-appointment: #dce4f2;
     --color-appointment-deco: #c8d4ea;
     --color-appointment-ink: #3a5288;
-    --color-growth: #d2f1ea;
-    --color-growth-deco: #b5e7dc;
-    --color-growth-ink: #087873;
+    --color-growth: #efe3cc;
+    --color-growth-deco: #e2d0ae;
+    --color-growth-ink: #7d5a3c;
     --color-moment: #ffe1d1;
     --color-moment-deco: #ffcdb2;
     --color-moment-ink: #b4532f;
@@ -64,7 +64,7 @@
     --color-chart-sleep: #6f67d9;
     --color-chart-diaper: #3b8fd9;
     --color-chart-medicine: #c2549e;
-    --color-chart-play: #20a99f;
+    --color-chart-play: #b58b5a;
 
     --shadow-card: 0 2px 10px rgba(23, 32, 51, 0.05);
     --shadow-soft: 0 2px 8px rgba(23, 32, 51, 0.06);

@@ -31,7 +31,7 @@ class SetupFamily
                 'name' => $data['admin_name'],
                 'role' => CaretakerRole::Admin,
                 'pin' => $data['pin'],
-                'badge_color' => '#087873',
+                'badge_color' => '#8B6340',
                 'language' => $data['language'],
             ]);
 

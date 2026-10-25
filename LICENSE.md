@@ -1,6 +1,6 @@
-# KiDu baby tracker — Licencia
+# Kidu Baby Tracker — Licencia
 
-KiDu baby tracker es una obra derivada de [Sprout Track](https://github.com/Oak-and-Sprout/sprout-track) y se distribuye bajo **los mismos términos** que el original (uso no comercial, atribución y share-alike). A continuación se reproduce, sin cambios, la licencia de Sprout Track.
+Kidu Baby Tracker es una obra derivada de [Sprout Track](https://github.com/Oak-and-Sprout/sprout-track) y se distribuye bajo **los mismos términos** que el original (uso no comercial, atribución y share-alike). A continuación se reproduce, sin cambios, la licencia de Sprout Track.
 
 ---
 

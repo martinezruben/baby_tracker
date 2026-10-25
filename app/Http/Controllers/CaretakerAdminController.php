@@ -14,7 +14,7 @@ use Inertia\Response;
 
 class CaretakerAdminController extends Controller
 {
-    public const COLORS = ['#087873', '#1D6FB0', '#4C46B6', '#A63A86', '#B4532F', '#A15C07', '#4D7A12', '#3A5288'];
+    public const COLORS = ['#8B6340', '#1D6FB0', '#4C46B6', '#A63A86', '#B4532F', '#A15C07', '#4D7A12', '#3A5288'];
 
     public function index(Request $request): Response
     {

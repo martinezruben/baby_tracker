@@ -193,6 +193,6 @@ class AutenticacionTest extends TestCase
         $this->actingAs($admin)->get('/')->assertInertia(fn (Assert $page) => $page
             ->where('locale', 'en')
             ->where('t.common.logout', 'Log out')
-            ->where('t.app.name', 'KiDu baby tracker'));
+            ->where('t.app.name', 'Kidu Baby Tracker'));
     }
 }

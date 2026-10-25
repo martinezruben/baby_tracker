@@ -1,6 +1,6 @@
 # Instrucciones para Claude Code
 
-Proyecto: KiDu baby tracker (Laravel + MySQL). Interfaz móvil primero, en español.
+Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 
 ## Antes de tocar la interfaz
 
@@ -76,11 +76,11 @@ Proyecto: KiDu baby tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
 - `/ajustes` (solo administradores, middleware `admin`): hub con cuidadores, bebés, preferencias y esquema de vacunación. Controladores `SettingsController`, `CaretakerAdminController`, `BabyAdminController`; el idioma personal se cambia en `/mas` (`PATCH /cuidador/idioma`). Idiomas implementados: `es` y `en`.
 - `SaveCaretaker`: crea (hereda los avisos compartidos de citas, medicinas y vacunas), edita (no deja sin administrador), da de baja (no a uno mismo ni al último admin; borra suscripciones push y sesiones, lo quita de los avisos) y reactiva. Dar de baja un bebé = borrado lógico y apaga sus reglas; nunca el último.
 - Al cambiar la zona horaria se vuelven a sincronizar los avisos de vacunas.
-- PWA: `public/manifest.webmanifest` (standalone, `#087873`), iconos en `public/icons/` generados con `php scripts/make-icons.php`, metaetiquetas de iPhone en `app.blade.php` y `InstallHint` en `/mas`. El manifest es estático (no por familia).
+- PWA: `public/manifest.webmanifest` (standalone, `#8B6340`), iconos en `public/icons/` generados con `php scripts/make-icons.php`, metaetiquetas de iPhone en `app.blade.php` y `InstallHint` en `/mas`. El manifest es estático (no por familia).
 
 ## Marca
 
-- El nombre de la app es **KiDu baby tracker** (`app.name` en `lang/*/ui.php`, `APP_NAME`, manifest; nombre corto «KiDu»). Úsalo siempre así en pantallas, avisos, correos y documentos.
+- El nombre de la app es **Kidu Baby Tracker** (`app.name` en `lang/*/ui.php`, `APP_NAME`, manifest; nombre corto «Kidu»). Úsalo siempre así en pantallas, avisos, correos y documentos.
 - Logo (carrito con reloj, tonos beige): original en `resources/brand/kidu-logo.png`; `php scripts/make-icons.php` genera `public/brand/kidu-mark.png` (fondo transparente) y los iconos de la PWA. La interfaz mantiene los tokens de color de `app.css`.
 
 ## Notificaciones (Web Push)

@@ -10,7 +10,7 @@ import { useT } from '../../lib/i18n';
 
 function Avatar({ name, color, size = 'size-[46px]' }) {
     return (
-        <span aria-hidden="true" className={`flex ${size} shrink-0 items-center justify-center rounded-full text-lg font-bold text-white`} style={{ backgroundColor: color ?? '#087873' }}>
+        <span aria-hidden="true" className={`flex ${size} shrink-0 items-center justify-center rounded-full text-lg font-bold text-white`} style={{ backgroundColor: color ?? '#8B6340' }}>
             {name.slice(0, 1).toUpperCase()}
         </span>
     );

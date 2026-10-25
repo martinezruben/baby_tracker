@@ -156,10 +156,10 @@ Cargando (esqueletos, no spinners a pantalla completa), vacío (con una acción 
 
 ## 15. Dirección visual del modo claro (moderna)
 
-- **Fondo** gris azulado muy claro `#F2F6F7`; superficies blancas con sombra suave; radios grandes (22-28 px en tarjetas, pastillas completas en botones y chips).
+- **Fondo** crema cálido `#F5F1EA` (paleta del logo Kidu); superficies blancas con sombra suave; radios grandes (22-28 px en tarjetas, pastillas completas en botones y chips).
 - **Tipografía:** Outfit (400/500/600/700), cifras tabulares.
-- **Primario:** verde azulado `#087873` (texto blanco, contraste 5.3:1); acento brillante `#2CC5BD` solo con texto oscuro `#0B2A3D`. Tarjeta principal en azul noche `#123B57`.
-- **Pastel por tipo de actividad** (fondo / icono): comida `#FCEBA6`/`#A15C07`, sueño `#E4E1FB`/`#4C46B6`, pañal `#CFE7FB`/`#1D6FB0`, medicina `#F9DDF3`/`#A63A86`, vacuna `#E3F2C4`/`#4D7A12`, cita `#DCE4F2`/`#3A5288`, crecimiento y baño `#D2F1EA`/`#087873`, momentos y juego `#FFE1D1`/`#B4532F`. En gráficos: `#E0A21B`, `#6F67D9`, `#3B8FD9`, `#C2549E`, `#20A99F`.
+- **Primario:** marrón del logo `#8B6340` (texto blanco, contraste 5.3:1; hover `#6F4E31`); acento tostado `#CCAF87` solo con texto oscuro `#2E2A25`. Tarjeta principal en marrón oscuro `#5A4632`. Texto `#2E2A25` / secundario `#675D52`; líneas `#E4DCCF`.
+- **Pastel por tipo de actividad** (fondo / icono): comida `#FCEBA6`/`#A15C07`, sueño `#E4E1FB`/`#4C46B6`, pañal `#CFE7FB`/`#1D6FB0`, medicina `#F9DDF3`/`#A63A86`, vacuna `#E3F2C4`/`#4D7A12`, cita `#DCE4F2`/`#3A5288`, crecimiento y baño `#EFE3CC`/`#7D5A3C`, momentos y juego `#FFE1D1`/`#B4532F`. En gráficos: `#E0A21B`, `#6F67D9`, `#3B8FD9`, `#C2549E`, `#B58B5A`.
 - **Inicio = dashboard general:** cabecera (bebé, búsqueda, avisos) → sesión activa → **tarjeta principal que abre el Centro de registro** → registro rápido (4 accesos) → resumen del día con donut → próximos eventos en tarjetas pastel desplazables → "Todo sobre el bebé" (cuadrícula de 12 módulos: calendario, citas, vacunas, medicinas, crecimiento, fotos, momentos, reportes, bitácora, alergias, contactos, ajustes).
 - **Centro de registro:** sesión activa con cronómetro por lado, "Repetir lo último", y todas las actividades agrupadas en Rutina, Salud y Momentos, con chips para saltar entre grupos.
 - **Navegación:** barra flotante en forma de pastilla; el destino activo se muestra en oscuro con su etiqueta, y el + abre el registro.
