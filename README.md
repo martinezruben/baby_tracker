@@ -57,3 +57,13 @@ vendor/bin/pint --test
 ## Seguridad
 
 No subas `.env`, claves VAPID ni datos reales del bebé. Cambia las credenciales por defecto antes de usar la app.
+
+## Despliegue en un servidor (sin Docker)
+
+1. Sube el código y apunta el dominio a la carpeta `public/`.
+2. Copia `.env.production.example` a `.env` y completa la base de datos y `APP_URL`.
+3. Ejecuta `bash scripts/deploy.sh` (instala dependencias, **compila el frontend**, migra y cachea).
+4. Programa el cron cada minuto: `* * * * * php /ruta/artisan schedule:run` (envía los recordatorios).
+5. Dale permisos de escritura al servidor web sobre `storage/` y `bootstrap/cache/`.
+
+**Error 500 en todas las páginas:** casi siempre es `Vite manifest not found`. La carpeta `public/build` no se sube con git; hay que generarla con `npm ci && npm run build` en el servidor (o compilarla en tu equipo y subirla). Otras causas habituales: falta `.env` o `APP_KEY`, `vendor/` sin instalar (`composer install --no-dev`), `storage/` sin permisos de escritura, migraciones sin correr, o `CACHE_STORE`/`SESSION_DRIVER`/`QUEUE_CONNECTION` apuntando a Redis sin tenerlo (usa `database`). El detalle está en `storage/logs/laravel.log`.
