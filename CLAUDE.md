@@ -42,6 +42,8 @@ Proyecto: Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 - Claves VAPID: `php artisan webpush:vapid` (imprime) o `--write` (las guarda en el `.env` si no existen). Nunca en el repo.
 - El service worker es `public/sw.js`. Los botones del aviso (Confirmar / Posponer) llaman a enlaces **firmados y con caducidad** (`reminders.act`), sin sesión ni CSRF.
 - El aviso solo lleva el título y el texto de la regla: nunca fotos ni ubicación.
+- Pantalla `/recordatorios` (`ReminderController`, `SaveReminder`): recordatorios sueltos (tipo `custom`) con varios momentos de aviso, repetición, "insistir hasta confirmar", snooze, horario silencioso y destinatarios. La fecha se escribe en la zona horaria de la familia y se guarda en UTC. Otros módulos (citas, medicinas, vacunas) crearán sus reglas con `NotificationScheduler`.
+- "Enviar aviso de prueba" (`/push/prueba`) comprueba que el dispositivo recibe avisos.
 - iPhone: los avisos solo funcionan con la app instalada en la pantalla de inicio (falta el manifest PWA).
 
 ## Comandos

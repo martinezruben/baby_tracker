@@ -25,16 +25,20 @@ class NotificationScheduler
 
         return DB::transaction(function () use ($rule, $eventAt, $recipients) {
             return collect($rule->offsets_minutes)->unique()->map(function (int $offset) use ($rule, $eventAt, $recipients) {
-                $occurrence = NotificationOccurrence::firstOrCreate(
-                    [
-                        'notification_rule_id' => $rule->id,
-                        'event_at' => $eventAt->copy()->utc(),
-                        'offset_minutes' => $offset,
-                    ],
-                    ['status' => OccurrenceStatus::Active],
-                );
+                $occurrence = NotificationOccurrence::firstOrNew([
+                    'notification_rule_id' => $rule->id,
+                    'event_at' => $eventAt->copy()->utc(),
+                    'offset_minutes' => $offset,
+                ]);
 
-                if ($occurrence->wasRecentlyCreated) {
+                // Nueva, o cancelada antes (al editar la regla): se (re)programa desde cero.
+                $needsTargets = ! $occurrence->exists || $occurrence->status === OccurrenceStatus::Cancelled;
+
+                if ($needsTargets) {
+                    $occurrence->targets()->delete();
+                    $occurrence->status = OccurrenceStatus::Active;
+                    $occurrence->save();
+
                     $fireAt = $eventAt->copy()->utc()->addMinutes($offset);
 
                     foreach ($recipients as $caretaker) {
@@ -59,6 +63,24 @@ class NotificationScheduler
         DB::transaction(function () use ($rule, $eventAt) {
             $rule->occurrences()
                 ->where('event_at', $eventAt->copy()->utc())
+                ->where('status', OccurrenceStatus::Active)
+                ->get()
+                ->each(function (NotificationOccurrence $occurrence) {
+                    $occurrence->targets()
+                        ->where('status', TargetStatus::Pending)
+                        ->update(['status' => TargetStatus::Cancelled, 'next_send_at' => null]);
+                    $occurrence->update(['status' => OccurrenceStatus::Cancelled]);
+                });
+        });
+    }
+
+    /**
+     * Cancela todos los avisos pendientes de la regla (al editarla, desactivarla o borrarla).
+     */
+    public function cancelAll(NotificationRule $rule): void
+    {
+        DB::transaction(function () use ($rule) {
+            $rule->occurrences()
                 ->where('status', OccurrenceStatus::Active)
                 ->get()
                 ->each(function (NotificationOccurrence $occurrence) {

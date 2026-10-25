@@ -21,6 +21,7 @@ class NotificationRule extends Model
     {
         return [
             'event_type' => NotificationEventType::class,
+            'event_at' => 'datetime',
             'ack_scope' => AckScope::class,
             'offsets_minutes' => 'array',
             'snooze_options' => 'array',

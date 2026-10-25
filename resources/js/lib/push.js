@@ -55,3 +55,14 @@ export async function disablePush() {
     await call('DELETE', { endpoint: subscription.endpoint });
     await subscription.unsubscribe();
 }
+
+/** Pide al servidor un aviso de prueba para este cuidador. Devuelve el mensaje a mostrar. */
+export async function sendTestPush() {
+    const response = await fetch('/push/prueba', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json', ...csrfHeader() },
+    });
+    const body = await response.json().catch(() => ({}));
+    return body.message ?? '';
+}

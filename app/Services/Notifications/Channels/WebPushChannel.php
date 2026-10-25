@@ -20,7 +20,34 @@ class WebPushChannel implements ReminderChannel
             throw new \RuntimeException('El cuidador no tiene dispositivos con avisos activados.');
         }
 
-        $body = json_encode($this->notification($caretaker, $payload), JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+        $this->deliver($subscriptions, $this->notification($caretaker, $payload));
+    }
+
+    /** Aviso de prueba sin botones, para comprobar que el dispositivo recibe notificaciones. */
+    public function sendTest(Caretaker $caretaker): void
+    {
+        $subscriptions = $caretaker->pushSubscriptions;
+
+        if ($subscriptions->isEmpty()) {
+            throw new \RuntimeException('El cuidador no tiene dispositivos con avisos activados.');
+        }
+
+        $locale = $caretaker->language ?? $caretaker->family?->settings?->language ?? config('app.locale');
+
+        $this->deliver($subscriptions, [
+            'title' => __('ui.push.test_title', [], $locale),
+            'body' => __('ui.push.test_body', [], $locale),
+            'tag' => 'reminder-test',
+            'requireInteraction' => false,
+            'actions' => [],
+            'data' => ['open_url' => route('inicio')],
+        ]);
+    }
+
+    /** @param  iterable<int, PushSubscription>  $subscriptions */
+    private function deliver(iterable $subscriptions, array $notification): void
+    {
+        $body = json_encode($notification, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
         $delivered = 0;
         $lastReason = null;
 

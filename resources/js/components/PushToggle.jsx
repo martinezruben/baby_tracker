@@ -1,8 +1,8 @@
 import { usePage } from '@inertiajs/react';
-import { Bell, BellOff } from 'lucide-react';
+import { Bell, BellOff, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useT } from '../lib/i18n';
-import { currentSubscription, disablePush, enablePush, pushSupported } from '../lib/push';
+import { currentSubscription, disablePush, enablePush, pushSupported, sendTestPush } from '../lib/push';
 import Button from './Button';
 
 export default function PushToggle() {
@@ -10,6 +10,7 @@ export default function PushToggle() {
     const t = useT();
     const [state, setState] = useState('loading'); // loading | unsupported | unconfigured | denied | off | on | error
     const [busy, setBusy] = useState(false);
+    const [testMessage, setTestMessage] = useState(null);
 
     useEffect(() => {
         if (!pushSupported()) return setState('unsupported');
@@ -32,6 +33,15 @@ export default function PushToggle() {
             }
         } catch (e) {
             setState('error');
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    const sendTest = async () => {
+        setBusy(true);
+        try {
+            setTestMessage(await sendTestPush());
         } finally {
             setBusy(false);
         }
@@ -65,6 +75,19 @@ export default function PushToggle() {
                     {state === 'on' ? <BellOff aria-hidden="true" className="size-5" /> : <Bell aria-hidden="true" className="size-5" />}
                     {state === 'on' ? t('push.disable') : t('push.enable')}
                 </Button>
+            )}
+            {state === 'on' && (
+                <>
+                    <Button variant="ghost" className="mt-2 w-full sm:ml-2 sm:w-auto" onClick={sendTest} disabled={busy}>
+                        <Send aria-hidden="true" className="size-5" />
+                        {t('push.test_button')}
+                    </Button>
+                    {testMessage && (
+                        <p role="status" className="mt-2 text-sm text-ink-soft">
+                            {testMessage}
+                        </p>
+                    )}
+                </>
             )}
         </section>
     );

@@ -3,7 +3,9 @@
 use App\Http\Controllers\BabySelectionController;
 use App\Http\Controllers\CaretakerPinController;
 use App\Http\Controllers\PushSubscriptionController;
+use App\Http\Controllers\PushTestController;
 use App\Http\Controllers\ReminderActionController;
+use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SetupController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +27,18 @@ Route::middleware('setup:required')->group(function () {
         Route::put('/cuidador/pin', [CaretakerPinController::class, 'update'])->name('caretaker.pin');
         Route::post('/push/suscripciones', [PushSubscriptionController::class, 'store'])->name('push.store');
         Route::delete('/push/suscripciones', [PushSubscriptionController::class, 'destroy'])->name('push.destroy');
+        Route::post('/push/prueba', PushTestController::class)->name('push.test');
+
+        Route::prefix('recordatorios')->name('reminders.')->group(function () {
+            Route::get('/', [ReminderController::class, 'index'])->name('index');
+            Route::get('/nuevo', [ReminderController::class, 'create'])->name('create');
+            Route::post('/', [ReminderController::class, 'store'])->name('store');
+            Route::get('/{rule}/editar', [ReminderController::class, 'edit'])->name('edit');
+            Route::put('/{rule}', [ReminderController::class, 'update'])->name('update');
+            Route::patch('/{rule}/activar', [ReminderController::class, 'toggle'])->name('toggle');
+            Route::delete('/{rule}', [ReminderController::class, 'destroy'])->name('destroy');
+        });
+
         Route::post('/bebes/{baby}/seleccionar', [BabySelectionController::class, 'store'])->name('babies.select');
     });
 });
