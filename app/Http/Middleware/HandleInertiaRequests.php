@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Support\ActiveBaby;
+use App\Support\UiTranslations;
+use Illuminate\Http\Request;
+use Inertia\Middleware;
+
+class HandleInertiaRequests extends Middleware
+{
+    /**
+     * The root template that's loaded on the first page visit.
+     *
+     * @see https://inertiajs.com/server-side-setup#root-template
+     *
+     * @var string
+     */
+    protected $rootView = 'app';
+
+    /**
+     * Determines the current asset version.
+     *
+     * @see https://inertiajs.com/asset-versioning
+     */
+    public function version(Request $request): ?string
+    {
+        return parent::version($request);
+    }
+
+    /**
+     * Define the props that are shared by default.
+     *
+     * @see https://inertiajs.com/shared-data
+     *
+     * @return array<string, mixed>
+     */
+    public function share(Request $request): array
+    {
+        $caretaker = $request->user();
+        $family = $caretaker?->family;
+        $babies = $family?->babies()->orderBy('birth_date')->get(['id', 'first_name', 'last_name', 'birth_date', 'gender']);
+        $activeBaby = $caretaker ? ActiveBaby::for($request) : null;
+
+        $locale = app()->getLocale();
+
+        return [
+            ...parent::share($request),
+            'locale' => $locale,
+            'vapidPublicKey' => config('webpush.vapid.public_key'),
+            'timezone' => $family?->settings?->timezone ?? config('app.timezone'),
+            'timeFormat' => $family?->settings?->time_format ?? '12',
+            't' => fn () => UiTranslations::for($locale),
+            'auth' => [
+                'caretaker' => $caretaker?->only(['id', 'name', 'role', 'badge_color']),
+            ],
+            'family' => $family?->only(['name', 'slug']),
+            'babies' => $babies,
+            'activeBabyId' => $activeBaby?->id,
+            'flash' => [
+                'status' => fn () => $request->session()->get('status'),
+                'undo' => fn () => $request->session()->get('undo'),
+            ],
+        ];
+    }
+}

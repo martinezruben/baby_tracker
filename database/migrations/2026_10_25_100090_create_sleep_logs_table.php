@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('sleep_logs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('family_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('baby_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('caretaker_id')->nullable()->constrained()->nullOnDelete();
+            $table->dateTime('started_at');
+            $table->dateTime('ended_at')->nullable();
+            $table->unsignedSmallInteger('duration_minutes')->nullable();
+            $table->string('type');
+            $table->string('quality')->nullable();
+            $table->string('location')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+            $table->index(['baby_id', 'started_at']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('sleep_logs');
+    }
+};

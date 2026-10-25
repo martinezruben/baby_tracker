@@ -1,0 +1,22 @@
+import { useForm } from '@inertiajs/react';
+import { agoLabel } from './i18n';
+import { minutesSince } from './time';
+
+/** "Sofía · último hace 45 min" para la cabecera de un formulario. */
+export function lastSubtitle(t, babyName, lastAt) {
+    return lastAt
+        ? t('registrar.baby_last', { name: babyName, ago: agoLabel(t, minutesSince(lastAt)).toLowerCase() })
+        : t('registrar.baby_first', { name: babyName });
+}
+
+/**
+ * Formulario de una actividad: crea (POST /registrar/{tipo}) o, con `record`, corrige un registro
+ * ya guardado (PUT /registros/{tipo}/{id}). `defaults` son los valores de un registro nuevo.
+ */
+export function useActivityForm(type, defaults, record) {
+    const { id, ...values } = record ?? {};
+    const form = useForm(record ? { ...defaults, ...values } : defaults);
+    const save = () => (record ? form.put(`/registros/${type}/${id}`) : form.post(`/registrar/${type}`));
+
+    return [form, save];
+}
