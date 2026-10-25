@@ -4,6 +4,7 @@ namespace App\Support\Activities;
 
 use App\Enums\MeasurementType;
 use App\Models\Measurement;
+use App\Support\FamilyClock;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
@@ -33,12 +34,12 @@ class MeasurementActivity extends ActivityType
         ];
     }
 
-    public function create(ActivityContext $context, array $data): Model
+    protected function attributes(ActivityContext $context, array $data, ?Model $log = null): array
     {
         $settings = $context->baby->family->settings;
         $type = MeasurementType::from($data['type']);
 
-        return Measurement::create($context->owner() + [
+        return [
             'measured_on' => $context->clock->parse($data['occurred_at'])->setTimezone($context->clock->timezone)->toDateString(),
             'type' => $type,
             'value' => $data['value'],
@@ -47,7 +48,16 @@ class MeasurementActivity extends ActivityType
                 MeasurementType::Temperature => $settings->temperature_unit,
                 default => $settings->height_unit,
             },
-        ]);
+        ];
+    }
+
+    public function formValues(Model $log, FamilyClock $clock): array
+    {
+        return [
+            'occurred_at' => $log->measured_on->format('Y-m-d').'T'.$clock->now()->format('H:i'),
+            'type' => $log->type->value,
+            'value' => (float) $log->value,
+        ];
     }
 
     public function summary(Model $log): array

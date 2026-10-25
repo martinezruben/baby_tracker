@@ -11,6 +11,7 @@ use App\Models\Medicine;
 use App\Models\SleepLog;
 use App\Support\ActiveBaby;
 use App\Support\Activities\ActivityRegistry;
+use App\Support\Activities\ActivityType;
 use App\Support\BreastFeedSession;
 use App\Support\DashboardData;
 use App\Support\FamilyClock;
@@ -55,7 +56,22 @@ class RegistrarController extends Controller
 
     public function create(Request $request, string $type): Response
     {
-        $activity = ActivityRegistry::findOrFail($type);
+        return $this->form($request, ActivityRegistry::findOrFail($type));
+    }
+
+    /** El mismo formulario del registro, con los valores guardados, para corregirlo. */
+    public function edit(Request $request, string $type, int $id): Response
+    {
+        $activity = ActivityRegistry::editable($type);
+        $log = $activity->query(ActiveBaby::for($request)->id)->findOrFail($id);
+        $clock = FamilyClock::for($request->user()->family);
+
+        return $this->form($request, $activity, ['id' => $log->id] + $activity->formValues($log, $clock));
+    }
+
+    private function form(Request $request, ActivityType $activity, ?array $record = null): Response
+    {
+        $type = $activity->slug();
         $baby = ActiveBaby::for($request);
         $family = $request->user()->family;
         $clock = FamilyClock::for($family);
@@ -63,6 +79,7 @@ class RegistrarController extends Controller
         $last = $activity->query($baby->id)->latest($activity->timeColumn())->first();
 
         return Inertia::render($activity->page(), [
+            'record' => $record,
             'baby' => $baby->only(['id', 'first_name']),
             'clock' => ['now' => $clock->now()->format(FamilyClock::LOCAL_FORMAT), 'timezone' => $clock->timezone],
             'lastAt' => $last?->{$activity->timeColumn()}?->toIso8601String(),

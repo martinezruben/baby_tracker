@@ -23,6 +23,19 @@ class ActivityController extends Controller
         return $this->saved($type, $activity->create($context, $data));
     }
 
+    /** Corregir un registro ya guardado (desde la Bitácora). */
+    public function update(Request $request, string $type, int $id): RedirectResponse
+    {
+        $activity = ActivityRegistry::editable($type);
+        $context = $this->context($request);
+        $log = $activity->query($context->baby->id)->where('family_id', $context->baby->family_id)->findOrFail($id);
+
+        $data = $request->validate($activity->rules($context), trans('ui.validation'), trans('ui.registrar.fields'));
+        $activity->update($context, $log, $data);
+
+        return redirect()->route('log')->with('status', trans('ui.log.updated'));
+    }
+
     public function repeat(Request $request, string $type): RedirectResponse
     {
         $activity = ActivityRegistry::findOrFail($type);

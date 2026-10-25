@@ -4,6 +4,7 @@ namespace App\Support\Activities;
 
 use App\Enums\DiaperType;
 use App\Models\DiaperLog;
+use App\Support\FamilyClock;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
@@ -35,15 +36,26 @@ class DiaperActivity extends ActivityType
         ];
     }
 
-    public function create(ActivityContext $context, array $data): Model
+    protected function attributes(ActivityContext $context, array $data, ?Model $log = null): array
     {
-        return DiaperLog::create($context->owner() + [
+        return [
             'occurred_at' => $context->clock->parse($data['occurred_at']),
             'type' => $data['type'],
             'cream_applied' => $data['cream_applied'] ?? false,
             'blowout' => $data['blowout'] ?? false,
             'notes' => $data['notes'] ?? null,
-        ]);
+        ];
+    }
+
+    public function formValues(Model $log, FamilyClock $clock): array
+    {
+        return [
+            'occurred_at' => $clock->toLocal($log->occurred_at),
+            'type' => $log->type->value,
+            'cream_applied' => (bool) $log->cream_applied,
+            'blowout' => (bool) $log->blowout,
+            'notes' => $log->notes ?? '',
+        ];
     }
 
     public function summary(Model $log): array

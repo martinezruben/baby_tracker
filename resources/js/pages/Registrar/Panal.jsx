@@ -1,4 +1,3 @@
-import { useForm } from '@inertiajs/react';
 import { Annoyed, Baby, Droplet, Droplets } from 'lucide-react';
 import Field from '../../components/Field';
 import MoreDetails from '../../components/form/MoreDetails';
@@ -7,18 +6,18 @@ import RegistersAs from '../../components/form/RegistersAs';
 import TimeBlock from '../../components/form/TimeBlock';
 import Switch from '../../components/Switch';
 import SheetLayout from '../../layouts/SheetLayout';
-import { lastSubtitle } from '../../lib/forms';
+import { lastSubtitle, useActivityForm } from '../../lib/forms';
 import { useT } from '../../lib/i18n';
 
-export default function Panal({ baby, clock, lastAt, last }) {
+export default function Panal({ record, baby, clock, lastAt, last }) {
     const t = useT();
-    const form = useForm({
+    const [form, save] = useActivityForm('panal', {
         occurred_at: clock.now,
         type: last?.type && last.type !== 'dry' ? last.type : 'wet',
         cream_applied: false,
         blowout: false,
         notes: '',
-    });
+    }, record);
     const { data, setData, errors } = form;
 
     return (
@@ -29,9 +28,10 @@ export default function Panal({ baby, clock, lastAt, last }) {
             icon={Baby}
             actionLabel={t('registrar.diaper.save')}
             processing={form.processing}
+            editing={Boolean(record)}
             onSubmit={(e) => {
                 e.preventDefault();
-                form.post('/registrar/panal');
+                save();
             }}
         >
             <TimeBlock value={data.occurred_at} onChange={(v) => setData('occurred_at', v)} now={clock.now} error={errors.occurred_at} />

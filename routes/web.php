@@ -50,6 +50,8 @@ Route::middleware('setup:required')->group(function () {
         Route::get('/registrar/{type}', [RegistrarController::class, 'create'])->name('registrar.create');
         Route::post('/registrar/{type}', [ActivityController::class, 'store'])->name('records.store');
         Route::post('/registrar/{type}/repetir', [ActivityController::class, 'repeat'])->name('records.repeat');
+        Route::get('/registros/{type}/{id}/editar', [RegistrarController::class, 'edit'])->whereNumber('id')->name('records.edit');
+        Route::put('/registros/{type}/{id}', [ActivityController::class, 'update'])->whereNumber('id')->name('records.update');
         Route::delete('/registros/{type}/{id}', [ActivityController::class, 'destroy'])->whereNumber('id')->name('records.destroy');
         Route::get('/bitacora', LogController::class)->name('log');
         Route::get('/calendario', CalendarController::class)->name('calendar');

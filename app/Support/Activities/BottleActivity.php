@@ -4,6 +4,7 @@ namespace App\Support\Activities;
 
 use App\Enums\FeedType;
 use App\Models\FeedLog;
+use App\Support\FamilyClock;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
@@ -41,11 +42,11 @@ class BottleActivity extends ActivityType
         ];
     }
 
-    public function create(ActivityContext $context, array $data): Model
+    protected function attributes(ActivityContext $context, array $data, ?Model $log = null): array
     {
         $at = $context->clock->parse($data['occurred_at']);
 
-        return FeedLog::create($context->owner() + [
+        return [
             'occurred_at' => $at,
             'started_at' => $at,
             'type' => FeedType::Bottle,
@@ -53,7 +54,18 @@ class BottleActivity extends ActivityType
             'unit' => $data['unit'],
             'bottle_type' => $data['bottle_type'] ?? null,
             'notes' => $data['notes'] ?? null,
-        ]);
+        ];
+    }
+
+    public function formValues(Model $log, FamilyClock $clock): array
+    {
+        return [
+            'occurred_at' => $clock->toLocal($log->occurred_at),
+            'amount' => (float) $log->amount,
+            'unit' => $log->unit,
+            'bottle_type' => $log->bottle_type ?? '',
+            'notes' => $log->notes ?? '',
+        ];
     }
 
     /** Los registros de biberón son los de tipo bottle; el pecho tiene su propia sesión. */

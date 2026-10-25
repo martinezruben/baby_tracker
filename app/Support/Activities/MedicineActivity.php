@@ -4,6 +4,7 @@ namespace App\Support\Activities;
 
 use App\Models\Medicine;
 use App\Models\MedicineLog;
+use App\Support\FamilyClock;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
@@ -37,7 +38,7 @@ class MedicineActivity extends ActivityType
         ];
     }
 
-    public function create(ActivityContext $context, array $data): Model
+    protected function attributes(ActivityContext $context, array $data, ?Model $log = null): array
     {
         $medicine = ! empty($data['new_medicine'])
             ? Medicine::firstOrCreate(
@@ -46,12 +47,23 @@ class MedicineActivity extends ActivityType
             )
             : Medicine::findOrFail($data['medicine_id']);
 
-        return MedicineLog::create($context->owner() + [
+        return [
             'medicine_id' => $medicine->id,
             'occurred_at' => $context->clock->parse($data['occurred_at']),
             'dose' => $data['dose'],
             'unit' => $data['unit'] ?? $medicine->unit,
-        ]);
+        ];
+    }
+
+    public function formValues(Model $log, FamilyClock $clock): array
+    {
+        return [
+            'occurred_at' => $clock->toLocal($log->occurred_at),
+            'medicine_id' => $log->medicine_id,
+            'new_medicine' => '',
+            'dose' => (float) $log->dose,
+            'unit' => $log->unit ?? '',
+        ];
     }
 
     public function summary(Model $log): array

@@ -24,6 +24,12 @@ class ActivityRegistry
         return self::all()[$slug] ?? null;
     }
 
+    /** Tipo cuyos registros se pueden corregir: los del registro más la lactancia con cronómetro. */
+    public static function editable(string $slug): ActivityType
+    {
+        return $slug === 'pecho' ? new BreastActivity : self::findOrFail($slug);
+    }
+
     public static function findOrFail(string $slug): ActivityType
     {
         return self::find($slug) ?? abort(404);

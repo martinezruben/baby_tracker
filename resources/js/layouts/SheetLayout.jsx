@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { X } from 'lucide-react';
 import Snackbar from '../components/Snackbar';
 import { KINDS } from '../lib/activities';
@@ -8,8 +8,10 @@ import { useT } from '../lib/i18n';
  * Hoja de formulario (docs/mockup/Panal.dc.html): fondo atenuado, hoja blanca con esquinas
  * superiores de 28 px, cabecera con icono del tipo, contenido con scroll y botón principal fijo abajo.
  */
-export default function SheetLayout({ title, subtitle, kind, icon: Icon, closeHref = '/registrar', actionLabel, onSubmit, disabled, processing, children, footer }) {
+export default function SheetLayout({ title, subtitle, kind, icon: Icon, closeHref, actionLabel, editing = false, onSubmit, disabled, processing, children, footer }) {
     const t = useT();
+    const { babies, activeBabyId } = usePage().props;
+    const babyName = babies?.find((b) => b.id === activeBabyId)?.first_name ?? '';
     const colors = KINDS[kind];
 
     return (
@@ -32,11 +34,11 @@ export default function SheetLayout({ title, subtitle, kind, icon: Icon, closeHr
                             </div>
                             <div className="min-w-0">
                                 <h1 className="text-[22px] leading-tight font-bold">{title}</h1>
-                                {subtitle && <p className="text-sm text-ink-soft">{subtitle}</p>}
+                                {(editing || subtitle) && <p className="text-sm text-ink-soft">{editing ? t('registrar.editing', { name: babyName }) : subtitle}</p>}
                             </div>
                         </div>
                         <Link
-                            href={closeHref}
+                            href={closeHref ?? (editing ? '/bitacora' : '/registrar')}
                             aria-label={t('common.close')}
                             className="flex size-12 shrink-0 items-center justify-center rounded-full bg-canvas text-ink focus-visible:outline-2 focus-visible:outline-primary"
                         >
@@ -54,9 +56,9 @@ export default function SheetLayout({ title, subtitle, kind, icon: Icon, closeHr
                         disabled={disabled || processing}
                         className="min-h-[58px] w-full rounded-full bg-primary text-lg font-bold text-white transition-colors hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50"
                     >
-                        {actionLabel}
+                        {editing ? t('registrar.save_changes') : actionLabel}
                     </button>
-                    <p className="text-sm text-ink-soft">{t('registrar.undo_hint')}</p>
+                    {!editing && <p className="text-sm text-ink-soft">{t('registrar.undo_hint')}</p>}
                 </div>
             </form>
             <Snackbar />

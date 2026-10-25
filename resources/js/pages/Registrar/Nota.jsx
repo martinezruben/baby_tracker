@@ -1,14 +1,13 @@
-import { useForm } from '@inertiajs/react';
 import { StickyNote } from 'lucide-react';
 import RegistersAs from '../../components/form/RegistersAs';
 import TimeBlock from '../../components/form/TimeBlock';
 import SheetLayout from '../../layouts/SheetLayout';
-import { lastSubtitle } from '../../lib/forms';
+import { lastSubtitle, useActivityForm } from '../../lib/forms';
 import { useT } from '../../lib/i18n';
 
-export default function Nota({ baby, clock, lastAt }) {
+export default function Nota({ record, baby, clock, lastAt }) {
     const t = useT();
-    const form = useForm({ occurred_at: clock.now, content: '' });
+    const [form, save] = useActivityForm('nota', { occurred_at: clock.now, content: '' }, record);
     const { data, setData, errors } = form;
 
     return (
@@ -20,9 +19,10 @@ export default function Nota({ baby, clock, lastAt }) {
             actionLabel={t('registrar.note_form.save')}
             disabled={!data.content.trim()}
             processing={form.processing}
+            editing={Boolean(record)}
             onSubmit={(e) => {
                 e.preventDefault();
-                form.post('/registrar/nota');
+                save();
             }}
         >
             <div className="flex flex-col gap-2.5">

@@ -1,4 +1,4 @@
-import { router, useForm } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { Moon } from 'lucide-react';
 import Field from '../../components/Field';
 import ChoiceChips from '../../components/form/Chips';
@@ -6,23 +6,23 @@ import MoreDetails from '../../components/form/MoreDetails';
 import RegistersAs from '../../components/form/RegistersAs';
 import TimeBlock from '../../components/form/TimeBlock';
 import SheetLayout from '../../layouts/SheetLayout';
-import { lastSubtitle } from '../../lib/forms';
+import { lastSubtitle, useActivityForm } from '../../lib/forms';
 import { useT } from '../../lib/i18n';
 
-export default function Sueno({ baby, clock, lastAt, openSleepId }) {
+export default function Sueno({ record, baby, clock, lastAt, openSleepId }) {
     const t = useT();
-    const form = useForm({
+    const [form, save] = useActivityForm('sueno', {
         occurred_at: clock.now,
         in_progress: true,
         ended_at: clock.now,
         type: 'nap',
         quality: '',
         location: '',
-    });
+    }, record);
     const { data, setData, errors } = form;
 
     // Ya hay un sueño abierto: lo único que tiene sentido es cerrarlo.
-    if (openSleepId) {
+    if (openSleepId && !record) {
         return (
             <SheetLayout
                 title={t('registrar.sleep.title')}
@@ -51,10 +51,11 @@ export default function Sueno({ baby, clock, lastAt, openSleepId }) {
             icon={Moon}
             actionLabel={data.in_progress ? t('registrar.sleep.save_start') : t('registrar.sleep.save')}
             processing={form.processing}
+            editing={Boolean(record)}
             onSubmit={(e) => {
                 e.preventDefault();
                 form.transform((d) => ({ ...d, ended_at: d.in_progress ? null : d.ended_at, quality: d.quality || null }));
-                form.post('/registrar/sueno');
+                save();
             }}
         >
             <ChoiceChips

@@ -1,4 +1,3 @@
-import { useForm } from '@inertiajs/react';
 import { Pill } from 'lucide-react';
 import Field from '../../components/Field';
 import ChoiceChips from '../../components/form/Chips';
@@ -6,19 +5,19 @@ import RegistersAs from '../../components/form/RegistersAs';
 import Stepper from '../../components/form/Stepper';
 import TimeBlock from '../../components/form/TimeBlock';
 import SheetLayout from '../../layouts/SheetLayout';
-import { lastSubtitle } from '../../lib/forms';
+import { lastSubtitle, useActivityForm } from '../../lib/forms';
 import { useT } from '../../lib/i18n';
 
-export default function Medicina({ baby, clock, lastAt, medicines }) {
+export default function Medicina({ record, baby, clock, lastAt, medicines }) {
     const t = useT();
     const first = medicines[0];
-    const form = useForm({
+    const [form, save] = useActivityForm('medicina', {
         occurred_at: clock.now,
         medicine_id: first?.id ?? '',
         new_medicine: '',
         dose: first?.typical_dose ? Number(first.typical_dose) : 1,
         unit: first?.unit ?? '',
-    });
+    }, record);
     const { data, setData, errors } = form;
     const isNew = data.medicine_id === '';
 
@@ -41,10 +40,11 @@ export default function Medicina({ baby, clock, lastAt, medicines }) {
             icon={Pill}
             actionLabel={t('registrar.medicine.save')}
             processing={form.processing}
+            editing={Boolean(record)}
             onSubmit={(e) => {
                 e.preventDefault();
                 form.transform((d) => ({ ...d, medicine_id: d.medicine_id === '' ? null : d.medicine_id, unit: d.unit || null }));
-                form.post('/registrar/medicina');
+                save();
             }}
         >
             <TimeBlock value={data.occurred_at} onChange={(v) => setData('occurred_at', v)} now={clock.now} error={errors.occurred_at} />

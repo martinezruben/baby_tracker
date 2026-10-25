@@ -2,6 +2,7 @@
 
 namespace App\Support\Activities;
 
+use App\Support\FamilyClock;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -33,8 +34,34 @@ abstract class ActivityType
     /** @return array<string, mixed> */
     abstract public function rules(ActivityContext $context): array;
 
+    /**
+     * Columnas del registro a partir de los datos validados; las usan `create` y `update`.
+     *
+     * @param  array<string, mixed>  $data  datos ya validados
+     * @return array<string, mixed>
+     */
+    abstract protected function attributes(ActivityContext $context, array $data, ?Model $log = null): array;
+
+    /**
+     * Valores del formulario para editar un registro (fechas en hora de la familia, "YYYY-MM-DDTHH:mm").
+     *
+     * @return array<string, mixed>
+     */
+    abstract public function formValues(Model $log, FamilyClock $clock): array;
+
     /** @param  array<string, mixed>  $data  datos ya validados */
-    abstract public function create(ActivityContext $context, array $data): Model;
+    public function create(ActivityContext $context, array $data): Model
+    {
+        return ($this->model())::create($context->owner() + $this->attributes($context, $data));
+    }
+
+    /** @param  array<string, mixed>  $data  datos ya validados */
+    public function update(ActivityContext $context, Model $log, array $data): Model
+    {
+        $log->update($this->attributes($context, $data, $log));
+
+        return $log;
+    }
 
     /** Datos del último registro que la interfaz necesita para "Repetir lo último". */
     public function summary(Model $log): array

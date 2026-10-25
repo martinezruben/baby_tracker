@@ -1,16 +1,15 @@
-import { useForm } from '@inertiajs/react';
 import { Ruler } from 'lucide-react';
 import ChoiceChips from '../../components/form/Chips';
 import RegistersAs from '../../components/form/RegistersAs';
 import Stepper from '../../components/form/Stepper';
 import TimeBlock from '../../components/form/TimeBlock';
 import SheetLayout from '../../layouts/SheetLayout';
-import { lastSubtitle } from '../../lib/forms';
+import { lastSubtitle, useActivityForm } from '../../lib/forms';
 import { useT } from '../../lib/i18n';
 
-export default function Medida({ baby, clock, lastAt, last, units }) {
+export default function Medida({ record, baby, clock, lastAt, last, units }) {
     const t = useT();
-    const form = useForm({ occurred_at: clock.now, type: last?.type ?? 'weight', value: last?.value ?? '' });
+    const [form, save] = useActivityForm('medida', { occurred_at: clock.now, type: last?.type ?? 'weight', value: last?.value ?? '' }, record);
     const { data, setData, errors } = form;
 
     const unitOf = { weight: units.weight, height: units.height, head_circumference: units.height, temperature: `°${units.temperature}` };
@@ -25,9 +24,10 @@ export default function Medida({ baby, clock, lastAt, last, units }) {
             actionLabel={t('registrar.measure.save')}
             disabled={data.value === '' || Number(data.value) <= 0}
             processing={form.processing}
+            editing={Boolean(record)}
             onSubmit={(e) => {
                 e.preventDefault();
-                form.post('/registrar/medida');
+                save();
             }}
         >
             <ChoiceChips

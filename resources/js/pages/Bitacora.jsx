@@ -1,5 +1,5 @@
-import { router, usePage } from '@inertiajs/react';
-import { BookOpen, Trash2, X } from 'lucide-react';
+import { Link, router, usePage } from '@inertiajs/react';
+import { BookOpen, Pencil, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import Button from '../components/Button';
 import AppLayout from '../layouts/AppLayout';
@@ -82,7 +82,16 @@ function Entry({ entry }) {
                 </span>
             </button>
             {open && (
-                <div className="border-t border-line px-3 py-2">
+                <div className="flex flex-wrap items-center gap-1 border-t border-line px-3 py-2">
+                    {entry.editable !== false && (
+                        <Link
+                            href={`/registros/${entry.type}/${entry.id}/editar`}
+                            className="inline-flex min-h-12 items-center gap-2 rounded-full px-4 text-base font-semibold text-primary hover:bg-canvas focus-visible:outline-2 focus-visible:outline-primary"
+                        >
+                            <Pencil aria-hidden="true" className="size-5" />
+                            {t('log.edit')}
+                        </Link>
+                    )}
                     <Button
                         variant="ghost"
                         className="text-red-700 hover:bg-red-50"
