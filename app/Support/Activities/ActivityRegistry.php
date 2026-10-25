@@ -13,9 +13,14 @@ class ActivityRegistry
             new BottleActivity,
             new DiaperActivity,
             new SleepActivity,
+            new SolidsActivity,
+            new PumpActivity,
+            new BathActivity,
+            new PlayActivity,
             new MedicineActivity,
             new MeasurementActivity,
             new NoteActivity,
+            new MoodActivity,
         ])->keyBy(fn (ActivityType $t) => $t->slug())->all();
     }
 

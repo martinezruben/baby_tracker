@@ -7,6 +7,7 @@ use App\Enums\FeedType;
 use App\Models\ActiveBreastFeed;
 use App\Models\Appointment;
 use App\Models\FeedLog;
+use App\Models\Food;
 use App\Models\Medicine;
 use App\Models\SleepLog;
 use App\Support\ActiveBaby;
@@ -88,6 +89,7 @@ class RegistrarController extends Controller
             'medicines' => $type === 'medicina'
                 ? Medicine::where('family_id', $family->id)->where('is_active', true)->orderBy('name')->get(['id', 'name', 'typical_dose', 'unit'])
                 : [],
+            'foods' => $type === 'solidos' ? Food::where('family_id', $family->id)->orderBy('name')->get(['id', 'name']) : [],
             'openSleepId' => $type === 'sueno' ? SleepLog::where('baby_id', $baby->id)->whereNull('ended_at')->value('id') : null,
             'units' => ['weight' => $family->settings->weight_unit, 'height' => $family->settings->height_unit, 'temperature' => $family->settings->temperature_unit],
             'breastActive' => ActiveBreastFeed::where('baby_id', $baby->id)->exists(),

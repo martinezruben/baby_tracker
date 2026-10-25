@@ -25,10 +25,10 @@ export const ACTIVITIES = {
     pecho: { kind: 'food', icon: Heart, available: true },
     panal: { kind: 'diaper', icon: Baby, available: true },
     sueno: { kind: 'sleep', icon: Moon, available: true },
-    solidos: { kind: 'food', icon: Utensils, available: false },
-    extraccion: { kind: 'food', icon: Droplet, available: false },
-    bano: { kind: 'growth', icon: Bath, available: false },
-    juego: { kind: 'moment', icon: Globe, available: false },
+    solidos: { kind: 'food', icon: Utensils, available: true },
+    extraccion: { kind: 'food', icon: Droplet, available: true },
+    bano: { kind: 'growth', icon: Bath, available: true },
+    juego: { kind: 'moment', icon: Globe, available: true },
     medicina: { kind: 'medicine', icon: Pill, available: true },
     medida: { kind: 'growth', icon: Ruler, available: true },
     vacuna: { kind: 'vaccine', icon: Syringe, available: true, href: '/vacunas/aplicar' },
@@ -36,7 +36,7 @@ export const ACTIVITIES = {
     hito: { kind: 'moment', icon: Star, available: true, href: '/eventos/nuevo' },
     foto: { kind: 'moment', icon: Camera, available: true, href: '/fotos' },
     nota: { kind: 'moment', icon: StickyNote, available: true },
-    animo: { kind: 'moment', icon: Smile, available: false },
+    animo: { kind: 'moment', icon: Smile, available: true },
 };
 
 export const GROUPS = {

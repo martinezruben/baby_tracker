@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use App\Models\Baby;
 use App\Models\DiaperLog;
 use App\Models\FeedLog;
+use App\Models\FoodLog;
 use App\Models\LifeEvent;
 use App\Models\MedicineLog;
 use App\Models\NotificationRule;
@@ -85,6 +86,7 @@ class CalendarData
 
         // Actividad diaria: solo cuántos registros hubo de cada tipo.
         FeedLog::where('baby_id', $baby->id)->where('occurred_at', '>=', $from)->where('occurred_at', '<', $to)->pluck('occurred_at')->each(fn ($at) => $count('feed', $at));
+        FoodLog::where('baby_id', $baby->id)->where('occurred_at', '>=', $from)->where('occurred_at', '<', $to)->pluck('occurred_at')->each(fn ($at) => $count('feed', $at));
         SleepLog::where('baby_id', $baby->id)->where('started_at', '>=', $from)->where('started_at', '<', $to)->pluck('started_at')->each(fn ($at) => $count('sleep', $at));
         DiaperLog::where('baby_id', $baby->id)->where('occurred_at', '>=', $from)->where('occurred_at', '<', $to)->pluck('occurred_at')->each(fn ($at) => $count('diaper', $at));
         MedicineLog::where('baby_id', $baby->id)->where('occurred_at', '>=', $from)->where('occurred_at', '<', $to)->pluck('occurred_at')->each(fn ($at) => $count('medicine', $at));

@@ -45,6 +45,19 @@ function describe(t, format, entry) {
             return { title: d.name ?? t('registrar.tiles.medicina'), detail: join(`${n(d.dose)}${d.unit ? ` ${d.unit}` : ''}`) };
         case 'medida':
             return { title: `${t(`registrar.measure.${d.type}`)} · ${n(d.value)} ${d.unit}`, detail: '' };
+        case 'solidos':
+            return {
+                title: `${t('registrar.tiles.solidos')} · ${d.food ?? ''}`.replace(/ · $/, ''),
+                detail: join(d.amount && `${n(d.amount)} ${d.unit ?? ''}`.trim(), d.enjoyment && t(`registrar.solids.enjoy_${d.enjoyment}`), d.reaction && t('registrar.solids.reaction')),
+            };
+        case 'extraccion':
+            return { title: `${t('registrar.tiles.extraccion')} · ${n(d.amount)} ${d.unit}`, detail: join(d.minutes && durationLabel(t, d.minutes)) };
+        case 'bano':
+            return { title: t('registrar.tiles.bano'), detail: join(d.bath_type && t(`registrar.bath.${d.bath_type}`), d.soap && t('registrar.bath.soap'), d.shampoo && t('registrar.bath.shampoo')) };
+        case 'juego':
+            return { title: `${t('registrar.tiles.juego')} · ${t(`registrar.play.${d.type}`)}`, detail: join(d.minutes && durationLabel(t, d.minutes), d.notes) };
+        case 'animo':
+            return { title: `${t('registrar.tiles.animo')} · ${t(`registrar.mood.${d.mood}`)}`, detail: join(d.intensity && `${t('registrar.mood.intensity_short')} ${d.intensity}`, d.minutes && durationLabel(t, d.minutes)) };
         default:
             return { title: t('registrar.tiles.nota'), detail: d.content };
     }

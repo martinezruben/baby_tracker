@@ -146,7 +146,7 @@ class BitacoraTest extends TestCase
 
     public function test_page_is_an_inertia_page_for_logged_in_users_only(): void
     {
-        $this->get('/bitacora')->assertInertia(fn (Assert $page) => $page->component('Bitacora')->where('tipo', null)->has('types', 7));
+        $this->get('/bitacora')->assertInertia(fn (Assert $page) => $page->component('Bitacora')->where('tipo', null)->has('types', 12));
 
         auth()->logout();
         $this->get('/bitacora')->assertRedirect(route('login'));

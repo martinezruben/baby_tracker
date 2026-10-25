@@ -4,11 +4,16 @@ namespace App\Support;
 
 use App\Enums\FeedType;
 use App\Models\Baby;
+use App\Models\BathLog;
 use App\Models\DiaperLog;
 use App\Models\FeedLog;
+use App\Models\FoodLog;
 use App\Models\Measurement;
 use App\Models\MedicineLog;
+use App\Models\MoodLog;
 use App\Models\Note;
+use App\Models\PlayLog;
+use App\Models\PumpLog;
 use App\Models\SleepLog;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,10 +36,15 @@ class Timeline
             'pecho' => [FeedLog::class, 'occurred_at', fn (Builder $q) => $q->where('type', FeedType::Breast)],
             'panal' => [DiaperLog::class, 'occurred_at', null],
             'sueno' => [SleepLog::class, 'started_at', null],
+            'solidos' => [FoodLog::class, 'occurred_at', fn (Builder $q) => $q->with('food:id,name')],
+            'extraccion' => [PumpLog::class, 'started_at', null],
+            'bano' => [BathLog::class, 'occurred_at', null],
+            'juego' => [PlayLog::class, 'started_at', null],
             'medicina' => [MedicineLog::class, 'occurred_at', fn (Builder $q) => $q->with('medicine:id,name')],
             // Las medidas solo guardan el día; se ordenan por cuándo se registraron.
             'medida' => [Measurement::class, 'created_at', null],
             'nota' => [Note::class, 'occurred_at', null],
+            'animo' => [MoodLog::class, 'occurred_at', null],
         ];
     }
 
@@ -157,6 +167,14 @@ class Timeline
                 'minutes' => $log->duration_minutes, 'open' => $log->ended_at === null, 'type' => $log->type->value,
                 'ended_at' => $log->ended_at?->toIso8601String(), 'location' => $log->location,
             ],
+            'solidos' => [
+                'food' => $log->food?->name, 'amount' => $log->amount === null ? null : (float) $log->amount, 'unit' => $log->unit,
+                'enjoyment' => $log->enjoyment?->value, 'reaction' => (bool) $log->had_reaction,
+            ],
+            'extraccion' => ['amount' => (float) $log->total_amount, 'unit' => $log->unit, 'minutes' => $log->duration_minutes],
+            'bano' => ['bath_type' => $log->bath_type, 'soap' => (bool) $log->soap_used, 'shampoo' => (bool) $log->shampoo_used],
+            'juego' => ['type' => $log->type->value, 'minutes' => $log->duration_minutes, 'notes' => $log->activities],
+            'animo' => ['mood' => $log->mood->value, 'intensity' => $log->intensity, 'minutes' => $log->duration_minutes],
             'medicina' => ['name' => $log->medicine?->name, 'dose' => (float) $log->dose, 'unit' => $log->unit],
             'medida' => ['type' => $log->type->value, 'value' => (float) $log->value, 'unit' => $log->unit],
             'nota' => ['content' => $log->content],
