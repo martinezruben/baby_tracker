@@ -7,8 +7,10 @@ use App\Http\Controllers\BabySelectionController;
 use App\Http\Controllers\BreastFeedController;
 use App\Http\Controllers\CaretakerPinController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LifeEventController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\MoreController;
+use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\PushTestController;
@@ -57,6 +59,27 @@ Route::middleware('setup:required')->group(function () {
             Route::get('/{appointment}/archivos/{attachment}', [AppointmentFileController::class, 'show'])->name('files.show');
             Route::delete('/{appointment}/archivos/{attachment}', [AppointmentFileController::class, 'destroy'])->name('files.destroy');
             Route::post('/{appointment}/medicinas', [PrescriptionController::class, 'store'])->name('prescriptions.store');
+        });
+        Route::prefix('fotos')->name('photos.')->group(function () {
+            Route::get('/', [PhotoController::class, 'index'])->name('index');
+            Route::post('/', [PhotoController::class, 'store'])->name('store');
+            Route::get('/{photo}', [PhotoController::class, 'show'])->name('show');
+            Route::patch('/{photo}', [PhotoController::class, 'update'])->name('update');
+            Route::delete('/{photo}', [PhotoController::class, 'destroy'])->name('destroy');
+            Route::post('/{photo}/favorita', [PhotoController::class, 'favorite'])->name('favorite');
+            Route::delete('/{photo}/ubicacion', [PhotoController::class, 'hideLocation'])->name('location.hide');
+            Route::get('/{photo}/archivo', [PhotoController::class, 'file'])->name('file');
+            Route::get('/{photo}/miniatura', [PhotoController::class, 'thumb'])->name('thumb');
+        });
+        Route::prefix('eventos')->name('events.')->group(function () {
+            Route::get('/', [LifeEventController::class, 'index'])->name('index');
+            Route::get('/nuevo', [LifeEventController::class, 'create'])->name('create');
+            Route::post('/', [LifeEventController::class, 'store'])->name('store');
+            Route::get('/{event}', [LifeEventController::class, 'show'])->name('show');
+            Route::get('/{event}/editar', [LifeEventController::class, 'edit'])->name('edit');
+            Route::put('/{event}', [LifeEventController::class, 'update'])->name('update');
+            Route::delete('/{event}', [LifeEventController::class, 'destroy'])->name('destroy');
+            Route::post('/{event}/fotos', [LifeEventController::class, 'addPhotos'])->name('photos.store');
         });
         Route::delete('/recetas/{prescription}', [PrescriptionController::class, 'destroy'])->name('prescriptions.destroy');
         Route::post('/dosis/{dose}/dada', [PrescriptionController::class, 'give'])->name('doses.give');
