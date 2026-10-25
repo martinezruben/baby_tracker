@@ -3,6 +3,7 @@ import { Bell, ChevronRight, KeyRound, LogOut, Settings, Users } from 'lucide-re
 import { useState } from 'react';
 import Button from '../components/Button';
 import Field from '../components/Field';
+import InstallHint from '../components/InstallHint';
 import ChoiceChips from '../components/form/Chips';
 import PushToggle from '../components/PushToggle';
 import AppLayout from '../layouts/AppLayout';
@@ -111,6 +112,7 @@ export default function Mas({ caretakers, slug, language, languages }) {
                         <ChevronRight aria-hidden="true" className="size-5 text-ink-soft" strokeWidth={2} />
                     </Link>
                     <PushToggle />
+                    <InstallHint />
                     {auth.caretaker.role === 'admin' && (
                         <Link href="/ajustes" className={row}>
                             <Icon kind="growth">

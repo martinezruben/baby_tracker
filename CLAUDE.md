@@ -71,6 +71,13 @@ Proyecto: Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 - `/calendario` (`CalendarData`): un mes del bebé activo agrupado por día **de la familia**: citas (no canceladas), vacunas (por aplicar y aplicadas), tomas de medicina, recordatorios, momentos, y solo el **conteo** de tomas, sueños, pañales y medicinas registradas. Cada día enlaza al detalle de cada cosa y a `/bitacora?dia=YYYY-MM-DD`.
 - Al añadir un módulo con fechas, súmalo en `CalendarData::month()` y en `ITEM_STYLES` / `DOTS` de `pages/Calendario.jsx`.
 
+## Ajustes de la familia y PWA
+
+- `/ajustes` (solo administradores, middleware `admin`): hub con cuidadores, bebés, preferencias y esquema de vacunación. Controladores `SettingsController`, `CaretakerAdminController`, `BabyAdminController`; el idioma personal se cambia en `/mas` (`PATCH /cuidador/idioma`). Idiomas implementados: `es` y `en`.
+- `SaveCaretaker`: crea (hereda los avisos compartidos de citas, medicinas y vacunas), edita (no deja sin administrador), da de baja (no a uno mismo ni al último admin; borra suscripciones push y sesiones, lo quita de los avisos) y reactiva. Dar de baja un bebé = borrado lógico y apaga sus reglas; nunca el último.
+- Al cambiar la zona horaria se vuelven a sincronizar los avisos de vacunas.
+- PWA: `public/manifest.webmanifest` (standalone, `#087873`), iconos en `public/icons/` generados con `php scripts/make-icons.php`, metaetiquetas de iPhone en `app.blade.php` y `InstallHint` en `/mas`. El manifest es estático (no por familia).
+
 ## Notificaciones (Web Push)
 
 - Canal `push` = `WebPushChannel` (librería `minishlink/web-push`); el cliente de envío es `PushClient` (se sustituye por un falso en las pruebas).
@@ -79,7 +86,7 @@ Proyecto: Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 - El aviso solo lleva el título y el texto de la regla: nunca fotos ni ubicación.
 - Pantalla `/recordatorios` (`ReminderController`, `SaveReminder`): recordatorios sueltos (tipo `custom`) con varios momentos de aviso, repetición, "insistir hasta confirmar", snooze, horario silencioso y destinatarios. La fecha se escribe en la zona horaria de la familia y se guarda en UTC. Otros módulos (citas, medicinas, vacunas) crearán sus reglas con `NotificationScheduler`.
 - "Enviar aviso de prueba" (`/push/prueba`) comprueba que el dispositivo recibe avisos.
-- iPhone: los avisos solo funcionan con la app instalada en la pantalla de inicio (falta el manifest PWA).
+- iPhone: los avisos solo funcionan con la app instalada en la pantalla de inicio (el manifest PWA ya existe).
 
 ## Comandos
 
