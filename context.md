@@ -164,38 +164,38 @@ Una app Next.js (App Router) con Prisma sobre SQLite o PostgreSQL, Tailwind y Do
 - Issues y un Project (tablero) con las fases: Base, Registro diario, Módulo médico, Notificaciones y Cierre.
 - Un issue por módulo: citas, vacunas, medicinas, eventos y fotos.
 
+## Funciones extra (módulos propios)
+
+### Citas médicas
+- Registro completo de la cita: fecha y hora, doctor/clínica (enlazado a Contactos), motivo, ubicación, síntomas, diagnóstico, notas, peso/talla/temperatura medidos y seguimiento (próxima cita).
+- **Archivos adjuntos** (recetas, resultados, informes, imágenes) con descarga y vista previa.
+- **Medicinas generadas por la cita:** cada cita puede crear recetas con dosis, frecuencia, hora de inicio, duración del tratamiento y total de tomas; al crearlas se generan automáticamente las reglas de notificación de cada toma (con snooze e insistencia hasta confirmar) y se registran en `MedicineLog` al aceptarlas.
+- Recordatorios de la cita configurables (varios avisos, ver notificaciones) y entrada automática en el calendario.
+- Estados: programada, realizada, cancelada, reprogramada.
+
+### Vacunas y calendario de vacunación
+- Registro de dosis (nombre, dosis, fecha, lote, lugar, quién la aplicó) con documentos adjuntos, como en el original.
+- **Calendario de vacunación:** esquema configurable por país (plantilla) que calcula las dosis esperadas según la fecha de nacimiento, con estados: pendiente, próxima, vencida y aplicada.
+- Avisos antes de cada dosis y de las vencidas; al registrar la dosis se marca como aplicada y se programa la siguiente.
+- Vista de cartilla de vacunación exportable a PDF.
+
+### Fotos con ubicación y etiquetas
+- Cada foto guarda fecha (de los metadatos EXIF o manual) y **ubicación** (coordenadas EXIF o lugar elegido en un mapa; editable o borrable por privacidad).
+- **Etiquetas:** de personas/bebé, de eventos y libres; búsqueda y filtros por etiqueta, fecha y lugar; álbumes y favoritos.
+- Miniaturas, cuota de almacenamiento y vínculo a actividades, hitos, citas y eventos (como `PhotoLink` del original).
+
+### Eventos con foto y tipo
+- Eventos de la vida del bebé (dientes, comida nueva, primeros pasos, viaje, etc.) con **tipo seleccionable** de una lista configurable (dientes, comida, gateo, caminar, palabra nueva, enfermedad, otro).
+- Cada evento tiene fecha, nota, una o varias fotos y, cuando aplica, datos específicos (por ejemplo el diente concreto o el alimento).
+- Se muestran en la línea de tiempo y el calendario; pueden generar recordatorios.
+
+### Notificaciones: destinatarios
+- Los avisos insistentes llegan a **todos los cuidadores** asignados a la regla y **se detienen en cuanto uno acepta**. (Queda como valor por defecto, configurable por regla.)
+
 ## Preguntas pendientes
 
-**Decidido:**
-- Uso **personal** (no comercial): se puede portar el código con la licencia y atribución de Sprout Track.
-- Frontend: **Inertia + React + Tailwind**.
-- Alcance: **todas** las funciones del original (menos las del servicio hospedado) **más un sistema de notificaciones configurable** (ver abajo).
-
-## Notificaciones configurables (función extra)
-
-El original solo avisa al registrar una actividad y cuando vence un temporizador (alimentación, pañal, medicina), con un intervalo fijo por evento. Aquí debe poder configurarse todo.
-
-**Requisitos**
-- Reglas de notificación por usuario, bebé y tipo de evento (alimentación, pañal, sueño, medicina, vacuna, cita, recordatorio personalizado).
-- **Frecuencia configurable:** una vez, o repetida cada N minutos/horas, con límite de repeticiones o ventana horaria (por ejemplo, no avisar de noche).
-- **Más de un aviso por evento:** por ejemplo 1 día antes, 1 hora antes y al momento.
-- **Snooze:** posponer 5, 10, 15 o 30 minutos o un tiempo personalizado.
-- **Insistente hasta confirmar:** algunas reglas se repiten hasta que el usuario las acepta (confirmar o marcar como hecho).
-- **Confirmación compartida:** si una persona confirma, se detienen los avisos para los demás cuidadores de esa regla (configurable).
-- Canales: Web Push (PWA) como base; correo como respaldo; el resto queda para después.
-- Historial de notificaciones enviadas, confirmadas y pospuestas, con reintentos y limpieza de suscripciones caducadas.
-
-**Diseño propuesto (Laravel)**
-- Tablas: `notification_rules` (tipo de evento, bebé, destinatarios, canal, `repeat_every_minutes`, `max_repeats`, `quiet_hours`, `requires_ack`, `snooze_options`), `notification_schedules` (próximo envío por regla y evento) y `notification_deliveries` (estado: pendiente, enviada, vista, pospuesta, confirmada, fallida).
-- El scheduler de Laravel (cada minuto) encola jobs en Redis para los envíos que vencen; cada envío reprograma el siguiente si la regla repite y no hay confirmación.
-- Acciones sobre la notificación (Confirmar, Posponer) desde el propio push (acciones del service worker) y desde la app.
-- Web Push con `laravel-notification-channels/webpush` y claves VAPID en `.env` (nunca en el repo).
-- Pruebas con Pest para: repetición, snooze, confirmación compartida y horario silencioso.
-
-## Preguntas pendientes
-
-1. ¿Qué otras funciones extra quieres además de las notificaciones (por ejemplo citas médicas, fotos, eventos)?
-2. ¿Los avisos insistentes deben llegar a todos los cuidadores o solo a quien los configuró?
+1. ¿Inicio el proyecto en este repo (`baby_tracker`) o creo uno nuevo (`baby-tracker-laravel`)?
+2. ¿Qué país o esquema de vacunación usamos como plantilla inicial?
 
 ## Fuentes
 
