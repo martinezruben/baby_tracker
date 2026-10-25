@@ -14,6 +14,7 @@ use App\Support\Activities\ActivityRegistry;
 use App\Support\BreastFeedSession;
 use App\Support\DashboardData;
 use App\Support\FamilyClock;
+use App\Support\VaccineSchedule;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -46,6 +47,7 @@ class RegistrarController extends Controller
             'sessions' => $data->sessions($baby),
             'last' => $last,
             'lastBreastAt' => $lastBreast?->occurred_at?->toIso8601String(),
+            'nextVaccine' => $this->nextVaccine($baby),
             'nextAppointmentAt' => Appointment::where('baby_id', $baby->id)->where('status', AppointmentStatus::Scheduled)
                 ->where('scheduled_at', '>', now())->orderBy('scheduled_at')->value('scheduled_at')?->toIso8601String(),
         ]);
@@ -73,5 +75,17 @@ class RegistrarController extends Controller
             'units' => ['weight' => $family->settings->weight_unit, 'height' => $family->settings->height_unit, 'temperature' => $family->settings->temperature_unit],
             'breastActive' => ActiveBreastFeed::where('baby_id', $baby->id)->exists(),
         ]);
+    }
+
+    /** @return array{name: string, due_on: string, overdue: bool}|null */
+    private function nextVaccine($baby): ?array
+    {
+        $row = VaccineSchedule::for($baby)->rows($baby)->where('status', '!=', 'applied')->sortBy('days_left')->first();
+
+        return $row ? [
+            'name' => trim($row['dose']->vaccine_name.' '.$row['dose']->dose_label),
+            'due_on' => $row['due_on']->toDateString(),
+            'overdue' => $row['status'] === 'overdue',
+        ] : null;
     }
 }

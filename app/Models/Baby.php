@@ -29,6 +29,11 @@ class Baby extends Model
         return $this->belongsTo(Family::class);
     }
 
+    public function vaccinations(): HasMany
+    {
+        return $this->hasMany(Vaccination::class);
+    }
+
     public function activeBreastFeed(): HasOne
     {
         return $this->hasOne(ActiveBreastFeed::class);

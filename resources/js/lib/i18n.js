@@ -64,3 +64,14 @@ export function ageLabel(t, birthDate, now = new Date()) {
     if (days >= 14) return t.choice('age.weeks', Math.floor(days / 7));
     return t.choice('age.days', days);
 }
+
+/** Edad recomendada de una dosis (en días): "Al nacer", "12 días", "6 semanas", "4 meses", "1 año". */
+export function doseAgeLabel(t, days) {
+    if (days === 0) return t('vacunas.due.at_birth');
+    if (days < 14) return t.choice('age.days', days);
+    if (days < 56) return t.choice('age.weeks', Math.round(days / 7));
+
+    const months = days / 30.4375;
+    if (months >= 23) return t.choice('age.years', Math.round(months / 12));
+    return t.choice('age.months', Math.round(months));
+}

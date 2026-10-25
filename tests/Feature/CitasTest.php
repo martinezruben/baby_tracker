@@ -201,7 +201,7 @@ class CitasTest extends TestCase
 
         $this->get('/citas/nueva')->assertInertia(fn (Assert $page) => $page
             ->where('defaults.scheduled_at', '2026-11-04T09:00')
-            ->where('options.offsets', [0, -5, -10, -15, -30, -60, -120, -1440]));
+            ->where('options.offsets', [0, -5, -10, -15, -30, -60, -120, -1440, -10080]));
     }
 
     public function test_the_home_shows_the_next_appointment(): void

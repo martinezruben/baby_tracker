@@ -60,6 +60,12 @@ Proyecto: Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 - Momentos (`LifeEvent`, `/eventos`): diente, comida nueva, primeros pasos, gateo, palabra, viaje, enfermedad u otro; con fotos (`photos.life_event_id`). La fecha de la foto manda; si no trae EXIF, se usa el día del momento. Borrar un momento deja sus fotos en la galería.
 - Las fotos y la ubicación nunca van en notificaciones.
 
+## Vacunas
+
+- El esquema (`VaccineDose`, por familia) es **dato**, no código: se carga desde la cartilla en `/vacunas/esquema` (una dosis, o pegando líneas "vacuna; dosis; edad; notas" con `VaccineScheduleImport`, todo o nada). No hay esquema precargado; no inventes edades ni dosis.
+- `VaccineSchedule` calcula el estado de cada dosis para un bebé desde su fecha de nacimiento: `applied`, `overdue`, `soon` (≤ 60 días) o `later`. Una aplicación (`Vaccination`) puede estar o no ligada a una dosis del esquema; una dosis se aplica una sola vez por bebé.
+- `SyncVaccineReminders` deja una regla por bebé y dosis pendiente (avisos 1 semana antes, 1 día antes y el día, a las 9:00 locales) y apaga la de las aplicadas, vencidas o borradas. Se llama al aplicar, deshacer, editar el esquema o importar; es idempotente.
+
 ## Notificaciones (Web Push)
 
 - Canal `push` = `WebPushChannel` (librería `minishlink/web-push`); el cliente de envío es `PushClient` (se sustituye por un falso en las pruebas).

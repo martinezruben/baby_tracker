@@ -20,6 +20,8 @@ use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\SleepWakeController;
+use App\Http\Controllers\VaccineController;
+use App\Http\Controllers\VaccineScheduleController;
 use Illuminate\Support\Facades\Route;
 
 // Asistente inicial: solo mientras no exista ninguna familia.
@@ -80,6 +82,18 @@ Route::middleware('setup:required')->group(function () {
             Route::put('/{event}', [LifeEventController::class, 'update'])->name('update');
             Route::delete('/{event}', [LifeEventController::class, 'destroy'])->name('destroy');
             Route::post('/{event}/fotos', [LifeEventController::class, 'addPhotos'])->name('photos.store');
+        });
+        Route::prefix('vacunas')->name('vaccines.')->group(function () {
+            Route::get('/', [VaccineController::class, 'index'])->name('index');
+            Route::get('/aplicar', [VaccineController::class, 'create'])->name('create');
+            Route::post('/', [VaccineController::class, 'store'])->name('store');
+            Route::get('/esquema', [VaccineScheduleController::class, 'show'])->name('schedule');
+            Route::patch('/esquema/nombre', [VaccineScheduleController::class, 'name'])->name('schedule.name');
+            Route::post('/esquema/dosis', [VaccineScheduleController::class, 'store'])->name('schedule.store');
+            Route::delete('/esquema/dosis/{dose}', [VaccineScheduleController::class, 'destroy'])->name('schedule.destroy');
+            Route::post('/esquema/importar', [VaccineScheduleController::class, 'import'])->name('schedule.import');
+            Route::post('/{id}/restaurar', [VaccineController::class, 'restore'])->whereNumber('id')->name('restore');
+            Route::delete('/{vaccination}', [VaccineController::class, 'destroy'])->name('destroy');
         });
         Route::delete('/recetas/{prescription}', [PrescriptionController::class, 'destroy'])->name('prescriptions.destroy');
         Route::post('/dosis/{dose}/dada', [PrescriptionController::class, 'give'])->name('doses.give');

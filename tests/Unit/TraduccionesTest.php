@@ -87,6 +87,9 @@ class TraduccionesTest extends TestCase
         foreach (['tooth', 'food', 'word', 'trip'] as $k) {
             array_push($dynamic, "eventos.form.detail_{$k}", "eventos.form.detail_{$k}_ph");
         }
+        foreach (['applied', 'overdue', 'soon', 'later'] as $k) {
+            array_push($dynamic, "vacunas.status.{$k}", "vacunas.sections.{$k}");
+        }
         foreach (['scheduled', 'completed', 'cancelled'] as $k) {
             $dynamic[] = "citas.states.{$k}";
         }

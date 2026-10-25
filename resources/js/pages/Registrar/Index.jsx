@@ -5,6 +5,7 @@ import useBreastTimer from '../../components/useBreastTimer';
 import AppLayout from '../../layouts/AppLayout';
 import { ACTIVITIES, GROUPS, KINDS } from '../../lib/activities';
 import { agoLabel, useT } from '../../lib/i18n';
+import { dayLabel } from '../../lib/lifeEvents';
 import useFormat from '../../lib/useFormat';
 import { formatClock, minutesSince } from '../../lib/time';
 
@@ -159,7 +160,7 @@ function GroupTitle({ id, title, count }) {
     );
 }
 
-export default function Index({ baby, clock, sessions, last, lastBreastAt, nextAppointmentAt }) {
+export default function Index({ baby, clock, sessions, last, lastBreastAt, nextAppointmentAt, nextVaccine }) {
     const t = useT();
     const format = useFormat();
     const [section, setSection] = useState('todo');
@@ -173,6 +174,7 @@ export default function Index({ baby, clock, sessions, last, lastBreastAt, nextA
             if (sessions.breast) return t('registrar.in_progress', { time: formatClock(breast.total) });
             return lastBreastAt ? ago(lastBreastAt) : t('registrar.none');
         }
+        if (slug === 'vacuna') return nextVaccine ? (nextVaccine.overdue ? `${t('vacunas.overdue_card')} · ${nextVaccine.name}` : `${t('vacunas.sections.soon')} ${dayLabel(nextVaccine.due_on, format.locale)}`) : t('registrar.none');
         if (slug === 'cita') return nextAppointmentAt ? `${format.date(nextAppointmentAt)} · ${format.time(nextAppointmentAt)}` : t('registrar.none');
         if (slug === 'sueno' && sessions.sleep) return t('session.sleeping_since', { time: format.time(sessions.sleep.started_at) });
         const entry = lastBy[slug];

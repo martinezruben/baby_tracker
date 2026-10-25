@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 
 class ReminderRequest extends FormRequest
 {
-    public const OFFSETS = [0, -5, -10, -15, -30, -60, -120, -1440];
+    public const OFFSETS = [0, -5, -10, -15, -30, -60, -120, -1440, -10080];
 
     public const SNOOZE = [5, 10, 15, 30, 60, 120];
 

@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, Baby, Bell, ChevronDown, ChevronRight, Milk, Moon, Pill, Ruler, Stethoscope } from 'lucide-react';
+import { ArrowRight, Baby, Bell, ChevronDown, ChevronRight, Milk, Moon, Pill, Ruler, Stethoscope, Syringe } from 'lucide-react';
 import ActiveSessions from '../components/ActiveSessions';
 import DonutChart from '../components/DonutChart';
 import AppLayout from '../layouts/AppLayout';
@@ -215,6 +215,7 @@ const EVENT_STYLES = {
     reminder: { kind: 'appointment', icon: Bell },
     appointment: { kind: 'appointment', icon: Stethoscope },
     dose: { kind: 'medicine', icon: Pill },
+    vaccine: { kind: 'vaccine', icon: Syringe },
 };
 
 function Upcoming({ upcoming }) {
@@ -257,7 +258,7 @@ function Upcoming({ upcoming }) {
                                     </span>
                                     <span className="relative flex flex-col gap-0.5">
                                         <span className="line-clamp-2 text-lg leading-[1.15] font-bold">{event.title}</span>
-                                        <span className="text-[13px] text-ink-mid">{when(event.at)}</span>
+                                        <span className="text-[13px] text-ink-mid">{event.overdue ? t('vacunas.overdue_card') : when(event.at)}</span>
                                     </span>
                                 </Link>
                             </li>
