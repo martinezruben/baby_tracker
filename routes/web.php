@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\AllergyController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AppointmentFileController;
 use App\Http\Controllers\BabyAdminController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\BreastFeedController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CaretakerAdminController;
 use App\Http\Controllers\CaretakerPinController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GrowthController;
 use App\Http\Controllers\LifeEventController;
@@ -58,6 +60,16 @@ Route::middleware('setup:required')->group(function () {
         Route::delete('/registros/{type}/{id}', [ActivityController::class, 'destroy'])->whereNumber('id')->name('records.destroy');
         Route::get('/bitacora', LogController::class)->name('log');
         Route::get('/calendario', CalendarController::class)->name('calendar');
+        Route::get('/contactos', [ContactController::class, 'index'])->name('contacts');
+        Route::post('/contactos', [ContactController::class, 'store'])->name('contacts.store');
+        Route::put('/contactos/{id}', [ContactController::class, 'update'])->whereNumber('id')->name('contacts.update');
+        Route::delete('/contactos/{id}', [ContactController::class, 'destroy'])->whereNumber('id')->name('contacts.destroy');
+        Route::post('/contactos/{id}/restaurar', [ContactController::class, 'restore'])->whereNumber('id')->name('contacts.restore');
+        Route::get('/alergias', [AllergyController::class, 'index'])->name('allergies');
+        Route::post('/alergias', [AllergyController::class, 'store'])->name('allergies.store');
+        Route::put('/alergias/{id}', [AllergyController::class, 'update'])->whereNumber('id')->name('allergies.update');
+        Route::delete('/alergias/{id}', [AllergyController::class, 'destroy'])->whereNumber('id')->name('allergies.destroy');
+        Route::post('/alergias/{id}/restaurar', [AllergyController::class, 'restore'])->whereNumber('id')->name('allergies.restore');
         Route::get('/nursery', NurseryController::class)->name('nursery');
         Route::get('/crecimiento', GrowthController::class)->name('growth');
         Route::get('/reportes', [ReportController::class, 'index'])->name('reports');

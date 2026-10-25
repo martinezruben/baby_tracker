@@ -23,3 +23,16 @@ export function useActivityForm(type, defaults, record) {
 
     return [form, save];
 }
+
+const plain = (text) => String(text ?? '').normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().trim();
+
+/** Alergia registrada que coincide con un nombre (alimento o medicina), o null. Compara sin acentos ni mayúsculas. */
+export function allergyHit(allergies, name) {
+    const target = plain(name);
+    if (target.length < 3) return null;
+
+    return allergies.find((a) => {
+        const known = plain(a);
+        return known.length >= 3 && (target.includes(known) || known.includes(target));
+    }) ?? null;
+}

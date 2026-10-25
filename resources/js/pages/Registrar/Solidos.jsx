@@ -1,5 +1,6 @@
 import { Utensils } from 'lucide-react';
 import Field from '../../components/Field';
+import AllergyWarning from '../../components/form/AllergyWarning';
 import ChoiceChips from '../../components/form/Chips';
 import MoreDetails from '../../components/form/MoreDetails';
 import RegistersAs from '../../components/form/RegistersAs';
@@ -12,7 +13,7 @@ import { useT } from '../../lib/i18n';
 
 const ENJOYMENT = ['hated', 'disliked', 'neutral', 'liked', 'loved'];
 
-export default function Solidos({ record, baby, clock, lastAt, foods }) {
+export default function Solidos({ record, baby, clock, lastAt, foods, allergies }) {
     const t = useT();
     const [form, save] = useActivityForm(
         'solidos',
@@ -21,6 +22,7 @@ export default function Solidos({ record, baby, clock, lastAt, foods }) {
     );
     const { data, setData, errors } = form;
     const isNew = data.food_id === '';
+    const foodName = isNew ? data.new_food : foods.find((f) => f.id === data.food_id)?.name;
 
     return (
         <SheetLayout
@@ -52,6 +54,8 @@ export default function Solidos({ record, baby, clock, lastAt, foods }) {
                 </p>
             )}
             {isNew && <Field label={t('registrar.solids.name')} value={data.new_food} onChange={(e) => setData('new_food', e.target.value)} error={errors.new_food} maxLength={80} autoComplete="off" />}
+
+            <AllergyWarning allergies={allergies} name={foodName} babyName={baby.first_name} />
 
             <ChoiceChips
                 label={t('registrar.solids.enjoyment')}

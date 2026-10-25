@@ -6,6 +6,7 @@ use App\Enums\AppointmentStatus;
 use App\Enums\FeedType;
 use App\Models\ActiveBreastFeed;
 use App\Models\Appointment;
+use App\Models\BabyAllergen;
 use App\Models\FeedLog;
 use App\Models\Food;
 use App\Models\Medicine;
@@ -88,6 +89,9 @@ class RegistrarController extends Controller
             'volumeUnit' => $family->settings->volume_unit,
             'medicines' => $type === 'medicina'
                 ? Medicine::where('family_id', $family->id)->where('is_active', true)->orderBy('name')->get(['id', 'name', 'typical_dose', 'unit'])
+                : [],
+            'allergies' => in_array($type, ['solidos', 'medicina'], true)
+                ? BabyAllergen::where('baby_id', $baby->id)->whereIn('type', $type === 'solidos' ? ['food'] : ['medicine'])->pluck('name')->all()
                 : [],
             'foods' => $type === 'solidos' ? Food::where('family_id', $family->id)->orderBy('name')->get(['id', 'name']) : [],
             'openSleepId' => $type === 'sueno' ? SleepLog::where('baby_id', $baby->id)->whereNull('ended_at')->value('id') : null,

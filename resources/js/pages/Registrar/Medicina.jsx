@@ -1,5 +1,6 @@
 import { Pill } from 'lucide-react';
 import Field from '../../components/Field';
+import AllergyWarning from '../../components/form/AllergyWarning';
 import ChoiceChips from '../../components/form/Chips';
 import RegistersAs from '../../components/form/RegistersAs';
 import Stepper from '../../components/form/Stepper';
@@ -8,7 +9,7 @@ import SheetLayout from '../../layouts/SheetLayout';
 import { lastSubtitle, useActivityForm } from '../../lib/forms';
 import { useT } from '../../lib/i18n';
 
-export default function Medicina({ record, baby, clock, lastAt, medicines }) {
+export default function Medicina({ record, baby, clock, lastAt, medicines, allergies }) {
     const t = useT();
     const first = medicines[0];
     const [form, save] = useActivityForm('medicina', {
@@ -20,6 +21,7 @@ export default function Medicina({ record, baby, clock, lastAt, medicines }) {
     }, record);
     const { data, setData, errors } = form;
     const isNew = data.medicine_id === '';
+    const medicineName = isNew ? data.new_medicine : medicines.find((m) => m.id === data.medicine_id)?.name;
 
     const pick = (id) => {
         const medicine = medicines.find((m) => m.id === id);
@@ -69,6 +71,8 @@ export default function Medicina({ record, baby, clock, lastAt, medicines }) {
                     maxLength={80}
                 />
             )}
+
+            <AllergyWarning allergies={allergies} name={medicineName} babyName={baby.first_name} />
 
             <Stepper label={t('registrar.medicine.dose')} value={data.dose} onChange={(v) => setData('dose', v)} step={0.5} min={0} max={10000} error={errors.dose} />
             <Field

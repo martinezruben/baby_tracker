@@ -57,7 +57,7 @@ export const MODULES = [
     { key: 'moments', icon: Star, kind: 'moment', href: '/eventos' },
     { key: 'reports', icon: BarChart3, kind: 'growth', href: '/reportes' },
     { key: 'log', icon: BookOpen, kind: 'diaper', href: '/bitacora' },
-    { key: 'allergies', icon: ShieldAlert, kind: 'food' },
-    { key: 'contacts', icon: Users, kind: 'sleep' },
+    { key: 'allergies', icon: ShieldAlert, kind: 'food', href: '/alergias' },
+    { key: 'contacts', icon: Users, kind: 'sleep', href: '/contactos' },
     { key: 'settings', icon: Settings, kind: 'neutral', href: '/mas' },
 ];
