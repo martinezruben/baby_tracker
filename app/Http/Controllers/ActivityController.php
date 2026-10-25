@@ -47,7 +47,29 @@ class ActivityController extends Controller
 
         $log->delete();
 
+        // Desde la Bitácora se avisa con "Deshacer" (restaurar); al deshacer un registro recién
+        // guardado basta con un aviso.
+        if ($request->query('desde') === 'bitacora') {
+            return back()->with('undo', [
+                'message' => trans('ui.log.deleted'),
+                'url' => route('records.restore', ['type' => $type, 'id' => $log->id]),
+                'method' => 'post',
+            ]);
+        }
+
         return back()->with('status', trans('ui.registrar.undone'));
+    }
+
+    public function restore(Request $request, string $type, int $id): RedirectResponse
+    {
+        $model = $type === 'pecho' ? FeedLog::class : ActivityRegistry::findOrFail($type)->model();
+
+        $model::onlyTrashed()
+            ->where('family_id', $request->user()->family_id)
+            ->findOrFail($id)
+            ->restore();
+
+        return back()->with('status', trans('ui.log.restored'));
     }
 
     private function context(Request $request): ActivityContext

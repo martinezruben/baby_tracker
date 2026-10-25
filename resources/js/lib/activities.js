@@ -56,7 +56,7 @@ export const MODULES = [
     { key: 'photos', icon: Camera, kind: 'moment' },
     { key: 'moments', icon: Star, kind: 'moment' },
     { key: 'reports', icon: BarChart3, kind: 'growth' },
-    { key: 'log', icon: BookOpen, kind: 'diaper' },
+    { key: 'log', icon: BookOpen, kind: 'diaper', href: '/bitacora' },
     { key: 'allergies', icon: ShieldAlert, kind: 'food' },
     { key: 'contacts', icon: Users, kind: 'sleep' },
     { key: 'settings', icon: Settings, kind: 'neutral', href: '/mas' },

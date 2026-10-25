@@ -42,6 +42,7 @@ Proyecto: Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 - Registro: cada tipo es una clase en `app/Support/Activities/` registrada en `ActivityRegistry` (reglas, creación, resumen, repetir). Rutas `/registrar/{tipo}`; deshacer = borrado lógico vía `records.destroy` (el `Snackbar` lo ofrece 6 s).
 - Pecho = cronómetro (`BreastFeedSession`, tabla `active_breast_feeds`): guarda segundos por lado y el instante de la última acción. Sueño en curso = `SleepLog` sin `ended_at`.
 - Fechas: se guardan en UTC; lo que escribe o ve una persona va en hora de la familia (`FamilyClock` en PHP, `lib/time.js` en JS) y en 12/24 h según `family_settings.time_format`.
+- Bitácora (`/bitacora`, `Timeline`): mezcla todos los tipos, paginada con cursor `instante|tipo|id` y `Inertia::merge`; eliminar desde ahí ofrece restaurar (`records.restore`). Al añadir un tipo de registro, añádelo también en `Timeline::sources()`.
 - Módulos aún sin construir aparecen atenuados con "Próximamente" (`available: false` en `resources/js/lib/activities.js`); al construirlos, cámbialos a `true`.
 - `tests/Unit/TraduccionesTest` falla si un `t('clave')` del frontend no existe en `lang/es` o si `en` y `es` difieren.
 

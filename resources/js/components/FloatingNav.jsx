@@ -11,7 +11,7 @@ export default function FloatingNav() {
     const t = useT();
     const path = url.split('?')[0];
 
-    const active = path === '/' ? 'home' : path.startsWith('/mas') || path.startsWith('/recordatorios') ? 'more' : null;
+    const active = path === '/' ? 'home' : path.startsWith('/bitacora') ? 'log' : path.startsWith('/mas') || path.startsWith('/recordatorios') ? 'more' : null;
 
     const item = (key, href, Icon, label) =>
         active === key ? (
@@ -49,7 +49,7 @@ export default function FloatingNav() {
             >
                 <Plus aria-hidden="true" className="size-[26px]" strokeWidth={2} />
             </Link>
-            {soon(List, t('nav.log'))}
+            {item('log', '/bitacora', List, t('nav.log'))}
             {item('more', '/mas', MoreHorizontal, t('nav.more'))}
         </nav>
     );
