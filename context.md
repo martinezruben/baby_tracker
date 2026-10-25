@@ -192,12 +192,26 @@ Una app Next.js (App Router) con Prisma sobre SQLite o PostgreSQL, Tailwind y Do
 ### Notificaciones: destinatarios
 - Los avisos insistentes llegan a **todos los cuidadores** asignados a la regla y **se detienen en cuanto uno acepta**. (Queda como valor por defecto, configurable por regla.)
 
+## Decisiones de arranque
+
+- **Repo:** se trabaja en este mismo repo (`martinezruben/baby_tracker`), rama de desarrollo `claude/jolly-johnson-ya45cu`.
+- **Plantilla de vacunación inicial:** República Dominicana (esquema del Programa Ampliado de Inmunizaciones, PAI, del Ministerio de Salud Pública).
+
+### Esquema de vacunación de República Dominicana (plantilla)
+Vacunas confirmadas en fuentes públicas como parte del esquema gratuito: hepatitis B, pentavalente (difteria, tétanos, tosferina, hepatitis B y Hib), rotavirus, neumococo, polio, sarampión/rubéola (SRP) y VPH (9 a 14 años, niñas y niños desde 2024). Hepatitis A y meningococo **no** están en el esquema regular.
+
+**Pendiente de verificar:** la búsqueda no encontró el calendario oficial con las edades y el número exacto de dosis, y no se inventan. Antes de cargar la plantilla hay que confirmarla con el MSP/PAI (msp.gob.do), la cartilla de vacunación del bebé o el pediatra.
+
+**Cómo se modela para no depender de eso:** el esquema es **dato, no código**: tablas `vaccine_schedules` y `vaccine_schedule_doses` (vacuna, número de dosis, edad recomendada en meses, intervalo mínimo desde la dosis anterior, notas) cargadas por un seeder `DominicanRepublicSchedule` editable desde la app. Así se puede corregir sin tocar código y agregar otros países o vacunas privadas.
+
 ## Preguntas pendientes
 
-1. ¿Inicio el proyecto en este repo (`baby_tracker`) o creo uno nuevo (`baby-tracker-laravel`)?
-2. ¿Qué país o esquema de vacunación usamos como plantilla inicial?
+1. Calendario oficial dominicano: ¿lo pegas desde la cartilla del bebé o verifico en el MSP?
+2. ¿Empiezo ya la Fase 1 (proyecto Laravel + Sail + MySQL, `LICENSE.md`, README, `.env.example`)?
 
 ## Fuentes
 
 - [Sprout Track en GitHub](https://github.com/Oak-and-Sprout/sprout-track)
 - [Licencia](https://github.com/Oak-and-Sprout/sprout-track/blob/main/LICENSE.md)
+- [UNICEF: esquema nacional gratuito (El Día)](https://eldia.com.do/unicef-alerta-sobre-numero-de-ninos-no-vacunados/)
+- [Sociedad Dominicana de Pediatría: completar el esquema (El Caribe)](https://www.elcaribe.com.do/panorama/salud/sdp-llama-a-completar-el-esquema-nacional-de-vacunacion-infantil/)
