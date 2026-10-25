@@ -1,4 +1,4 @@
-/* Service worker de Baby Tracker: avisos push con botones Confirmar / Posponer. */
+/* Service worker de KiDu baby tracker: avisos push con botones Confirmar / Posponer. */
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()));
@@ -8,11 +8,11 @@ self.addEventListener('push', (event) => {
     try {
         payload = event.data ? event.data.json() : {};
     } catch (e) {
-        payload = { title: 'Baby Tracker', body: event.data ? event.data.text() : '' };
+        payload = { title: 'KiDu baby tracker', body: event.data ? event.data.text() : '' };
     }
 
     event.waitUntil(
-        self.registration.showNotification(payload.title || 'Baby Tracker', {
+        self.registration.showNotification(payload.title || 'KiDu baby tracker', {
             body: payload.body || '',
             tag: payload.tag,
             renotify: Boolean(payload.tag),

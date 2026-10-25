@@ -3,7 +3,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 
 createInertiaApp({
-    title: (title) => (title ? `${title} · Baby Tracker` : 'Baby Tracker'),
+    title: (title) => (title ? `${title} · KiDu baby tracker` : 'KiDu baby tracker'),
     // Cada pantalla se descarga solo cuando se visita (carga inicial más ligera).
     resolve: (name) => {
         const pages = import.meta.glob('./pages/**/*.jsx');

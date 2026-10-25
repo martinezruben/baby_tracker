@@ -2,7 +2,7 @@
 
 return [
     'app' => [
-        'name' => 'Baby Tracker',
+        'name' => 'KiDu baby tracker',
     ],
     'common' => [
         'continue' => 'Continue',

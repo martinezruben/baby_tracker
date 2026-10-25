@@ -1,6 +1,6 @@
 {
-    "name": "Baby Tracker",
-    "short_name": "Baby Tracker",
+    "name": "KiDu baby tracker",
+    "short_name": "KiDu",
     "description": "Registro del bebé: tomas, sueño, pañales, citas, vacunas y avisos.",
     "id": "/",
     "start_url": "/",

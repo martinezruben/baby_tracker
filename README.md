@@ -1,4 +1,4 @@
-# Baby Tracker
+# KiDu baby tracker
 
 Aplicación personal para el seguimiento del bebé (sueño, alimentación, pañales, medicinas, vacunas, citas médicas, fotos, eventos y notificaciones configurables). Móvil primero, en español, con soporte para 5 idiomas.
 
