@@ -15,6 +15,8 @@ class MoreController extends Controller
         return Inertia::render('Mas', [
             'caretakers' => $user->family->caretakers()->where('is_active', true)->count(),
             'slug' => $user->family->slug,
+            'language' => $user->language,
+            'languages' => SettingsController::LANGUAGES,
         ]);
     }
 }

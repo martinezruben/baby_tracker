@@ -1,8 +1,9 @@
 import { Link, router, useForm, usePage } from '@inertiajs/react';
-import { Bell, ChevronRight, KeyRound, LogOut, Users } from 'lucide-react';
+import { Bell, ChevronRight, KeyRound, LogOut, Settings, Users } from 'lucide-react';
 import { useState } from 'react';
 import Button from '../components/Button';
 import Field from '../components/Field';
+import ChoiceChips from '../components/form/Chips';
 import PushToggle from '../components/PushToggle';
 import AppLayout from '../layouts/AppLayout';
 import { KINDS } from '../lib/activities';
@@ -64,7 +65,28 @@ function ChangePin() {
     );
 }
 
-export default function Mas({ caretakers, slug }) {
+function MyLanguage({ language, languages }) {
+    const t = useT();
+    const [value, setValue] = useState(language ?? '');
+
+    const change = (v) => {
+        setValue(v);
+        router.patch('/cuidador/idioma', { language: v || null }, { preserveScroll: true });
+    };
+
+    return (
+        <div className="rounded-3xl bg-surface p-4 shadow-card">
+            <ChoiceChips
+                label={t('more.my_language')}
+                value={value}
+                onChange={change}
+                options={[{ value: '', label: t('more.language_family') }, ...languages.map((l) => ({ value: l, label: l === 'es' ? 'Español' : 'English' }))]}
+            />
+        </div>
+    );
+}
+
+export default function Mas({ caretakers, slug, language, languages }) {
     const t = useT();
     const { auth } = usePage().props;
     const name = auth.caretaker.name;
@@ -89,10 +111,23 @@ export default function Mas({ caretakers, slug }) {
                         <ChevronRight aria-hidden="true" className="size-5 text-ink-soft" strokeWidth={2} />
                     </Link>
                     <PushToggle />
+                    {auth.caretaker.role === 'admin' && (
+                        <Link href="/ajustes" className={row}>
+                            <Icon kind="growth">
+                                <Settings aria-hidden="true" className="size-6" strokeWidth={1.75} />
+                            </Icon>
+                            <span className="flex grow flex-col">
+                                <span className="text-base font-bold">{t('more.family_settings')}</span>
+                                <span className="text-[13px] text-ink-soft">{t('more.family_settings_help')}</span>
+                            </span>
+                            <ChevronRight aria-hidden="true" className="size-5 text-ink-soft" strokeWidth={2} />
+                        </Link>
+                    )}
                 </section>
 
                 <section className="flex flex-col gap-3">
                     <h2 className="text-[19px] font-bold">{t('more.account')}</h2>
+                    <MyLanguage language={language} languages={languages} />
                     <ChangePin />
                     {caretakers > 1 && (
                         <Link href={`/entrar/${slug}`} className={row}>

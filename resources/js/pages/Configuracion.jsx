@@ -15,9 +15,6 @@ const STEP_FIELDS = [
 const LANGUAGES = [
     { value: 'es', label: 'Español' },
     { value: 'en', label: 'English' },
-    { value: 'fr', label: 'Français' },
-    { value: 'de', label: 'Deutsch' },
-    { value: 'it', label: 'Italiano' },
 ];
 
 export default function Configuracion() {

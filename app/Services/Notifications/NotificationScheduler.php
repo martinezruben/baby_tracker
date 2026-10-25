@@ -4,8 +4,10 @@ namespace App\Services\Notifications;
 
 use App\Enums\OccurrenceStatus;
 use App\Enums\TargetStatus;
+use App\Models\Caretaker;
 use App\Models\NotificationOccurrence;
 use App\Models\NotificationRule;
+use App\Models\NotificationTarget;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -89,6 +91,51 @@ class NotificationScheduler
                         ->update(['status' => TargetStatus::Cancelled, 'next_send_at' => null]);
                     $occurrence->update(['status' => OccurrenceStatus::Cancelled]);
                 });
+        });
+    }
+
+    /**
+     * Suma a un cuidador a una regla y le crea los avisos de lo que todavía no ha pasado.
+     * Sirve para quien se une a la familia (o se reactiva) con citas, tomas y vacunas ya programadas.
+     */
+    public function addRecipient(NotificationRule $rule, Caretaker $caretaker): void
+    {
+        DB::transaction(function () use ($rule, $caretaker) {
+            $rule->recipients()->syncWithoutDetaching([$caretaker->id]);
+
+            $rule->occurrences()->where('status', OccurrenceStatus::Active)->get()->each(function (NotificationOccurrence $occurrence) use ($caretaker) {
+                $fireAt = $occurrence->event_at->copy()->utc()->addMinutes($occurrence->offset_minutes);
+
+                if ($fireAt->lessThan(now())) {
+                    return;
+                }
+
+                $target = $occurrence->targets()->where('caretaker_id', $caretaker->id)->first();
+
+                if (! $target) {
+                    $occurrence->targets()->create([
+                        'caretaker_id' => $caretaker->id,
+                        'status' => TargetStatus::Pending,
+                        'next_send_at' => $fireAt,
+                    ]);
+                } elseif ($target->status === TargetStatus::Cancelled) {
+                    // Estaba dado de baja: se reactivan sus avisos pendientes desde cero.
+                    $target->update(['status' => TargetStatus::Pending, 'next_send_at' => $fireAt, 'sent_count' => 0, 'failed_attempts' => 0]);
+                }
+            });
+        });
+    }
+
+    /** Quita a un cuidador de todas las reglas y cancela sus avisos pendientes. */
+    public function removeRecipient(Caretaker $caretaker): void
+    {
+        DB::transaction(function () use ($caretaker) {
+            NotificationTarget::query()
+                ->where('caretaker_id', $caretaker->id)
+                ->where('status', TargetStatus::Pending)
+                ->update(['status' => TargetStatus::Cancelled, 'next_send_at' => null]);
+
+            DB::table('notification_rule_caretaker')->where('caretaker_id', $caretaker->id)->delete();
         });
     }
 }

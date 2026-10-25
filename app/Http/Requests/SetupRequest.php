@@ -14,7 +14,7 @@ class SetupRequest extends FormRequest
     {
         return [
             'family_name' => ['required', 'string', 'max:80'],
-            'language' => ['required', Rule::in(['es', 'en', 'fr', 'de', 'it'])],
+            'language' => ['required', Rule::in(['es', 'en'])],
             'admin_name' => ['required', 'string', 'max:80'],
             'pin' => ['required', 'string', 'regex:/^\d{4,10}$/', 'confirmed', Rule::notIn(self::WEAK_PINS)],
             'baby_first_name' => ['required', 'string', 'max:80'],

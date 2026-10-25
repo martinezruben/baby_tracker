@@ -3,9 +3,11 @@
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AppointmentFileController;
+use App\Http\Controllers\BabyAdminController;
 use App\Http\Controllers\BabySelectionController;
 use App\Http\Controllers\BreastFeedController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\CaretakerAdminController;
 use App\Http\Controllers\CaretakerPinController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LifeEventController;
@@ -19,6 +21,7 @@ use App\Http\Controllers\RegistrarController;
 use App\Http\Controllers\ReminderActionController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\SleepWakeController;
 use App\Http\Controllers\VaccineController;
@@ -106,6 +109,25 @@ Route::middleware('setup:required')->group(function () {
         Route::patch('/sueno/{log}/reabrir', [SleepWakeController::class, 'reopen'])->name('sleep.reopen');
 
         Route::post('/salir', [SessionController::class, 'destroy'])->name('logout');
+        Route::patch('/cuidador/idioma', [SettingsController::class, 'language'])->name('caretaker.language');
+
+        Route::middleware('admin')->prefix('ajustes')->name('settings.')->group(function () {
+            Route::get('/', [SettingsController::class, 'index'])->name('index');
+            Route::get('/preferencias', [SettingsController::class, 'preferences'])->name('preferences');
+            Route::put('/preferencias', [SettingsController::class, 'updatePreferences'])->name('preferences.update');
+
+            Route::get('/cuidadores', [CaretakerAdminController::class, 'index'])->name('caretakers');
+            Route::post('/cuidadores', [CaretakerAdminController::class, 'store'])->name('caretakers.store');
+            Route::put('/cuidadores/{caretaker}', [CaretakerAdminController::class, 'update'])->name('caretakers.update');
+            Route::post('/cuidadores/{caretaker}/baja', [CaretakerAdminController::class, 'deactivate'])->name('caretakers.deactivate');
+            Route::post('/cuidadores/{caretaker}/alta', [CaretakerAdminController::class, 'reactivate'])->name('caretakers.reactivate');
+
+            Route::get('/bebes', [BabyAdminController::class, 'index'])->name('babies');
+            Route::post('/bebes', [BabyAdminController::class, 'store'])->name('babies.store');
+            Route::put('/bebes/{baby}', [BabyAdminController::class, 'update'])->name('babies.update');
+            Route::delete('/bebes/{baby}', [BabyAdminController::class, 'destroy'])->name('babies.destroy');
+        });
+
         Route::put('/cuidador/pin', [CaretakerPinController::class, 'update'])->name('caretaker.pin');
         Route::post('/push/suscripciones', [PushSubscriptionController::class, 'store'])->name('push.store');
         Route::delete('/push/suscripciones', [PushSubscriptionController::class, 'destroy'])->name('push.destroy');

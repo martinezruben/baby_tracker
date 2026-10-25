@@ -102,6 +102,9 @@ class TraduccionesTest extends TestCase
         foreach (['appointment', 'vaccine', 'medicine', 'life_event', 'feed', 'sleep', 'diaper'] as $k) {
             $dynamic[] = "calendario.legend.{$k}";
         }
+        foreach (['active', 'count_babies'] as $k) {
+            $dynamic[] = "ajustes.hub.{$k}";
+        }
         foreach (['scheduled', 'completed', 'cancelled'] as $k) {
             $dynamic[] = "citas.states.{$k}";
         }

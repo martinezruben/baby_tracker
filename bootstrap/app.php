@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureSetupState;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SetLocale;
@@ -18,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Los botones de los avisos llevan enlaces firmados y no tienen sesión ni token CSRF.
         $middleware->validateCsrfTokens(except: ['avisos/*']);
-        $middleware->alias(['setup' => EnsureSetupState::class]);
+        $middleware->alias(['setup' => EnsureSetupState::class, 'admin' => EnsureAdmin::class]);
         $middleware->redirectGuestsTo(fn () => Family::query()->exists() ? route('login') : route('setup.show'));
         $middleware->web(append: [
             SetLocale::class,
