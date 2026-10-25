@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Centro de registro</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+a{color:#087873}a:hover{color:#065E5A}
+</style>
+</helmet>
+<div style="width:390px;height:1560px;position:relative;overflow:hidden;box-sizing:border-box;background:#F2F6F7;color:#172033;font-family:'Outfit',system-ui,sans-serif;font-size:16px;line-height:1.3;font-variant-numeric:tabular-nums">
+  <div style="padding:12px 20px 32px;display:flex;flex-direction:column;gap:20px">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;min-height:56px">
+      <a href="Main.dc.html" aria-label="Volver al inicio" style="width:48px;height:48px;border-radius:50%;background:#FFFFFF;color:#172033;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(23,32,51,0.06)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+      </a>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div style="font-size:21px;font-weight:700">Registrar</div>
+        <div style="font-size:13px;color:#5B6576">Sofía · ahora 14:20</div>
+      </div>
+      <button type="button" aria-label="Más opciones" style="width:48px;height:48px;border-radius:50%;border:0;background:#FFFFFF;color:#172033;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(23,32,51,0.06)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5h.01M12 12h.01M12 19h.01" /></svg>
+      </button>
+    </div>
+
+    <nav aria-label="Secciones" style="display:flex;gap:8px;margin-right:-20px;overflow:hidden">
+      <a href="#todo" aria-current="true" style="flex-shrink:0;display:flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#087873;color:#FFFFFF;font-size:15px;font-weight:600;text-decoration:none">Todo</a>
+      <a href="#rutina" style="flex-shrink:0;display:flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#FFFFFF;color:#172033;font-size:15px;font-weight:500;text-decoration:none">Rutina</a>
+      <a href="#salud" style="flex-shrink:0;display:flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#FFFFFF;color:#172033;font-size:15px;font-weight:500;text-decoration:none">Salud</a>
+      <a href="#momentos" style="flex-shrink:0;display:flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#FFFFFF;color:#172033;font-size:15px;font-weight:500;text-decoration:none">Momentos</a>
+    </nav>
+
+    <div id="todo" style="display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:26px;background:#123B57;color:#FFFFFF">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px;font-size:18px;font-weight:700">
+          <span style="width:10px;height:10px;border-radius:50%;background:#4ADE80"></span>
+          Lactancia en curso
+        </div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.8)">Inició 14:08</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+        <div style="display:flex;flex-direction:column;gap:2px;padding:14px;border-radius:18px;background:#2CC5BD;color:#0B2A3D">
+          <div style="font-size:13px;font-weight:600">Izquierdo · activo</div>
+          <div style="font-size:32px;font-weight:700;line-height:1.1">07:12</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px;padding:14px;border-radius:18px;background:rgba(255,255,255,0.1)">
+          <div style="font-size:13px;color:rgba(255,255,255,0.8)">Derecho</div>
+          <div style="font-size:32px;font-weight:700;line-height:1.1">04:52</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button type="button" style="flex:1;min-height:48px;border-radius:999px;border:1px solid rgba(255,255,255,0.45);background:none;color:#FFFFFF;font-size:15px;font-weight:600;cursor:pointer">Pausar</button>
+        <button type="button" style="flex:1;min-height:48px;border-radius:999px;border:1px solid rgba(255,255,255,0.45);background:none;color:#FFFFFF;font-size:15px;font-weight:600;cursor:pointer">Cambiar lado</button>
+        <button type="button" style="flex:1;min-height:48px;border-radius:999px;border:0;background:#FFFFFF;color:#123B57;font-size:15px;font-weight:700;cursor:pointer">Finalizar</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#5B6576">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
+        Repetir lo último
+      </div>
+      <div style="display:flex;gap:8px;margin-right:-20px;overflow:hidden">
+        <button type="button" style="flex-shrink:0;display:flex;align-items:center;gap:8px;min-height:48px;padding:0 16px;border-radius:999px;border:0;background:#FFFFFF;color:#172033;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(23,32,51,0.05)"><span style="width:10px;height:10px;border-radius:3px;background:#E0A21B"></span>Biberón · 120 ml</button>
+        <button type="button" style="flex-shrink:0;display:flex;align-items:center;gap:8px;min-height:48px;padding:0 16px;border-radius:999px;border:0;background:#FFFFFF;color:#172033;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(23,32,51,0.05)"><span style="width:10px;height:10px;border-radius:3px;background:#3B8FD9"></span>Pañal mojado</button>
+        <button type="button" style="flex-shrink:0;display:flex;align-items:center;gap:8px;min-height:48px;padding:0 16px;border-radius:999px;border:0;background:#FFFFFF;color:#172033;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(23,32,51,0.05)"><span style="width:10px;height:10px;border-radius:3px;background:#C2549E"></span>Vitamina D</button>
+      </div>
+    </div>
+
+    <div id="rutina" style="display:flex;align-items:baseline;justify-content:space-between">
+      <div style="font-size:20px;font-weight:700">Rutina diaria</div>
+      <div style="font-size:13px;color:#5B6576">8 tipos</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:-6px">
+      <button type="button" style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;height:124px;padding:14px;box-sizing:border-box;border-radius:24px;border:0;background:#FCEBA6;color:#172033;text-align:left;cursor:pointer">
+        <span aria-hidden="true" style="position:absolute;right:-24px;top:-24px;width:92px;height:92px;border-radius:50%;background:#F7DC72"></span>
+        <span style="position:relative;width:44px;height:44px;border-radius:50%;background:#FFFFFF;color:#A15C07;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2h8M9 2v2.789a4 4 0 0 1-.672 2.219l-.656.984A4 4 0 0 0 7 10.212V20a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9.789a4 4 0 0 0-.672-2.219l-.656-.984A4 4 0 0 1 15 4.788V2M7 15a6.472 6.472 0 0 1 5 0 6.47 6.47 0 0 0 5 0" /></svg></span>
+        <span style="position:relative;display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:700">Biberón</span><span style="font-size:13px;color:#3E4757">Hace 2 h 10 min</span></span>
+      </button>
+      <button type="button" style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;height:124px;padding:14px;box-sizing:border-box;border-radius:24px;border:2px solid #E0A21B;background:#FCEBA6;color:#172033;text-align:left;cursor:pointer">
+        <span aria-hidden="true" style="position:absolute;right:-24px;top:-24px;width:92px;height:92px;border-radius:50%;background:#F7DC72"></span>
+        <span style="position:relative;width:44px;height:44px;border-radius:50%;background:#FFFFFF;color:#A15C07;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg></span>
+        <span style="position:relative;display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:700">Pecho</span><span style="font-size:13px;color:#3E4757;font-weight:600">En curso · 12:04</span></span>
+      </button>
+      <a href="Panal.dc.html" style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;height:124px;padding:14px;box-sizing:border-box;border-radius:24px;background:#CFE7FB;color:#172033;text-decoration:none">
+        <span aria-hidden="true" style="position:absolute;right:-24px;top:-24px;width:92px;height:92px;border-radius:50%;background:#B5D9F7"></span>
+        <span style="position:relative;width:44px;height:44px;border-radius:50%;background:#FFFFFF;color:#1D6FB0;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12h.01M15 12h.01M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5" /><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1" /></svg></span>
+        <span style="position:relative;display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:700">Pañal</span><span style="font-size:13px;color:#3E4757">Hace 45 min</span></span>
+      </a>
+      <button type="button" style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;height:124px;padding:14px;box-sizing:border-box;border-radius:24px;border:0;background:#E4E1FB;color:#172033;text-align:left;cursor:pointer">
+        <span aria-hidden="true" style="position:absolute;right:-24px;top:-24px;width:92px;height:92px;border-radius:50%;background:#CFCAF7"></span>
+        <span style="position:relative;width:44px;height:44px;border-radius:50%;background:#FFFFFF;color:#4C46B6;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg></span>
+        <span style="position:relative;display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:700">Sueño</span><span style="font-size:13px;color:#3E4757">Despierta hace 2 h 15 min</span></span>
+      </button>
+      <button type="button" style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;height:124px;padding:14px;box-sizing:border-box;border-radius:24px;border:0;background:#FCEBA6;color:#172033;text-align:left;cursor:pointer">
+        <span aria-hidden="true" style="position:absolute;right:-24px;top:-24px;width:92px;height:92px;border-radius:50%;background:#F7DC72"></span>
+        <span style="position:relative;width:44px;height:44px;border-radius:50%;background:#FFFFFF;color:#A15C07;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /></svg></span>
+        <span style="position:relative;display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:700">Sólidos</span><span style="font-size:13px;color:#3E4757">Sin registros</span></span>
+      </button>
+      <button type="button" style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;height:124px;padding:14px;box-sizing:border-box;border-radius:24px;border:0;background:#FCEBA6;color:#172033;text-align:left;cursor:pointer">
+        <span aria-hidden="true" style="position:absolute;right:-24px;top:-24px;width:92px;height:92px;border-radius:50%;background:#F7DC72"></span>
+        <span style="position:relative;width:44px;height:44px;border-radius:50%;background:#FFFFFF;color:#A15C07;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></svg></span>
+        <span style="position:relative;display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:700">Extracción</span><span style="font-size:13px;color:#3E4757">Ayer 21:30</span></span>
+      </button>
+      <button type="button" style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;height:124px;padding:14px;box-sizing:border-box;border-radius:24px;border:0;background:#D2F1EA;color:#172033;text-align:left;cursor:pointer">
+        <span aria-hidden="true" style="position:absolute;right:-24px;top:-24px;width:92px;height:92px;border-radius:50%;background:#B5E7DC"></span>
+        <span style="position:relative;width:44px;height:44px;border-radius:50%;background:#FFFFFF;color:#087873;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4 8 6M17 19v2M2 12h20M7 19v2M9 5 7.621 3.621A2.121 2.121 0 0 0 4 5v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" /></svg></span>
+        <span style="position:relative;display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:700">Baño</span><span style="font-size:13px;color:#3E4757">Ayer 19:00</span></span>
+      </button>
+      <button type="button" style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;height:124px;padding:14px;box-sizing:border-box;border-radius:24px;border:0;background:#FFE1D1;color:#172033;text-align:left;cursor:pointer">
+        <span aria-hidden="true" style="position:absolute;right:-24px;top:-24px;width:92px;height:92px;border-radius:50%;background:#FFCDB2"></span>
+        <span style="position:relative;width:44px;height:44px;border-radius:50%;background:#FFFFFF;color:#B4532F;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20" /></svg></span>
+        <span style="position:relative;display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:700">Juego</span><span style="font-size:13px;color:#3E4757">Hace 1 h · 15 min</span></span>
+      </button>
+    </div>
+
+    <div id="salud" style="display:flex;align-items:baseline;justify-content:space-between">
+      <div style="font-size:20px;font-weight:700">Salud</div>
+      <div style="font-size:13px;color:#5B6576">4 tipos</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:-6px">
+      <button type="button" style="display:flex;align-items:center;gap:12px;min-height:84px;padding:12px;box-sizing:border-box;border-radius:22px;border:0;background:#FFFFFF;color:#172033;text-align:left;cursor:pointer;box-shadow:0 2px 10px rgba(23,32,51,0.05)">
+        <span style="width:46px;height:46px;flex-shrink:0;border-radius:16px;background:#F9DDF3;color:#A63A86;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" /><path d="m8.5 8.5 7 7" /></svg></span>
+        <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:700">Medicina</span><span style="font-size:13px;color:#5B6576">Hoy 18:00</span></span>
+      </button>
+      <button type="button" style="display:flex;align-items:center;gap:12px;min-height:84px;padding:12px;box-sizing:border-box;border-radius:22px;border:0;background:#FFFFFF;color:#172033;text-align:left;cursor:pointer;box-shadow:0 2px 10px rgba(23,32,51,0.05)">
+        <span style="width:46px;height:46px;flex-shrink:0;border-radius:16px;background:#D2F1EA;color:#087873;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" /><path d="m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2" /></svg></span>
+        <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:700">Medida</span><span style="font-size:13px;color:#5B6576">6,1 kg · 20 oct</span></span>
+      </button>
+      <button type="button" style="display:flex;align-items:center;gap:12px;min-height:84px;padding:12px;box-sizing:border-box;border-radius:22px;border:0;background:#FFFFFF;color:#172033;text-align:left;cursor:pointer;box-shadow:0 2px 10px rgba(23,32,51,0.05)">
+        <span style="width:46px;height:46px;flex-shrink:0;border-radius:16px;background:#E3F2C4;color:#4D7A12;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 2 4 4M17 7l3-3M19 9 8.7 19.3a1 1 0 0 1-.7.3H5v-3a1 1 0 0 1 .3-.7L15.5 5.5M9 11l4 4M5 19l-3 3M14 4l6 6" /></svg></span>
+        <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:700">Vacuna</span><span style="font-size:13px;color:#5B6576">Próxima 3 nov</span></span>
+      </button>
+      <button type="button" style="display:flex;align-items:center;gap:12px;min-height:84px;padding:12px;box-sizing:border-box;border-radius:22px;border:0;background:#FFFFFF;color:#172033;text-align:left;cursor:pointer;box-shadow:0 2px 10px rgba(23,32,51,0.05)">
+        <span style="width:46px;height:46px;flex-shrink:0;border-radius:16px;background:#DCE4F2;color:#3A5288;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 2v2M5 2v2M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1" /><path d="M8 15a6 6 0 0 0 12 0v-3" /><circle cx="20" cy="10" r="2" /></svg></span>
+        <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:700">Cita médica</span><span style="font-size:13px;color:#5B6576">5 nov · 9:30</span></span>
+      </button>
+    </div>
+
+    <div id="momentos" style="display:flex;align-items:baseline;justify-content:space-between">
+      <div style="font-size:20px;font-weight:700">Momentos</div>
+      <div style="font-size:13px;color:#5B6576">4 tipos</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:-6px">
+      <button type="button" style="display:flex;align-items:center;gap:12px;min-height:84px;padding:12px;box-sizing:border-box;border-radius:22px;border:0;background:#FFFFFF;color:#172033;text-align:left;cursor:pointer;box-shadow:0 2px 10px rgba(23,32,51,0.05)">
+        <span style="width:46px;height:46px;flex-shrink:0;border-radius:16px;background:#FFE1D1;color:#B4532F;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 2.8a.5.5 0 0 1 1 0l2.3 4.7 5.2.8a.5.5 0 0 1 .3.9l-3.8 3.6.9 5.2a.5.5 0 0 1-.7.5L12 16.1l-4.7 2.4a.5.5 0 0 1-.7-.5l.9-5.2-3.8-3.6a.5.5 0 0 1 .3-.9l5.2-.8z" /></svg></span>
+        <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:700">Hito o evento</span><span style="font-size:13px;color:#5B6576">Dientes, gateo…</span></span>
+      </button>
+      <button type="button" style="display:flex;align-items:center;gap:12px;min-height:84px;padding:12px;box-sizing:border-box;border-radius:22px;border:0;background:#FFFFFF;color:#172033;text-align:left;cursor:pointer;box-shadow:0 2px 10px rgba(23,32,51,0.05)">
+        <span style="width:46px;height:46px;flex-shrink:0;border-radius:16px;background:#FFE1D1;color:#B4532F;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></svg></span>
+        <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:700">Foto</span><span style="font-size:13px;color:#5B6576">Con lugar y etiquetas</span></span>
+      </button>
+      <button type="button" style="display:flex;align-items:center;gap:12px;min-height:84px;padding:12px;box-sizing:border-box;border-radius:22px;border:0;background:#FFFFFF;color:#172033;text-align:left;cursor:pointer;box-shadow:0 2px 10px rgba(23,32,51,0.05)">
+        <span style="width:46px;height:46px;flex-shrink:0;border-radius:16px;background:#E7ECEF;color:#3E4757;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8" /></svg></span>
+        <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:700">Nota</span><span style="font-size:13px;color:#5B6576">Hace 3 días</span></span>
+      </button>
+      <button type="button" style="display:flex;align-items:center;gap:12px;min-height:84px;padding:12px;box-sizing:border-box;border-radius:22px;border:0;background:#FFFFFF;color:#172033;text-align:left;cursor:pointer;box-shadow:0 2px 10px rgba(23,32,51,0.05)">
+        <span style="width:46px;height:46px;flex-shrink:0;border-radius:16px;background:#E7ECEF;color:#3E4757;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" /></svg></span>
+        <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:700">Ánimo</span><span style="font-size:13px;color:#5B6576">Contenta · 11:00</span></span>
+      </button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1560}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

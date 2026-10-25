@@ -1,0 +1,21 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-10-25T18:25:00Z" },
+  "title": "Baby Tracker Mockup",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 1480, "title": "Inicio · dashboard general", "is_interactive": true },
+    "Registro.dc.html": { "x": 470, "y": 0, "w": 390, "h": 1560, "title": "Centro de registro", "is_interactive": true },
+    "Panal.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "Formulario de pañal", "is_interactive": true },
+    "Actividad.dc.html": { "x": 1410, "y": 0, "w": 390, "h": 1180, "title": "Resumen de actividad", "is_interactive": true },
+    "Oscuro.dc.html": { "x": 0, "y": 2000, "w": 390, "h": 844, "title": "Modo oscuro" },
+    "Nursery.dc.html": { "x": 470, "y": 2000, "w": 390, "h": 844, "title": "Modo nursery" }
+  },
+  "order": ["Main.dc.html", "Registro.dc.html", "Panal.dc.html", "Actividad.dc.html", "Oscuro.dc.html", "Nursery.dc.html"],
+  "notes": {
+    "t1": { "x": 0, "y": -260, "text": "Modo claro", "kind": "title1", "maxW": 1800 },
+    "t2": { "x": 0, "y": 1740, "text": "Modo oscuro y nursery", "kind": "title1", "maxW": 860 }
+  },
+  "designSystems": []
+}

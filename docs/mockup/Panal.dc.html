@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Formulario de pañal</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+a{color:#087873}a:hover{color:#065E5A}
+</style>
+</helmet>
+<div style="width:390px;height:844px;position:relative;overflow:hidden;box-sizing:border-box;background:#F2F6F7;color:#172033;font-family:'Outfit',system-ui,sans-serif;font-size:16px;line-height:1.3;font-variant-numeric:tabular-nums">
+
+  <div aria-hidden="true" style="position:absolute;top:0;left:0;right:0;padding:12px 20px;display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;height:56px">
+      <div style="width:48px;height:48px;border-radius:50%;background:#FFFFFF"></div>
+      <div style="font-size:21px;font-weight:700">Registrar</div>
+      <div style="width:48px;height:48px;border-radius:50%;background:#FFFFFF"></div>
+    </div>
+    <div style="height:44px;width:250px;border-radius:999px;background:#FFFFFF"></div>
+  </div>
+  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(18,32,48,0.45)"></div>
+
+  <div role="dialog" aria-label="Registrar pañal" style="position:absolute;left:0;right:0;top:64px;bottom:0;background:#FFFFFF;border-radius:28px 28px 0 0;box-sizing:border-box;display:flex;flex-direction:column">
+    <div style="flex-grow:1;padding:10px 20px 0;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+      <div style="align-self:center;width:40px;height:5px;border-radius:3px;background:#DCE3E8"></div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:50px;height:50px;border-radius:50%;background:#CFE7FB;color:#1D6FB0;display:flex;align-items:center;justify-content:center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12h.01M15 12h.01M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5" /><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1" /></svg>
+          </div>
+          <div style="display:flex;flex-direction:column">
+            <div style="font-size:22px;font-weight:700">Pañal</div>
+            <div style="font-size:14px;color:#5B6576">Sofía · último hace 45 min</div>
+          </div>
+        </div>
+        <a href="Registro.dc.html" aria-label="Cerrar" style="width:48px;height:48px;border-radius:50%;background:#F2F6F7;color:#172033;display:flex;align-items:center;justify-content:center">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+        </a>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:15px;font-weight:600;color:#5B6576">Hora</div>
+        <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:0 18px;border-radius:20px;background:#F2F6F7">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5B6576" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+          <div style="font-size:34px;font-weight:700;line-height:1">14:20</div>
+          <div style="font-size:14px;color:#5B6576">hoy, 25 oct</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" aria-pressed="true" style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;min-height:48px;border-radius:999px;border:0;background:#087873;color:#FFFFFF;font-size:14px;font-weight:600;cursor:pointer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            Ahora
+          </button>
+          <button type="button" aria-pressed="false" style="flex:1;min-width:0;min-height:48px;border-radius:999px;border:1px solid #DCE3E8;background:#FFFFFF;color:#172033;font-size:14px;font-weight:500;cursor:pointer">Hace 15 min</button>
+          <button type="button" aria-pressed="false" style="flex:1;min-width:0;min-height:48px;border-radius:999px;border:1px solid #DCE3E8;background:#FFFFFF;color:#172033;font-size:14px;font-weight:500;cursor:pointer">Hace 30 min</button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:15px;font-weight:600;color:#5B6576">Tipo</div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+          <button type="button" aria-pressed="true" style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:96px;border-radius:22px;border:2px solid #087873;background:#D2F1EA;color:#172033;font-size:16px;font-weight:700;cursor:pointer">
+            <span style="position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:#087873;color:#FFFFFF;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg></span>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1D6FB0" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></svg>
+            Mojado
+          </button>
+          <button type="button" aria-pressed="false" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:96px;border-radius:22px;border:1px solid #DCE3E8;background:#FFFFFF;color:#172033;font-size:16px;font-weight:600;cursor:pointer">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A15C07" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M9 10h.01M15 10h.01M9.5 15c.7.6 1.6 1 2.5 1s1.8-.4 2.5-1" /></svg>
+            Sucio
+          </button>
+          <button type="button" aria-pressed="false" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:96px;border-radius:22px;border:1px solid #DCE3E8;background:#FFFFFF;color:#172033;font-size:16px;font-weight:600;cursor:pointer">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4C46B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /><path d="M9.5 15.5c.7.6 1.6 1 2.5 1s1.8-.4 2.5-1" /></svg>
+            Ambos
+          </button>
+        </div>
+      </div>
+
+      <button type="button" aria-expanded="false" style="display:flex;align-items:center;justify-content:space-between;min-height:60px;padding:0 18px;border-radius:20px;border:0;background:#F2F6F7;color:#172033;font-size:16px;font-weight:600;text-align:left;cursor:pointer">
+        <span>Más detalles <span style="font-size:14px;font-weight:400;color:#5B6576">· nota, crema, foto</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5B6576" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+      </button>
+
+      <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:#5B6576">
+        <div style="width:26px;height:26px;border-radius:50%;background:#E4E1FB;color:#4C46B6;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">R</div>
+        Registra Rubén
+      </div>
+    </div>
+
+    <div style="padding:12px 20px 28px;display:flex;flex-direction:column;gap:8px;align-items:center">
+      <a href="Main.dc.html" style="width:100%;min-height:58px;border-radius:999px;background:#087873;color:#FFFFFF;font-size:18px;font-weight:700;text-decoration:none;display:flex;align-items:center;justify-content:center">Guardar pañal</a>
+      <div style="font-size:14px;color:#5B6576">Podrás deshacerlo unos segundos después</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
