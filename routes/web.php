@@ -10,6 +10,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CaretakerAdminController;
 use App\Http\Controllers\CaretakerPinController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GrowthController;
 use App\Http\Controllers\LifeEventController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\MoreController;
@@ -55,6 +56,7 @@ Route::middleware('setup:required')->group(function () {
         Route::delete('/registros/{type}/{id}', [ActivityController::class, 'destroy'])->whereNumber('id')->name('records.destroy');
         Route::get('/bitacora', LogController::class)->name('log');
         Route::get('/calendario', CalendarController::class)->name('calendar');
+        Route::get('/crecimiento', GrowthController::class)->name('growth');
 
         Route::prefix('citas')->name('appointments.')->group(function () {
             Route::get('/', [AppointmentController::class, 'index'])->name('index');

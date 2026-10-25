@@ -75,6 +75,12 @@ class TraduccionesTest extends TestCase
         foreach (['full', 'sponge'] as $k) {
             $dynamic[] = "registrar.bath.{$k}";
         }
+        foreach (['weight', 'height', 'head'] as $k) {
+            $dynamic[] = "crecimiento.measure_{$k}";
+        }
+        foreach (['who', 'cdc'] as $k) {
+            $dynamic[] = "crecimiento.standard_{$k}";
+        }
         foreach (['wet', 'dirty', 'both', 'dry'] as $k) {
             $dynamic[] = "registrar.diaper.{$k}";
         }

@@ -52,7 +52,7 @@ export const MODULES = [
     { key: 'appointments', icon: Stethoscope, kind: 'appointment', href: '/citas' },
     { key: 'vaccines', icon: Syringe, kind: 'vaccine', href: '/vacunas' },
     { key: 'medicines', icon: Pill, kind: 'medicine' },
-    { key: 'growth', icon: TrendingUp, kind: 'growth' },
+    { key: 'growth', icon: TrendingUp, kind: 'growth', href: '/crecimiento' },
     { key: 'photos', icon: Camera, kind: 'moment', href: '/fotos' },
     { key: 'moments', icon: Star, kind: 'moment', href: '/eventos' },
     { key: 'reports', icon: BarChart3, kind: 'growth' },
