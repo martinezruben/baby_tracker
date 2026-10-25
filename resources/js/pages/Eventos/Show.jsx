@@ -93,7 +93,7 @@ export default function Show({ event }) {
                         {busy ? t('fotos.uploading') : t('eventos.show.add_photos')}
                     </Button>
                     {error && (
-                        <p role="alert" className="text-sm font-medium text-red-700">
+                        <p role="alert" className="text-sm font-medium text-danger-ink">
                             {error}
                         </p>
                     )}

@@ -62,7 +62,7 @@ export default function Entrar({ needsFamily, family, caretakers }) {
                                         aria-checked={selected}
                                         onClick={() => form.setData('caretaker_id', c.id)}
                                         className={`inline-flex min-h-12 items-center gap-2 rounded-full border px-4 text-base font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                                            selected ? 'border-primary bg-primary text-white' : 'border-ink/20 bg-surface'
+                                            selected ? 'border-primary bg-primary text-on-primary' : 'border-ink/20 bg-surface'
                                         }`}
                                     >
                                         <span

@@ -47,7 +47,7 @@ export default function Solidos({ record, baby, clock, lastAt, foods }) {
                 options={[...foods.map((f) => ({ value: f.id, label: f.name })), { value: '', label: t('registrar.solids.other') }]}
             />
             {errors.food_id && (
-                <p role="alert" className="-mt-3 text-sm font-medium text-red-700">
+                <p role="alert" className="-mt-3 text-sm font-medium text-danger-ink">
                     {errors.food_id}
                 </p>
             )}

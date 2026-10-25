@@ -169,11 +169,11 @@ export default function Show({ photo, newer_id, older_id, suggestions }) {
 
                 <div className="flex justify-center">
                     {confirming ? (
-                        <Button variant="secondary" className="border-red-300 text-red-700" onClick={() => router.delete(`/fotos/${photo.id}`)}>
+                        <Button variant="secondary" className="border-danger-line text-danger-ink" onClick={() => router.delete(`/fotos/${photo.id}`)}>
                             {t('fotos.detail.delete_confirm')}
                         </Button>
                     ) : (
-                        <Button variant="ghost" className="text-red-700" onClick={() => setConfirming(true)}>
+                        <Button variant="ghost" className="text-danger-ink" onClick={() => setConfirming(true)}>
                             <Trash2 aria-hidden="true" className="size-5" />
                             {t('fotos.detail.delete')}
                         </Button>

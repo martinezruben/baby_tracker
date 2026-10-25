@@ -29,7 +29,7 @@ export default function Snackbar() {
         <div
             role="status"
             aria-live="polite"
-            className="fixed inset-x-5 bottom-[calc(max(1.5rem,env(safe-area-inset-bottom))+88px)] z-30 mx-auto flex min-h-12 max-w-[430px] items-center justify-between gap-3 rounded-full bg-ink py-1 pr-1 pl-5 text-[15px] text-white shadow-nav"
+            className="fixed inset-x-5 bottom-[calc(max(1.5rem,env(safe-area-inset-bottom))+88px)] z-30 mx-auto flex min-h-12 max-w-[430px] items-center justify-between gap-3 rounded-full bg-ink py-1 pr-1 pl-5 text-[15px] text-on-ink shadow-nav"
         >
             <span>{message.text}</span>
             {message.undo && (

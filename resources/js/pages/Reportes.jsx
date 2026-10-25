@@ -95,7 +95,7 @@ export default function Reportes({ baby, ranges, report }) {
                             href={`/reportes?dias=${n}`}
                             preserveScroll
                             aria-current={report.days === n ? 'true' : undefined}
-                            className={`flex min-h-11 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${report.days === n ? 'bg-primary font-semibold text-white' : 'bg-surface font-medium text-ink'}`}
+                            className={`flex min-h-11 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${report.days === n ? 'bg-primary font-semibold text-on-primary' : 'bg-surface font-medium text-ink'}`}
                         >
                             {t('reportes.days', { n })}
                         </Link>
@@ -153,7 +153,7 @@ export default function Reportes({ baby, ranges, report }) {
                     <Link href="/crecimiento" className="flex min-h-14 items-center justify-center rounded-full bg-surface text-base font-semibold shadow-soft focus-visible:outline-2 focus-visible:outline-primary">
                         {t('reportes.growth_link')}
                     </Link>
-                    <a href="/reportes/exportar" download className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-primary text-lg font-bold text-white hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                    <a href="/reportes/exportar" download className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-primary text-lg font-bold text-on-primary hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
                         <Download aria-hidden="true" className="size-5" />
                         {t('reportes.export')}
                     </a>

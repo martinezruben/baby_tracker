@@ -27,7 +27,7 @@ export default function Field({ label, error, hint, optional, children, ...input
                 </p>
             )}
             {error && (
-                <p id={`${id}-error`} role="alert" className="text-sm font-medium text-red-700">
+                <p id={`${id}-error`} role="alert" className="text-sm font-medium text-danger-ink">
                     {error}
                 </p>
             )}

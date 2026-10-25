@@ -58,7 +58,7 @@ export default function Form({ baby, clock, pending, selected }) {
                 options={[...pending.map((p) => ({ value: p.id, label: [p.name, p.label].filter(Boolean).join(' · ') })), { value: '', label: t('vacunas.form.other') }]}
             />
             {errors.vaccine_dose_id && (
-                <p role="alert" className="-mt-3 text-sm font-medium text-red-700">
+                <p role="alert" className="-mt-3 text-sm font-medium text-danger-ink">
                     {errors.vaccine_dose_id}
                 </p>
             )}

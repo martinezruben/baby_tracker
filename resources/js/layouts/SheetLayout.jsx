@@ -2,6 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { X } from 'lucide-react';
 import Snackbar from '../components/Snackbar';
 import { KINDS } from '../lib/activities';
+import { fromNursery } from '../lib/forms';
 import { useT } from '../lib/i18n';
 
 /**
@@ -17,7 +18,7 @@ export default function SheetLayout({ title, subtitle, kind, icon: Icon, closeHr
     return (
         <>
             <Head title={title} />
-            <div className="fixed inset-0 bg-[rgba(18,32,48,0.45)]" aria-hidden="true" />
+            <div className="fixed inset-0 bg-scrim" aria-hidden="true" />
             <form
                 role="dialog"
                 aria-label={title}
@@ -38,7 +39,7 @@ export default function SheetLayout({ title, subtitle, kind, icon: Icon, closeHr
                             </div>
                         </div>
                         <Link
-                            href={closeHref ?? (editing ? '/bitacora' : '/registrar')}
+                            href={closeHref ?? (editing ? '/bitacora' : fromNursery() ? '/nursery' : '/registrar')}
                             aria-label={t('common.close')}
                             className="flex size-12 shrink-0 items-center justify-center rounded-full bg-canvas text-ink focus-visible:outline-2 focus-visible:outline-primary"
                         >
@@ -54,7 +55,7 @@ export default function SheetLayout({ title, subtitle, kind, icon: Icon, closeHr
                     <button
                         type="submit"
                         disabled={disabled || processing}
-                        className="min-h-[58px] w-full rounded-full bg-primary text-lg font-bold text-white transition-colors hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50"
+                        className="min-h-[58px] w-full rounded-full bg-primary text-lg font-bold text-on-primary transition-colors hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50"
                     >
                         {editing ? t('registrar.save_changes') : actionLabel}
                     </button>

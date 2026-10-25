@@ -43,7 +43,7 @@ export default function Pecho({ baby, active }) {
                 />
             )}
             {form.errors.side && (
-                <p role="alert" className="text-sm font-medium text-red-700">
+                <p role="alert" className="text-sm font-medium text-danger-ink">
                     {form.errors.side}
                 </p>
             )}

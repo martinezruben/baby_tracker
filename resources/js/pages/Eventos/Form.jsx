@@ -55,7 +55,7 @@ export default function Form({ event, baby, today, types }) {
                     return { value: type, label: t(`eventos.types.${type}`), icon, iconClass: KINDS[kind].ink };
                 })}
             />
-            {errors.type && <p role="alert" className="-mt-3 text-sm font-medium text-red-700">{errors.type}</p>}
+            {errors.type && <p role="alert" className="-mt-3 text-sm font-medium text-danger-ink">{errors.type}</p>}
 
             <Field label={t('eventos.form.date')} type="date" max={today} value={data.occurred_on} onChange={(e) => setData('occurred_on', e.target.value)} error={errors.occurred_on} />
 
@@ -100,17 +100,17 @@ export default function Form({ event, baby, today, types }) {
                         {t('eventos.form.photos_add')}
                     </Button>
                     {data.photos.length > 0 && <p className="text-sm text-ink-soft">{t.choice('eventos.form.photos_selected', data.photos.length)}</p>}
-                    {(errors.photos || errors['photos.0']) && <p role="alert" className="text-sm font-medium text-red-700">{errors.photos ?? errors['photos.0']}</p>}
+                    {(errors.photos || errors['photos.0']) && <p role="alert" className="text-sm font-medium text-danger-ink">{errors.photos ?? errors['photos.0']}</p>}
                 </div>
             )}
 
             {editing &&
                 (confirming ? (
-                    <Button variant="secondary" className="border-red-300 text-red-700" onClick={() => router.delete(`/eventos/${event.id}`)}>
+                    <Button variant="secondary" className="border-danger-line text-danger-ink" onClick={() => router.delete(`/eventos/${event.id}`)}>
                         {t('eventos.form.delete_confirm')}
                     </Button>
                 ) : (
-                    <Button variant="ghost" className="text-red-700" onClick={() => setConfirming(true)}>
+                    <Button variant="ghost" className="text-danger-ink" onClick={() => setConfirming(true)}>
                         {t('eventos.form.delete')}
                     </Button>
                 ))}

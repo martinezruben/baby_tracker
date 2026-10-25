@@ -29,7 +29,7 @@ export default function OptionGrid({ label, options, value, onChange, columns = 
                             }`}
                         >
                             {selected && (
-                                <span className="absolute top-2 right-2 flex size-[22px] items-center justify-center rounded-full bg-primary text-white">
+                                <span className="absolute top-2 right-2 flex size-[22px] items-center justify-center rounded-full bg-primary text-on-primary">
                                     <Check aria-hidden="true" className="size-3.5" strokeWidth={3} />
                                 </span>
                             )}

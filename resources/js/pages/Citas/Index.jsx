@@ -83,7 +83,7 @@ export default function Index({ upcoming, past }) {
                     </div>
                     <Link
                         href="/citas/nueva"
-                        className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-6 text-base font-semibold text-white hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                        className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-6 text-base font-semibold text-on-primary hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                     >
                         <Plus aria-hidden="true" className="size-5" />
                         {t('citas.new')}

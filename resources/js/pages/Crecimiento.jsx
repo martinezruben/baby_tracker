@@ -132,7 +132,7 @@ export default function Crecimiento({ baby, measures, report }) {
                             href={`/crecimiento?medida=${m}`}
                             preserveScroll
                             aria-current={report.measure === m ? 'true' : undefined}
-                            className={`flex min-h-11 shrink-0 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${report.measure === m ? 'bg-primary font-semibold text-white' : 'bg-surface font-medium text-ink'}`}
+                            className={`flex min-h-11 shrink-0 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${report.measure === m ? 'bg-primary font-semibold text-on-primary' : 'bg-surface font-medium text-ink'}`}
                         >
                             {t(`crecimiento.measure_${m}`)}
                         </Link>
@@ -173,7 +173,7 @@ export default function Crecimiento({ baby, measures, report }) {
                 )}
                 {selected && selected.percentile !== null && <Verdict t={t} percentile={selected.percentile} />}
 
-                <Link href="/registrar/medida" className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-primary text-lg font-bold text-white hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                <Link href="/registrar/medida" className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-primary text-lg font-bold text-on-primary hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
                     <Plus aria-hidden="true" className="size-5" />
                     {t('crecimiento.add')}
                 </Link>

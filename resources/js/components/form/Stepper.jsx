@@ -35,7 +35,7 @@ export default function Stepper({ label, value, onChange, step = 10, min = 0, ma
                 </button>
             </div>
             {error && (
-                <p role="alert" className="text-sm font-medium text-red-700">
+                <p role="alert" className="text-sm font-medium text-danger-ink">
                     {error}
                 </p>
             )}

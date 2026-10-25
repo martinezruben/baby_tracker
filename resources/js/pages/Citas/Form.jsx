@@ -150,11 +150,11 @@ export default function Form({ appointment, baby, defaults, units, options }) {
                 {editing && (
                     <div className="flex justify-center">
                         {confirmDelete ? (
-                            <Button variant="secondary" className="border-red-300 text-red-700" onClick={() => form.delete(`/citas/${appointment.id}`)}>
+                            <Button variant="secondary" className="border-danger-line text-danger-ink" onClick={() => form.delete(`/citas/${appointment.id}`)}>
                                 {t('citas.form.delete_confirm')}
                             </Button>
                         ) : (
-                            <Button variant="ghost" className="text-red-700" onClick={() => setConfirmDelete(true)}>
+                            <Button variant="ghost" className="text-danger-ink" onClick={() => setConfirmDelete(true)}>
                                 {t('citas.form.delete')}
                             </Button>
                         )}

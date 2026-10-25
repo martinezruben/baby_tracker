@@ -107,7 +107,7 @@ function Entry({ entry }) {
                     )}
                     <Button
                         variant="ghost"
-                        className="text-red-700 hover:bg-red-50"
+                        className="text-danger-ink hover:bg-danger-soft"
                         onClick={() => router.delete(`/registros/${entry.type}/${entry.id}?desde=bitacora`, { preserveScroll: true })}
                     >
                         <Trash2 aria-hidden="true" className="size-5" />
@@ -156,7 +156,7 @@ export default function Bitacora({ tipo, dia, types, entries, next }) {
                 aria-pressed={selected}
                 onClick={() => setType(value)}
                 className={`flex min-h-11 shrink-0 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                    selected ? 'bg-primary font-semibold text-white' : 'bg-surface font-medium text-ink'
+                    selected ? 'bg-primary font-semibold text-on-primary' : 'bg-surface font-medium text-ink'
                 }`}
             >
                 {label}

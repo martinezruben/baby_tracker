@@ -15,7 +15,7 @@ export default function Preferencias({ prefs, languages, timezones }) {
     const chips = (name, label, options) => (
         <div className="flex flex-col gap-1">
             <ChoiceChips label={label} value={data[name]} onChange={(v) => setData(name, v)} options={options} />
-            {errors[name] && <p role="alert" className="text-sm font-medium text-red-700">{errors[name]}</p>}
+            {errors[name] && <p role="alert" className="text-sm font-medium text-danger-ink">{errors[name]}</p>}
         </div>
     );
 

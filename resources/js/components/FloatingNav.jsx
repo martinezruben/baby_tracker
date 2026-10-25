@@ -18,7 +18,7 @@ export default function FloatingNav() {
             <Link
                 href={href}
                 aria-current="page"
-                className="flex h-14 items-center gap-2 rounded-[28px] bg-ink pr-[18px] pl-3.5 text-[15px] font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="flex h-14 items-center gap-2 rounded-[28px] bg-ink pr-[18px] pl-3.5 text-[15px] font-semibold text-on-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
                 <Icon aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />
                 {label}
@@ -45,7 +45,7 @@ export default function FloatingNav() {
             <Link
                 href="/registrar"
                 aria-label={t('nav.register')}
-                className="flex size-[52px] items-center justify-center rounded-full bg-primary text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="flex size-[52px] items-center justify-center rounded-full bg-primary text-on-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
                 <Plus aria-hidden="true" className="size-[26px]" strokeWidth={2} />
             </Link>

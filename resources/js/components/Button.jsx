@@ -1,5 +1,5 @@
 const variants = {
-    primary: 'bg-primary text-white hover:bg-primary/90',
+    primary: 'bg-primary text-on-primary hover:bg-primary/90',
     secondary: 'bg-surface text-ink border border-ink/15 hover:bg-ink/5',
     ghost: 'bg-transparent text-primary hover:bg-primary/10',
 };

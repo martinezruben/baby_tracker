@@ -10,7 +10,7 @@ import useFormat from '../../lib/useFormat';
 
 const STATUS_STYLES = {
     applied: 'bg-vaccine text-vaccine-ink',
-    overdue: 'bg-red-100 text-red-800',
+    overdue: 'bg-danger-soft text-danger-ink',
     soon: 'bg-appointment text-appointment-ink',
     later: 'bg-ink/10 text-ink-soft',
 };
@@ -33,11 +33,11 @@ function DeleteButton({ vaccination }) {
     const t = useT();
     const [confirming, setConfirming] = useState(false);
     return confirming ? (
-        <Button variant="secondary" className="border-red-300 text-red-700" onClick={() => router.delete(`/vacunas/${vaccination.id}`, { preserveScroll: true })}>
+        <Button variant="secondary" className="border-danger-line text-danger-ink" onClick={() => router.delete(`/vacunas/${vaccination.id}`, { preserveScroll: true })}>
             {t('vacunas.delete_confirm')}
         </Button>
     ) : (
-        <Button variant="ghost" className="text-red-700" onClick={() => setConfirming(true)}>
+        <Button variant="ghost" className="text-danger-ink" onClick={() => setConfirming(true)}>
             {t('vacunas.delete')}
         </Button>
     );
@@ -74,7 +74,7 @@ function DoseRow({ dose }) {
             ) : (
                 <Link
                     href={`/vacunas/aplicar?dosis=${dose.dose_id}`}
-                    className="inline-flex min-h-12 items-center justify-center gap-2 self-start rounded-full bg-primary px-5 text-[15px] font-semibold text-white hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                    className="inline-flex min-h-12 items-center justify-center gap-2 self-start rounded-full bg-primary px-5 text-[15px] font-semibold text-on-primary hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
                     <Plus aria-hidden="true" className="size-4" />
                     {t('vacunas.apply')}
@@ -121,7 +121,7 @@ export default function Index({ schedule_name, has_schedule, counts, doses, extr
                     </div>
                     <Link
                         href="/vacunas/aplicar"
-                        className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-6 text-base font-semibold text-white hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                        className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-6 text-base font-semibold text-on-primary hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                     >
                         <Plus aria-hidden="true" className="size-5" />
                         {t('vacunas.apply_new')}
@@ -147,7 +147,7 @@ export default function Index({ schedule_name, has_schedule, counts, doses, extr
                             <div className="flex items-center justify-between gap-3">
                                 <p className="text-base font-bold">{t('vacunas.progress', { applied: counts.applied, total: counts.total })}</p>
                                 {counts.overdue > 0 && (
-                                    <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-800">{t.choice('vacunas.overdue_count', counts.overdue)}</span>
+                                    <span className="rounded-full bg-danger-soft px-3 py-1 text-xs font-semibold text-danger-ink">{t.choice('vacunas.overdue_count', counts.overdue)}</span>
                                 )}
                             </div>
                             <div role="progressbar" aria-valuemin={0} aria-valuemax={counts.total} aria-valuenow={counts.applied} className="h-2 overflow-hidden rounded-full bg-track">
