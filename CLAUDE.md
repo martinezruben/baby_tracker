@@ -85,6 +85,11 @@ Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
 - El nombre de la app es **Kidu Baby Tracker** (`app.name` en `lang/*/ui.php`, `APP_NAME`, manifest; nombre corto «Kidu»). Úsalo siempre así en pantallas, avisos, correos y documentos.
 - Logo (carrito con reloj, tonos beige): original en `resources/brand/kidu-logo.png`; `php scripts/make-icons.php` genera `public/brand/kidu-mark.png` (fondo transparente) y los iconos de la PWA. La interfaz mantiene los tokens de color de `app.css`.
 
+## Contactos y alergias
+
+- Contactos (`Contact`, `/contactos`, `ContactController`): directorio **de la familia** (nombre, quién es, teléfono, correo, dirección, notas). Teléfono con `tel:`, correo con `mailto:`, dirección con enlace a mapas (solo se abre al tocar). Borrar = borrado lógico con deshacer (`contacts.restore`).
+- Alergias (`BabyAllergen`, `/alergias`, `AllergyController`): por **bebé activo**, tipo alimento / medicina / ambiente / otra, reacción y notas. `RegistrarController` envía a los formularios de sólidos (alergias de alimento) y medicina (de medicina) la lista de nombres; `AllergyWarning` + `allergyHit()` avisan sin bloquear si el nombre coincide (sin acentos ni mayúsculas, por inclusión). Es una ayuda: no sustituye al pediatra.
+
 ## Temas: claro, oscuro y nursery
 
 - Los componentes solo usan tokens de `resources/css/app.css`; `:root[data-theme='dark'|'nursery']` los redefinen (nunca colores sueltos: usa `text-on-primary`, `text-on-ink`, `text-danger-ink`, `bg-scrim`…, no `text-white` ni `text-red-*`). Oscuro = marrón grisáceo cálido, no negro puro; nursery = fondo casi negro y texto ámbar tenue, sin colores fríos.

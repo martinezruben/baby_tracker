@@ -63,6 +63,12 @@ class TraduccionesTest extends TestCase
         foreach (['biberon', 'pecho', 'panal', 'sueno', 'solidos', 'extraccion', 'bano', 'juego', 'medicina', 'medida', 'vacuna', 'cita', 'hito', 'foto', 'nota', 'animo'] as $k) {
             $dynamic[] = "registrar.tiles.{$k}";
         }
+        foreach (['pediatrician', 'emergency', 'family', 'nanny', 'other'] as $k) {
+            $dynamic[] = "contactos.role_{$k}";
+        }
+        foreach (['food', 'medicine', 'environment', 'other'] as $k) {
+            $dynamic[] = "alergias.type_{$k}";
+        }
         foreach (['auto', 'light', 'dark', 'nursery'] as $k) {
             $dynamic[] = "more.theme_{$k}";
         }
