@@ -46,6 +46,33 @@ Una app Next.js (App Router) con Prisma sobre SQLite o PostgreSQL, Tailwind y Do
 - **Feedback** con adjuntos y respuestas encadenadas.
 - **Configuración de email** (SMTP, SendGrid, SMTP2GO) y de dominio/HTTPS.
 
+### Funciones adicionales detectadas en la revisión del código (rutas API y componentes)
+- **Importadores externos:** asistente de importación en 2 pasos (configurar y revisar) desde **Baby Buddy** (CSV de niño, actividades y medicación) y **Huckleberry** (CSV de alimentación, pañales y extracción), con deduplicación por registro de origen.
+- **Balance de leche materna:** endpoint y vista de inventario (extraída menos consumida, más ajustes manuales).
+- **Línea de tiempo (timeline):** vista cronológica unificada de todas las actividades, además de la bitácora completa.
+- **Últimas actividades y próximos eventos por bebé:** tarjetas de acceso rápido (`BabyQuickInfo`, `BabyQuickStats`, `DailyStats`).
+- **Selector de bebé** y **banners de sesión activa** (lactancia y actividad en curso).
+- **Ajustes configurables por familia:**
+  - visibilidad de cada tipo de actividad en el dashboard (`activity-settings`);
+  - ubicaciones de sueño personalizadas (`sleep-locations`);
+  - tipos de baño personalizados (`bath-type-settings`);
+  - ajustes del modo nursery;
+  - tipos de alimentación que reinician el temporizador (`feedTimerTypes`);
+  - unidades por defecto y estándar de curvas de crecimiento (CDC u OMS);
+  - zona horaria del sistema.
+- **Gestión de cuidadores:** alta, edición, cambio de PIN propio (`ChangePinModal`), colores de insignia y desactivación.
+- **Invitaciones a familias** (`ActiveInviteView`, `FamilySetup` con token y expiración) y gestión de cuentas desde el Family Manager, con vistas móviles.
+- **PWA por familia:** `manifest` dinámico por slug.
+- **Localización:** endpoint de traducciones y selector de idioma por usuario.
+- **Changelog, política de privacidad y términos de uso** como modales dentro de la app.
+- **Actualización del guardián (`guardian/update`)** y configuración del despliegue (`deployment-config`, `app-config`).
+- **Detalle de foto, galería y formulario de foto** (`PhotoGallery`, `PhotoDetail`, `PhotoForm`).
+- **Formularios existentes:** actividad, bebé, baño, evento de calendario, cuidador, contacto, pañal, familia, alimentación, alimento, dar medicina, medida, medicina, hito, nota, foto, extracción, ajustes, sueño, vacuna y feedback.
+- **Tarjeta visual del reporte mensual (`reporting/CardVisual`)** que se exporta como PDF.
+- **Hooks de integración versionados (`hooks/v1`)**: la API de webhooks usa API keys con scopes y está versionada.
+- **Documentación:** manual de usuario (a mano), documentación de administración y de arquitectura, y CSV de percentiles CDC/OMS.
+- **Solo del servicio hospedado (no se portan):** `landing`, `landing-stats`, `analytics`, `beta-signup`, `beta-subscribers`, `gift-codes`, `short-links`, `ExpiredAccountMessage` y suscripciones/facturación.
+
 ### Administración e instalación
 - **Asistente inicial (3 pasos):** (1) familia: nombre, slug de URL e importación opcional; (2) seguridad: PIN global o PIN por cuidador; (3) bebé: nombre, fecha de nacimiento y umbrales de alerta de alimentación y pañal.
 - **Family Manager (`/family-manager`):** dominio, HTTPS, email, respaldos de BD y notificaciones push, protegido con contraseña de administrador.
