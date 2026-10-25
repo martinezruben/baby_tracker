@@ -91,7 +91,7 @@ export default function Form({ reminder, defaults, caretakers, babies, options }
     const recipientOptions = caretakers.map((c) => ({ value: c.id, label: c.name }));
 
     return (
-        <AppLayout title={editing ? t('reminders.edit_title') : t('reminders.new')}>
+        <AppLayout nav={false} title={editing ? t('reminders.edit_title') : t('reminders.new')}>
             <Link href="/recordatorios" className="inline-flex min-h-12 items-center gap-2 text-base font-medium text-primary">
                 <ArrowLeft aria-hidden="true" className="size-4" />
                 {t('reminders.back')}

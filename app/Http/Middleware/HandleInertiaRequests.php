@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\ActiveBaby;
 use App\Support\UiTranslations;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -39,7 +40,7 @@ class HandleInertiaRequests extends Middleware
         $caretaker = $request->user();
         $family = $caretaker?->family;
         $babies = $family?->babies()->orderBy('birth_date')->get(['id', 'first_name', 'last_name', 'birth_date', 'gender']);
-        $activeBaby = $babies?->firstWhere('id', $request->session()->get('baby_id')) ?? $babies?->first();
+        $activeBaby = $caretaker ? ActiveBaby::for($request) : null;
 
         $locale = app()->getLocale();
 
@@ -47,6 +48,8 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'locale' => $locale,
             'vapidPublicKey' => config('webpush.vapid.public_key'),
+            'timezone' => $family?->settings?->timezone ?? config('app.timezone'),
+            'timeFormat' => $family?->settings?->time_format ?? '12',
             't' => fn () => UiTranslations::for($locale),
             'auth' => [
                 'caretaker' => $caretaker?->only(['id', 'name', 'role', 'badge_color']),
@@ -54,7 +57,10 @@ class HandleInertiaRequests extends Middleware
             'family' => $family?->only(['name', 'slug']),
             'babies' => $babies,
             'activeBabyId' => $activeBaby?->id,
-            'flash' => ['status' => fn () => $request->session()->get('status')],
+            'flash' => [
+                'status' => fn () => $request->session()->get('status'),
+                'undo' => fn () => $request->session()->get('undo'),
+            ],
         ];
     }
 }

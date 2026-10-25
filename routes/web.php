@@ -1,15 +1,20 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\BabySelectionController;
+use App\Http\Controllers\BreastFeedController;
 use App\Http\Controllers\CaretakerPinController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MoreController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\PushTestController;
+use App\Http\Controllers\RegistrarController;
 use App\Http\Controllers\ReminderActionController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SetupController;
+use App\Http\Controllers\SleepWakeController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 // Asistente inicial: solo mientras no exista ninguna familia.
 Route::middleware('setup:pending')->group(function () {
@@ -22,7 +27,21 @@ Route::middleware('setup:required')->group(function () {
     Route::post('/entrar', [SessionController::class, 'store'])->name('login.store');
 
     Route::middleware('auth')->group(function () {
-        Route::get('/', fn () => Inertia::render('Inicio'))->name('inicio');
+        Route::get('/', DashboardController::class)->name('inicio');
+
+        Route::get('/mas', MoreController::class)->name('more');
+        Route::get('/registrar', [RegistrarController::class, 'hub'])->name('registrar');
+        Route::get('/registrar/pecho', [BreastFeedController::class, 'create'])->name('breast.create');
+        Route::post('/registrar/pecho', [BreastFeedController::class, 'start'])->name('breast.start');
+        Route::patch('/pecho/{op}', [BreastFeedController::class, 'update'])->name('breast.update');
+        Route::delete('/pecho', [BreastFeedController::class, 'destroy'])->name('breast.discard');
+        Route::get('/registrar/{type}', [RegistrarController::class, 'create'])->name('registrar.create');
+        Route::post('/registrar/{type}', [ActivityController::class, 'store'])->name('records.store');
+        Route::post('/registrar/{type}/repetir', [ActivityController::class, 'repeat'])->name('records.repeat');
+        Route::delete('/registros/{type}/{id}', [ActivityController::class, 'destroy'])->whereNumber('id')->name('records.destroy');
+        Route::patch('/sueno/{log}/despertar', SleepWakeController::class)->name('sleep.wake');
+        Route::patch('/sueno/{log}/reabrir', [SleepWakeController::class, 'reopen'])->name('sleep.reopen');
+
         Route::post('/salir', [SessionController::class, 'destroy'])->name('logout');
         Route::put('/cuidador/pin', [CaretakerPinController::class, 'update'])->name('caretaker.pin');
         Route::post('/push/suscripciones', [PushSubscriptionController::class, 'store'])->name('push.store');

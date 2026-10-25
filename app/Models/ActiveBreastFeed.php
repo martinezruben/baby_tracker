@@ -16,6 +16,7 @@ class ActiveBreastFeed extends Model
     {
         return [
             'started_at' => 'datetime',
+            'ticked_at' => 'datetime',
             'is_paused' => 'boolean',
             'active_side' => BreastSide::class,
         ];

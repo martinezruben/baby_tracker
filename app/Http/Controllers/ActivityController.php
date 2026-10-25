@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\FeedLog;
+use App\Support\ActiveBaby;
+use App\Support\Activities\ActivityContext;
+use App\Support\Activities\ActivityRegistry;
+use App\Support\FamilyClock;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+
+class ActivityController extends Controller
+{
+    public function store(Request $request, string $type): RedirectResponse
+    {
+        $activity = ActivityRegistry::findOrFail($type);
+        $context = $this->context($request);
+
+        $data = $request->validate($activity->rules($context), trans('ui.validation'), trans('ui.registrar.fields'));
+
+        return $this->saved($type, $activity->create($context, $data));
+    }
+
+    public function repeat(Request $request, string $type): RedirectResponse
+    {
+        $activity = ActivityRegistry::findOrFail($type);
+        abort_unless($activity->repeatable(), 404);
+
+        $context = $this->context($request);
+        $last = $activity->query($context->baby->id)->latest($activity->timeColumn())->first();
+        abort_unless($last, 404);
+
+        return $this->saved($type, $activity->repeat($context, $last));
+    }
+
+    /** Deshacer: el registro se borra de forma lógica. */
+    public function destroy(Request $request, string $type, int $id): RedirectResponse
+    {
+        // "pecho" no es un tipo de formulario (tiene su cronómetro), pero su registro también se deshace.
+        $model = $type === 'pecho' ? FeedLog::class : ActivityRegistry::findOrFail($type)->model();
+
+        $log = $model::query()
+            ->where('family_id', $request->user()->family_id)
+            ->findOrFail($id);
+
+        $log->delete();
+
+        return back()->with('status', trans('ui.registrar.undone'));
+    }
+
+    private function context(Request $request): ActivityContext
+    {
+        $user = $request->user();
+
+        return new ActivityContext(ActiveBaby::for($request), $user, FamilyClock::for($user->family));
+    }
+
+    private function saved(string $type, Model $log): RedirectResponse
+    {
+        return redirect()->route('inicio')->with('undo', [
+            'message' => trans("ui.registrar.saved.{$type}"),
+            'url' => route('records.destroy', ['type' => $type, 'id' => $log->id]),
+        ]);
+    }
+}

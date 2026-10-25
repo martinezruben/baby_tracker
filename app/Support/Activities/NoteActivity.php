@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Support\Activities;
+
+use App\Models\Note;
+use Illuminate\Database\Eloquent\Model;
+
+class NoteActivity extends ActivityType
+{
+    public function slug(): string
+    {
+        return 'nota';
+    }
+
+    public function model(): string
+    {
+        return Note::class;
+    }
+
+    public function timeColumn(): string
+    {
+        return 'occurred_at';
+    }
+
+    public function rules(ActivityContext $context): array
+    {
+        return [
+            'occurred_at' => $this->occurredAtRules($context),
+            'content' => ['required', 'string', 'max:1000'],
+        ];
+    }
+
+    public function create(ActivityContext $context, array $data): Model
+    {
+        return Note::create($context->owner() + [
+            'occurred_at' => $context->clock->parse($data['occurred_at']),
+            'content' => $data['content'],
+        ]);
+    }
+}

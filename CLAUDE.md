@@ -36,6 +36,15 @@ Proyecto: Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 - Cambio rápido de cuidador: se vuelve a `/entrar` y se elige otro con su PIN.
 - Textos de interfaz en `lang/{es,en}/ui.php` (es es el respaldo); el frontend los lee con `useT()`.
 
+## Panel de Inicio y registro de actividades
+
+- Fuente de verdad visual: `docs/mockup/*.dc.html`; los tokens (colores, sombras, Outfit) viven en `resources/css/app.css`. Barra flotante: `FloatingNav`; formularios como hoja inferior: `SheetLayout`; hora con atajos: `TimeBlock`.
+- Registro: cada tipo es una clase en `app/Support/Activities/` registrada en `ActivityRegistry` (reglas, creación, resumen, repetir). Rutas `/registrar/{tipo}`; deshacer = borrado lógico vía `records.destroy` (el `Snackbar` lo ofrece 6 s).
+- Pecho = cronómetro (`BreastFeedSession`, tabla `active_breast_feeds`): guarda segundos por lado y el instante de la última acción. Sueño en curso = `SleepLog` sin `ended_at`.
+- Fechas: se guardan en UTC; lo que escribe o ve una persona va en hora de la familia (`FamilyClock` en PHP, `lib/time.js` en JS) y en 12/24 h según `family_settings.time_format`.
+- Módulos aún sin construir aparecen atenuados con "Próximamente" (`available: false` en `resources/js/lib/activities.js`); al construirlos, cámbialos a `true`.
+- `tests/Unit/TraduccionesTest` falla si un `t('clave')` del frontend no existe en `lang/es` o si `en` y `es` difieren.
+
 ## Notificaciones (Web Push)
 
 - Canal `push` = `WebPushChannel` (librería `minishlink/web-push`); el cliente de envío es `PushClient` (se sustituye por un falso en las pruebas).

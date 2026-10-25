@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { BellRing, Pause, Pencil, Play, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, BellRing, Pause, Pencil, Play, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import Button from '../../components/Button';
 import AppLayout from '../../layouts/AppLayout';
@@ -81,6 +81,10 @@ export default function Index({ reminders }) {
 
     return (
         <AppLayout title={t('reminders.title')}>
+            <Link href="/mas" className="inline-flex min-h-12 items-center gap-2 text-base font-medium text-primary">
+                <ArrowLeft aria-hidden="true" className="size-4" />
+                {t('nav.more')}
+            </Link>
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <h1 className="text-2xl font-semibold">{t('reminders.title')}</h1>
                 <Link
