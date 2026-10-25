@@ -32,7 +32,7 @@ export const ACTIVITIES = {
     medicina: { kind: 'medicine', icon: Pill, available: true },
     medida: { kind: 'growth', icon: Ruler, available: true },
     vacuna: { kind: 'vaccine', icon: Syringe, available: false },
-    cita: { kind: 'appointment', icon: Stethoscope, available: false },
+    cita: { kind: 'appointment', icon: Stethoscope, available: true, href: '/citas/nueva' },
     hito: { kind: 'moment', icon: Star, available: false },
     foto: { kind: 'moment', icon: Camera, available: false },
     nota: { kind: 'moment', icon: StickyNote, available: true },
@@ -49,7 +49,7 @@ export const GROUPS = {
 export const MODULES = [
     { key: 'calendar', icon: CalendarDays, kind: 'diaper' },
     { key: 'reminders', icon: Bell, kind: 'appointment', href: '/recordatorios' },
-    { key: 'appointments', icon: Stethoscope, kind: 'appointment' },
+    { key: 'appointments', icon: Stethoscope, kind: 'appointment', href: '/citas' },
     { key: 'vaccines', icon: Syringe, kind: 'vaccine' },
     { key: 'medicines', icon: Pill, kind: 'medicine' },
     { key: 'growth', icon: TrendingUp, kind: 'growth' },

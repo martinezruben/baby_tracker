@@ -81,6 +81,12 @@ class TraduccionesTest extends TestCase
         foreach ([0, 5, 10, 15, 30, 60, 120, 1440] as $k) {
             $dynamic[] = "reminders.offsets.{$k}";
         }
+        foreach (['scheduled', 'completed', 'cancelled'] as $k) {
+            $dynamic[] = "citas.states.{$k}";
+        }
+        foreach (['pending', 'given', 'skipped'] as $k) {
+            $dynamic[] = "citas.rx.{$k}";
+        }
         foreach (['upcoming', 'acknowledged', 'done', 'paused'] as $k) {
             $dynamic[] = "reminders.states.{$k}";
         }

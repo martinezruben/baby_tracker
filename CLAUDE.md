@@ -46,6 +46,13 @@ Proyecto: Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 - Módulos aún sin construir aparecen atenuados con "Próximamente" (`available: false` en `resources/js/lib/activities.js`); al construirlos, cámbialos a `true`.
 - `tests/Unit/TraduccionesTest` falla si un `t('clave')` del frontend no existe en `lang/es` o si `en` y `es` difieren.
 
+## Citas médicas, archivos y medicinas con tomas
+
+- Cita (`Appointment`): motivo, doctor, lugar, fecha (UTC), estado (programada/realizada/cancelada), resultado y seguimiento. `SaveAppointment` crea/actualiza la cita, guarda lo medido como `Measurement` (con `appointment_id`) y mantiene **una** regla de recordatorio (avisos antes de la cita) que se apaga al cancelar, realizar o borrar.
+- Archivos (`AppointmentFileController`): solo PDF e imágenes (validados por contenido), 10 MB y 10 por cita, en el disco **privado** `local`; se sirven únicamente por la ruta autenticada `appointments.files.show` (con `nosniff`). Nunca por `public/storage`.
+- Medicinas (`Prescription` + `PrescriptionDose`): `SavePrescription` genera todas las tomas (cada N horas) y una regla `Medicine` que insiste cada 10 min hasta confirmar y no respeta el horario silencioso. Confirmar el aviso dispara `ReminderAcknowledged` y `LogDoseWhenAcknowledged` marca la toma como dada y crea el `MedicineLog`. `RecordDose` (dar, omitir, deshacer) es la única vía para cambiar una toma.
+- No se programan avisos para tomas que pasaron hace más de 10 minutos.
+
 ## Notificaciones (Web Push)
 
 - Canal `push` = `WebPushChannel` (librería `minishlink/web-push`); el cliente de envío es `PushClient` (se sustituye por un falso en las pruebas).

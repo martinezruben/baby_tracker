@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\AppointmentFileController;
 use App\Http\Controllers\BabySelectionController;
 use App\Http\Controllers\BreastFeedController;
 use App\Http\Controllers\CaretakerPinController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\MoreController;
+use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\PushTestController;
 use App\Http\Controllers\RegistrarController;
@@ -41,6 +44,24 @@ Route::middleware('setup:required')->group(function () {
         Route::post('/registrar/{type}/repetir', [ActivityController::class, 'repeat'])->name('records.repeat');
         Route::delete('/registros/{type}/{id}', [ActivityController::class, 'destroy'])->whereNumber('id')->name('records.destroy');
         Route::get('/bitacora', LogController::class)->name('log');
+
+        Route::prefix('citas')->name('appointments.')->group(function () {
+            Route::get('/', [AppointmentController::class, 'index'])->name('index');
+            Route::get('/nueva', [AppointmentController::class, 'create'])->name('create');
+            Route::post('/', [AppointmentController::class, 'store'])->name('store');
+            Route::get('/{appointment}', [AppointmentController::class, 'show'])->name('show');
+            Route::get('/{appointment}/editar', [AppointmentController::class, 'edit'])->name('edit');
+            Route::put('/{appointment}', [AppointmentController::class, 'update'])->name('update');
+            Route::delete('/{appointment}', [AppointmentController::class, 'destroy'])->name('destroy');
+            Route::post('/{appointment}/archivos', [AppointmentFileController::class, 'store'])->name('files.store');
+            Route::get('/{appointment}/archivos/{attachment}', [AppointmentFileController::class, 'show'])->name('files.show');
+            Route::delete('/{appointment}/archivos/{attachment}', [AppointmentFileController::class, 'destroy'])->name('files.destroy');
+            Route::post('/{appointment}/medicinas', [PrescriptionController::class, 'store'])->name('prescriptions.store');
+        });
+        Route::delete('/recetas/{prescription}', [PrescriptionController::class, 'destroy'])->name('prescriptions.destroy');
+        Route::post('/dosis/{dose}/dada', [PrescriptionController::class, 'give'])->name('doses.give');
+        Route::post('/dosis/{dose}/omitir', [PrescriptionController::class, 'skip'])->name('doses.skip');
+        Route::post('/dosis/{dose}/deshacer', [PrescriptionController::class, 'revert'])->name('doses.revert');
         Route::post('/registros/{type}/{id}/restaurar', [ActivityController::class, 'restore'])->whereNumber('id')->name('records.restore');
         Route::patch('/sueno/{log}/despertar', SleepWakeController::class)->name('sleep.wake');
         Route::patch('/sueno/{log}/reabrir', [SleepWakeController::class, 'reopen'])->name('sleep.reopen');

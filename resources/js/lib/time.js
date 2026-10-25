@@ -66,3 +66,9 @@ export function calendarDaysFrom(iso, nowLocal, timeZone) {
     const today = nowLocal.split('T')[0];
     return Math.round((Date.parse(`${at}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 86400000);
 }
+
+/** "jueves, 5 de noviembre": fecha completa de un instante en la zona de la familia. */
+export function fullDate(iso, locale, timeZone) {
+    const text = new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', timeZone }).format(new Date(iso));
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}

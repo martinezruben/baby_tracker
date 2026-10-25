@@ -3,27 +3,11 @@ import { ArrowLeft } from 'lucide-react';
 import Button from '../../components/Button';
 import Chips from '../../components/Chips';
 import Field from '../../components/Field';
+import Section from '../../components/form/Section';
 import Segmented from '../../components/Segmented';
 import Switch from '../../components/Switch';
 import AppLayout from '../../layouts/AppLayout';
 import { useT } from '../../lib/i18n';
-
-function Section({ title, help, error, children }) {
-    return (
-        <section className="flex flex-col gap-3 rounded-3xl bg-surface p-4 shadow-sm">
-            <div>
-                <h2 className="text-base font-semibold">{title}</h2>
-                {help && <p className="text-sm text-ink-soft">{help}</p>}
-            </div>
-            {children}
-            {error && (
-                <p role="alert" className="text-sm font-medium text-red-700">
-                    {error}
-                </p>
-            )}
-        </section>
-    );
-}
 
 export default function Form({ reminder, defaults, caretakers, babies, options }) {
     const t = useT();

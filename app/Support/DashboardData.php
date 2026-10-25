@@ -2,14 +2,19 @@
 
 namespace App\Support;
 
+use App\Enums\AppointmentStatus;
+use App\Enums\DoseStatus;
 use App\Enums\NotificationEventType;
+use App\Enums\PrescriptionStatus;
 use App\Models\ActiveBreastFeed;
+use App\Models\Appointment;
 use App\Models\Baby;
 use App\Models\DiaperLog;
 use App\Models\FeedLog;
 use App\Models\MedicineLog;
 use App\Models\NotificationRule;
 use App\Models\PlayLog;
+use App\Models\Prescription;
 use App\Models\SleepLog;
 
 class DashboardData
@@ -67,13 +72,13 @@ class DashboardData
     }
 
     /**
-     * Próximos recordatorios activos (los de citas, vacunas y medicinas se sumarán aquí).
+     * Próximos eventos del bebé: recordatorios, citas médicas y la siguiente toma de cada tratamiento.
      *
-     * @return array<int, array{id: int, kind: string, title: string, at: string}>
+     * @return array<int, array{id: int, kind: string, title: string, at: string, href: string}>
      */
     public function upcoming(Baby $baby, int $limit = 6): array
     {
-        return NotificationRule::query()
+        $reminders = NotificationRule::query()
             ->where('family_id', $baby->family_id)
             ->where('event_type', NotificationEventType::Custom)
             ->where('is_active', true)
@@ -87,7 +92,38 @@ class DashboardData
                 'kind' => 'reminder',
                 'title' => $rule->title,
                 'at' => $rule->event_at->toIso8601String(),
-            ])
-            ->all();
+                'href' => "/recordatorios/{$rule->id}/editar",
+            ]);
+
+        $appointments = Appointment::query()
+            ->where('baby_id', $baby->id)
+            ->where('status', AppointmentStatus::Scheduled)
+            ->where('scheduled_at', '>', now())
+            ->orderBy('scheduled_at')
+            ->limit($limit)
+            ->get()
+            ->map(fn (Appointment $a) => [
+                'id' => $a->id,
+                'kind' => 'appointment',
+                'title' => $a->reason,
+                'at' => $a->scheduled_at->toIso8601String(),
+                'href' => "/citas/{$a->id}",
+            ]);
+
+        $doses = Prescription::query()
+            ->where('baby_id', $baby->id)
+            ->where('status', PrescriptionStatus::Active)
+            ->with(['medicine:id,name', 'doses' => fn ($q) => $q->where('status', DoseStatus::Pending)->orderBy('scheduled_at')->limit(1)])
+            ->get()
+            ->filter(fn (Prescription $p) => $p->doses->isNotEmpty())
+            ->map(fn (Prescription $p) => [
+                'id' => $p->id,
+                'kind' => 'dose',
+                'title' => $p->medicine->name,
+                'at' => $p->doses->first()->scheduled_at->toIso8601String(),
+                'href' => $p->appointment_id ? "/citas/{$p->appointment_id}" : '/citas',
+            ]);
+
+        return $reminders->concat($appointments)->concat($doses)->sortBy('at')->take($limit)->values()->all();
     }
 }

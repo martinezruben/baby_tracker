@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AppointmentStatus;
 use App\Enums\FeedType;
 use App\Models\ActiveBreastFeed;
+use App\Models\Appointment;
 use App\Models\FeedLog;
 use App\Models\Medicine;
 use App\Models\SleepLog;
@@ -44,6 +46,8 @@ class RegistrarController extends Controller
             'sessions' => $data->sessions($baby),
             'last' => $last,
             'lastBreastAt' => $lastBreast?->occurred_at?->toIso8601String(),
+            'nextAppointmentAt' => Appointment::where('baby_id', $baby->id)->where('status', AppointmentStatus::Scheduled)
+                ->where('scheduled_at', '>', now())->orderBy('scheduled_at')->value('scheduled_at')?->toIso8601String(),
         ]);
     }
 

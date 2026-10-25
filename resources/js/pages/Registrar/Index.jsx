@@ -90,7 +90,7 @@ function repeatLabel(t, entry) {
 
 function RoutineTile({ slug, subtitle, active }) {
     const t = useT();
-    const { kind, icon: Icon, available } = ACTIVITIES[slug];
+    const { kind, icon: Icon, available, href } = ACTIVITIES[slug];
     const colors = KINDS[kind];
     const className = `relative flex h-[124px] flex-col items-start justify-between overflow-hidden rounded-3xl p-3.5 text-left ${colors.bg} ${
         active ? `border-2 ${colors.border}` : ''
@@ -110,7 +110,7 @@ function RoutineTile({ slug, subtitle, active }) {
     );
 
     return available ? (
-        <Link href={`/registrar/${slug}`} className={`${className} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary`}>
+        <Link href={href ?? `/registrar/${slug}`} className={`${className} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary`}>
             {content}
         </Link>
     ) : (
@@ -122,7 +122,7 @@ function RoutineTile({ slug, subtitle, active }) {
 
 function ListTile({ slug, subtitle }) {
     const t = useT();
-    const { kind, icon: Icon, available } = ACTIVITIES[slug];
+    const { kind, icon: Icon, available, href } = ACTIVITIES[slug];
     const colors = KINDS[kind];
     const className = 'flex min-h-[84px] items-center gap-3 rounded-[22px] bg-surface p-3 text-left shadow-card';
 
@@ -139,7 +139,7 @@ function ListTile({ slug, subtitle }) {
     );
 
     return available ? (
-        <Link href={`/registrar/${slug}`} className={`${className} focus-visible:outline-2 focus-visible:outline-primary`}>
+        <Link href={href ?? `/registrar/${slug}`} className={`${className} focus-visible:outline-2 focus-visible:outline-primary`}>
             {content}
         </Link>
     ) : (
@@ -159,7 +159,7 @@ function GroupTitle({ id, title, count }) {
     );
 }
 
-export default function Index({ baby, clock, sessions, last, lastBreastAt }) {
+export default function Index({ baby, clock, sessions, last, lastBreastAt, nextAppointmentAt }) {
     const t = useT();
     const format = useFormat();
     const [section, setSection] = useState('todo');
@@ -173,6 +173,7 @@ export default function Index({ baby, clock, sessions, last, lastBreastAt }) {
             if (sessions.breast) return t('registrar.in_progress', { time: formatClock(breast.total) });
             return lastBreastAt ? ago(lastBreastAt) : t('registrar.none');
         }
+        if (slug === 'cita') return nextAppointmentAt ? `${format.date(nextAppointmentAt)} · ${format.time(nextAppointmentAt)}` : t('registrar.none');
         if (slug === 'sueno' && sessions.sleep) return t('session.sleeping_since', { time: format.time(sessions.sleep.started_at) });
         const entry = lastBy[slug];
         if (!entry) return t('registrar.none');

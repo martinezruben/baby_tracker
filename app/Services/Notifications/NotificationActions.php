@@ -5,6 +5,7 @@ namespace App\Services\Notifications;
 use App\Enums\AckScope;
 use App\Enums\OccurrenceStatus;
 use App\Enums\TargetStatus;
+use App\Events\ReminderAcknowledged;
 use App\Models\Caretaker;
 use App\Models\NotificationOccurrence;
 use App\Models\NotificationTarget;
@@ -39,6 +40,8 @@ class NotificationActions
 
             $this->refreshOccurrence($occurrence);
         });
+
+        event(new ReminderAcknowledged($target->occurrence, $by));
     }
 
     /**

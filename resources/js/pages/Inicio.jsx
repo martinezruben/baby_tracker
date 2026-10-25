@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, Baby, Bell, ChevronDown, ChevronRight, Milk, Moon, Ruler } from 'lucide-react';
+import { ArrowRight, Baby, Bell, ChevronDown, ChevronRight, Milk, Moon, Pill, Ruler, Stethoscope } from 'lucide-react';
 import ActiveSessions from '../components/ActiveSessions';
 import DonutChart from '../components/DonutChart';
 import AppLayout from '../layouts/AppLayout';
@@ -211,6 +211,12 @@ function Summary({ summary }) {
     );
 }
 
+const EVENT_STYLES = {
+    reminder: { kind: 'appointment', icon: Bell },
+    appointment: { kind: 'appointment', icon: Stethoscope },
+    dose: { kind: 'medicine', icon: Pill },
+};
+
 function Upcoming({ upcoming }) {
     const t = useT();
     const { clock } = usePage().props;
@@ -237,23 +243,26 @@ function Upcoming({ upcoming }) {
                 </Link>
             ) : (
                 <ul className="-mr-5 flex snap-x gap-3 overflow-x-auto pr-5 pb-1 [scrollbar-width:none]">
-                    {upcoming.map((event) => (
-                        <li key={event.id} className="snap-start">
-                            <Link
-                                href={`/recordatorios/${event.id}/editar`}
-                                className={`relative flex size-[156px] flex-col justify-between overflow-hidden rounded-3xl p-4 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${KINDS.appointment.bg}`}
-                            >
-                                <span aria-hidden="true" className={`absolute -right-[30px] -bottom-[30px] size-[100px] rounded-full ${KINDS.appointment.deco}`} />
-                                <span className={`relative flex size-11 items-center justify-center rounded-full bg-white ${KINDS.appointment.ink}`}>
-                                    <Bell aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />
-                                </span>
-                                <span className="relative flex flex-col gap-0.5">
-                                    <span className="line-clamp-2 text-lg leading-[1.15] font-bold">{event.title}</span>
-                                    <span className="text-[13px] text-ink-mid">{when(event.at)}</span>
-                                </span>
-                            </Link>
-                        </li>
-                    ))}
+                    {upcoming.map((event) => {
+                        const { kind, icon: Icon } = EVENT_STYLES[event.kind];
+                        return (
+                            <li key={`${event.kind}-${event.id}`} className="snap-start">
+                                <Link
+                                    href={event.href}
+                                    className={`relative flex size-[156px] flex-col justify-between overflow-hidden rounded-3xl p-4 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${KINDS[kind].bg}`}
+                                >
+                                    <span aria-hidden="true" className={`absolute -right-[30px] -bottom-[30px] size-[100px] rounded-full ${KINDS[kind].deco}`} />
+                                    <span className={`relative flex size-11 items-center justify-center rounded-full bg-white ${KINDS[kind].ink}`}>
+                                        <Icon aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />
+                                    </span>
+                                    <span className="relative flex flex-col gap-0.5">
+                                        <span className="line-clamp-2 text-lg leading-[1.15] font-bold">{event.title}</span>
+                                        <span className="text-[13px] text-ink-mid">{when(event.at)}</span>
+                                    </span>
+                                </Link>
+                            </li>
+                        );
+                    })}
                 </ul>
             )}
         </section>
