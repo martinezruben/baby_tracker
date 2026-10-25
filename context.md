@@ -17,6 +17,71 @@ Una app Next.js (App Router) con Prisma sobre SQLite o PostgreSQL, Tailwind y Do
 - Varias familias y varios cuidadores con PIN.
 - Panel de administración (`/family-manager`) y respaldos.
 
+## Inventario completo de Sprout Track (referencia para el port)
+
+### Funciones
+- **Seguimiento y dashboard diario:** sueño, alimentación, pañales, baño, medidas, medicinas, actividades e hitos; resumen del día con estadísticas en tiempo real y sesiones activas.
+- **Calendario:** vista mensual con indicadores de color por tipo de actividad y detalle al tocar un día.
+- **Reportes:** reportes mensuales con métricas y curvas de percentiles de crecimiento, estadísticas de alimentación, análisis de sueño, desglose de actividades y boleta mensual en PDF.
+- **Bitácora y exportación:** log completo con búsqueda, filtros y paginación; exportación a CSV y XLSX.
+- **Modo nursery:** pantalla completa, botones grandes, color de fondo y brillo configurables.
+- **Modo oscuro** en toda la app.
+- **5 idiomas:** inglés, español, francés, alemán e italiano; preferencia guardada por usuario.
+- **Notificaciones push:** alertas a cuidadores cuando se registra una actividad, y avisos por temporizador vencido (alimentación, pañal, medicina).
+- **API y webhooks:** gestión de API keys (con scopes) y soporte de webhooks.
+- **PWA:** instalable, con notificaciones, modo keep-awake y pantalla completa.
+- **Multi-familia:** dashboards separados y privados por familia.
+- **Multi-cuidador:** PIN individual para padres, abuelos, niñeras y guardería (o un PIN global).
+- **Cuentas familiares:** varios bebés en un mismo espacio familiar.
+- **Contactos compartidos:** vinculables a medicinas, vacunas y eventos del calendario.
+- **Respaldo y restauración** de la base de datos integrados.
+- **Fotos:** galería por bebé con miniaturas, favoritos, vínculos a actividades e hitos, y cuota por familia.
+- **Vacunas:** registro de dosis con documentos adjuntos.
+- **Alergias y alimentos sólidos:** catálogo de alimentos, disfrute, reacciones y alérgenos del bebé.
+- **Extracción de leche (pump)** y ajustes de inventario de leche materna.
+- **Estados de ánimo, notas y juego** (tummy time, paseo, etc.).
+- **Sesiones activas:** lactancia con cronómetro por lado y pausa; actividades de juego con cronómetro.
+- **Calendario avanzado:** eventos con recurrencia, recordatorios, citas y horarios de cuidadores.
+- **Importación externa** con trazabilidad por proveedor (`ExternalImportRecord`).
+- **Feedback** con adjuntos y respuestas encadenadas.
+- **Configuración de email** (SMTP, SendGrid, SMTP2GO) y de dominio/HTTPS.
+
+### Administración e instalación
+- **Asistente inicial (3 pasos):** (1) familia: nombre, slug de URL e importación opcional; (2) seguridad: PIN global o PIN por cuidador; (3) bebé: nombre, fecha de nacimiento y umbrales de alerta de alimentación y pañal.
+- **Family Manager (`/family-manager`):** dominio, HTTPS, email, respaldos de BD y notificaciones push, protegido con contraseña de administrador.
+- **Credenciales por defecto del original (PIN `111222`, contraseña `admin`):** en nuestra versión deben generarse aleatorias y obligar a cambiarlas.
+
+### Integraciones
+- Home Assistant, Grafana, etiquetas NFC, API de webhooks genérica y Web Push (claves VAPID, cron, configuración por usuario).
+
+### Stack y despliegue del original
+- Next.js (App Router), Prisma (SQLite o PostgreSQL 14+ con base de datos separada para logs), Tailwind, Docker.
+- Opciones: Docker con SQLite, Docker con PostgreSQL, Docker Compose, instalación local (Node 22+) con o sin PostgreSQL y servicio systemd, y demo pública que se reinicia cada hora.
+
+### Seguridad del original
+- PIN por cuidador o global, contraseña del Family Manager, API keys hasheadas con scopes y expiración, logging opcional de requests/responses de la API, autogeneración de variables de entorno y reseteo automático de la contraseña admin al actualizar desde versiones antiguas.
+
+### Modelo de datos (68 modelos, 19 enums)
+- **Cuenta y familia:** Account, Family, FamilyMember, Caretaker (rol USER/ADMIN, PIN, color de insignia), Baby, Settings, FamilySetup.
+- **Registros de actividad** (comparten `id`, timestamps, `deletedAt` para borrado lógico, `familyId`, `babyId`, `caretakerId`): SleepLog, FeedLog, DiaperLog, MoodLog, Note, Milestone, PumpLog, BreastMilkAdjustment, PlayLog, BathLog, Measurement, VaccineLog, VaccineDocument, MedicineLog, FoodLog, PhotoLog.
+- **Catálogos:** Medicine, Food, BabyAllergen, Unit, Contact (con tablas puente ContactMedicine y ContactVaccine).
+- **Calendario:** CalendarEvent con tablas puente BabyEvent, CaretakerEvent y ContactEvent.
+- **Fotos:** Photo, PhotoLink (polimórfico por tipo de actividad e id), PhotoFavorite.
+- **Notificaciones:** PushSubscription, DeviceToken, NotificationPreference, NotificationLog.
+- **Sesiones activas:** ActiveBreastFeed y ActiveActivity (una por bebé).
+- **API e importación:** ApiKey, ExternalImportRecord.
+- **Soporte:** Feedback y FeedbackAttachment.
+- **Configuración del sistema:** AppConfig, EmailConfig, NotificationConfig.
+- **Referencia de crecimiento (tablas LMS con percentiles p3–p97):** CDC (peso, longitud, perímetro cefálico para 0–36 meses; peso y estatura para 24–240 meses) y OMS/WHO (peso, longitud, perímetro cefálico para 0–24 meses).
+- **Enums principales:** SleepType, SleepQuality, FeedType (BREAST/BOTTLE/SOLIDS), BreastSide, DiaperType, Mood, MilestoneCategory, PlayType, MeasurementType, CalendarEventType, RecurrencePattern, NotificationEventType, AllergenType, FoodEnjoyment, Gender, UserRole.
+- **Solo del servicio hospedado, no se portan:** cuentas con facturación, GiftCode (Stripe), Beta* (campañas de email), ShortLink/ShortLinkClick, Pageview y DemoTracker.
+
+### Notas para el port a Laravel
+- Prisma → migraciones y modelos Eloquent con `SoftDeletes`; las 3 tablas de percentiles se cargan con seeders desde los datos CDC y OMS.
+- Los enums pasan a enums de PHP 8.1 con casts en los modelos.
+- Web Push con `laravel-notification-channels/webpush`; cron de temporizadores con el scheduler de Laravel.
+- Respaldos con `spatie/laravel-backup`; sustituye también el respaldo propio del Family Manager.
+
 ## Plan para la versión en Laravel + MySQL
 
 **Fase 1: Base (semana 1)**
