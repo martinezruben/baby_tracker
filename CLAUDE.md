@@ -85,6 +85,12 @@ Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
 - El nombre de la app es **Kidu Baby Tracker** (`app.name` en `lang/*/ui.php`, `APP_NAME`, manifest; nombre corto «Kidu»). Úsalo siempre así en pantallas, avisos, correos y documentos.
 - Logo (carrito con reloj, tonos beige): original en `resources/brand/kidu-logo.png`; `php scripts/make-icons.php` genera `public/brand/kidu-mark.png` (fondo transparente) y los iconos de la PWA. La interfaz mantiene los tokens de color de `app.css`.
 
+## Crecimiento y reportes
+
+- `/crecimiento` (`GrowthController`, `Support/Growth/GrowthReport`): peso, talla y perímetro cefálico sobre curvas de percentiles 3/15/50/85/97 con el percentil de cada medida. Las tablas LMS oficiales de la OMS (0-5 años) y del CDC (0-36 meses) están en `resources/data/growth.json` (son datos; no los edites a mano ni inventes valores). `GrowthStandards` calcula z y percentil (`z = ((x/M)^L − 1)/(L·S)`); si el estándar elegido es CDC y el bebé pasa de 36 meses, se usa la OMS. Hace falta el sexo del bebé (Ajustes > Bebés); las medidas se convierten a kg/cm para el cálculo y se muestran en las unidades de la familia.
+- `/reportes` (`ReportController`, `ReportData`): promedios y barras por día (tomas, sueño, pañales) de 7, 14 o 30 días en hora de la familia, tabla alterna, `/reportes/exportar` (CSV con BOM, protegido contra fórmulas de Excel) e impresión/PDF con `window.print()`.
+- Gráficos en SVG propio (sin librería): una sola serie por gráfico, barras con 2 px de separación y extremo redondeado, tabla alterna.
+
 ## Notificaciones (Web Push)
 
 - Canal `push` = `WebPushChannel` (librería `minishlink/web-push`); el cliente de envío es `PushClient` (se sustituye por un falso en las pruebas).

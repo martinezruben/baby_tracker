@@ -38,7 +38,7 @@ export default function FloatingNav() {
     return (
         <nav
             aria-label={t('nav.main')}
-            className="fixed inset-x-5 bottom-[max(1.5rem,env(safe-area-inset-bottom))] z-20 mx-auto flex h-[72px] max-w-[430px] items-center justify-between rounded-[36px] bg-surface p-2 shadow-nav"
+            className="fixed print:hidden inset-x-5 bottom-[max(1.5rem,env(safe-area-inset-bottom))] z-20 mx-auto flex h-[72px] max-w-[430px] items-center justify-between rounded-[36px] bg-surface p-2 shadow-nav"
         >
             {item('home', '/', Home, t('nav.home'))}
             {item('calendar', '/calendario', CalendarDays, t('nav.calendar'))}

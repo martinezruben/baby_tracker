@@ -55,7 +55,7 @@ export const MODULES = [
     { key: 'growth', icon: TrendingUp, kind: 'growth', href: '/crecimiento' },
     { key: 'photos', icon: Camera, kind: 'moment', href: '/fotos' },
     { key: 'moments', icon: Star, kind: 'moment', href: '/eventos' },
-    { key: 'reports', icon: BarChart3, kind: 'growth' },
+    { key: 'reports', icon: BarChart3, kind: 'growth', href: '/reportes' },
     { key: 'log', icon: BookOpen, kind: 'diaper', href: '/bitacora' },
     { key: 'allergies', icon: ShieldAlert, kind: 'food' },
     { key: 'contacts', icon: Users, kind: 'sleep' },

@@ -21,6 +21,7 @@ use App\Http\Controllers\PushTestController;
 use App\Http\Controllers\RegistrarController;
 use App\Http\Controllers\ReminderActionController;
 use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SetupController;
@@ -57,6 +58,8 @@ Route::middleware('setup:required')->group(function () {
         Route::get('/bitacora', LogController::class)->name('log');
         Route::get('/calendario', CalendarController::class)->name('calendar');
         Route::get('/crecimiento', GrowthController::class)->name('growth');
+        Route::get('/reportes', [ReportController::class, 'index'])->name('reports');
+        Route::get('/reportes/exportar', [ReportController::class, 'export'])->name('reports.export');
 
         Route::prefix('citas')->name('appointments.')->group(function () {
             Route::get('/', [AppointmentController::class, 'index'])->name('index');
