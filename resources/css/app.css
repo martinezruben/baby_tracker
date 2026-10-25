@@ -1,0 +1,42 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/* Tokens de diseño: ver docs/DISENO-UI.md (sección 15) */
+@theme {
+    --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+
+    --color-surface-base: #f2f6f7;
+    --color-surface: #ffffff;
+    --color-primary: #087873;
+    --color-accent: #2cc5bd;
+    --color-night: #123b57;
+    --color-ink: #0b2a3d;
+    --color-ink-soft: #4a6372;
+
+    --color-food: #fceba6;
+    --color-food-ink: #a15c07;
+    --color-sleep: #e4e1fb;
+    --color-sleep-ink: #4c46b6;
+    --color-diaper: #cfe7fb;
+    --color-diaper-ink: #1d6fb0;
+    --color-medicine: #f9ddf3;
+    --color-medicine-ink: #a63a86;
+    --color-vaccine: #e3f2c4;
+    --color-vaccine-ink: #4d7a12;
+    --color-appointment: #dce4f2;
+    --color-appointment-ink: #3a5288;
+    --color-growth: #d2f1ea;
+    --color-growth-ink: #087873;
+    --color-moment: #ffe1d1;
+    --color-moment-ink: #b4532f;
+}
+
+body {
+    background-color: var(--color-surface-base);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+}
