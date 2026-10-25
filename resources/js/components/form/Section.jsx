@@ -10,7 +10,7 @@ export default function Section({ title, help, error, children }) {
             )}
             {children}
             {error && (
-                <p role="alert" className="text-sm font-medium text-red-700">
+                <p role="alert" className="text-sm font-medium text-danger-ink">
                     {error}
                 </p>
             )}

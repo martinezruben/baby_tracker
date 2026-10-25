@@ -106,7 +106,7 @@ function DoseItem({ dose }) {
                 </span>
             </span>
             {confirming ? (
-                <Button variant="secondary" className="border-red-300 px-4 text-red-700" onClick={() => router.delete(`/vacunas/esquema/dosis/${dose.id}`, { preserveScroll: true })}>
+                <Button variant="secondary" className="border-danger-line px-4 text-danger-ink" onClick={() => router.delete(`/vacunas/esquema/dosis/${dose.id}`, { preserveScroll: true })}>
                     {t('vacunas.schedule.delete_confirm')}
                 </Button>
             ) : (
@@ -114,7 +114,7 @@ function DoseItem({ dose }) {
                     type="button"
                     aria-label={`${t('vacunas.schedule.delete')}: ${dose.name}`}
                     onClick={() => setConfirming(true)}
-                    className="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface text-red-700 focus-visible:outline-2 focus-visible:outline-primary"
+                    className="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface text-danger-ink focus-visible:outline-2 focus-visible:outline-primary"
                 >
                     <Trash2 aria-hidden="true" className="size-5" strokeWidth={1.75} />
                 </button>

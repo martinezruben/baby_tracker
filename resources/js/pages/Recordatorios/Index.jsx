@@ -60,13 +60,13 @@ function Reminder({ reminder }) {
                 {confirming ? (
                     <Button
                         variant="secondary"
-                        className="border-red-300 text-red-700"
+                        className="border-danger-line text-danger-ink"
                         onClick={() => router.delete(`/recordatorios/${reminder.id}`)}
                     >
                         {t('reminders.delete_confirm')}
                     </Button>
                 ) : (
-                    <Button variant="ghost" className="text-red-700" onClick={() => setConfirming(true)}>
+                    <Button variant="ghost" className="text-danger-ink" onClick={() => setConfirming(true)}>
                         <Trash2 aria-hidden="true" className="size-4" />
                         {t('reminders.delete')}
                     </Button>
@@ -89,7 +89,7 @@ export default function Index({ reminders }) {
                 <h1 className="text-2xl font-semibold">{t('reminders.title')}</h1>
                 <Link
                     href="/recordatorios/nuevo"
-                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-6 text-base font-semibold text-white hover:bg-primary/90"
+                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-6 text-base font-semibold text-on-primary hover:bg-primary/90"
                 >
                     <Plus aria-hidden="true" className="size-5" />
                     {t('reminders.new')}

@@ -20,7 +20,7 @@ class ActivityController extends Controller
 
         $data = $request->validate($activity->rules($context), trans('ui.validation'), trans('ui.registrar.fields'));
 
-        return $this->saved($type, $activity->create($context, $data));
+        return $this->saved($request, $type, $activity->create($context, $data));
     }
 
     /** Corregir un registro ya guardado (desde la Bitácora). */
@@ -45,7 +45,7 @@ class ActivityController extends Controller
         $last = $activity->query($context->baby->id)->latest($activity->timeColumn())->first();
         abort_unless($last, 404);
 
-        return $this->saved($type, $activity->repeat($context, $last));
+        return $this->saved($request, $type, $activity->repeat($context, $last));
     }
 
     /** Deshacer: el registro se borra de forma lógica. */
@@ -92,9 +92,10 @@ class ActivityController extends Controller
         return new ActivityContext(ActiveBaby::for($request), $user, FamilyClock::for($user->family));
     }
 
-    private function saved(string $type, Model $log): RedirectResponse
+    private function saved(Request $request, string $type, Model $log): RedirectResponse
     {
-        return redirect()->route('inicio')->with('undo', [
+        // Desde el modo nursery se vuelve a esa pantalla, no al Inicio.
+        return redirect()->route($request->boolean('nursery') ? 'nursery' : 'inicio')->with('undo', [
             'message' => trans("ui.registrar.saved.{$type}"),
             'url' => route('records.destroy', ['type' => $type, 'id' => $log->id]),
         ]);

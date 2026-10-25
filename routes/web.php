@@ -14,6 +14,7 @@ use App\Http\Controllers\GrowthController;
 use App\Http\Controllers\LifeEventController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\MoreController;
+use App\Http\Controllers\NurseryController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\PushSubscriptionController;
@@ -57,6 +58,7 @@ Route::middleware('setup:required')->group(function () {
         Route::delete('/registros/{type}/{id}', [ActivityController::class, 'destroy'])->whereNumber('id')->name('records.destroy');
         Route::get('/bitacora', LogController::class)->name('log');
         Route::get('/calendario', CalendarController::class)->name('calendar');
+        Route::get('/nursery', NurseryController::class)->name('nursery');
         Route::get('/crecimiento', GrowthController::class)->name('growth');
         Route::get('/reportes', [ReportController::class, 'index'])->name('reports');
         Route::get('/reportes/exportar', [ReportController::class, 'export'])->name('reports.export');

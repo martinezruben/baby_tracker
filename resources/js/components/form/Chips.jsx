@@ -15,7 +15,7 @@ export default function ChoiceChips({ label, options, value, onChange, columns }
                             aria-checked={selected}
                             onClick={() => onChange(option.value)}
                             className={`min-h-12 rounded-full ${columns ? 'px-1' : 'px-5'} text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                                selected ? 'bg-primary font-semibold text-white' : 'border border-line bg-surface font-medium text-ink'
+                                selected ? 'bg-primary font-semibold text-on-primary' : 'border border-line bg-surface font-medium text-ink'
                             }`}
                         >
                             {option.label}

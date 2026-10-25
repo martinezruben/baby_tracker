@@ -74,7 +74,7 @@ function SleepCard({ session }) {
             <button
                 type="button"
                 onClick={() => router.patch(`/sueno/${session.id}/despertar`, {}, { preserveScroll: true })}
-                className="min-h-12 rounded-full bg-ink px-5 text-[15px] font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="min-h-12 rounded-full bg-ink px-5 text-[15px] font-semibold text-on-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
                 {t('session.wake')}
             </button>
@@ -100,7 +100,7 @@ function RoutineTile({ slug, subtitle, active }) {
     const content = (
         <>
             <span aria-hidden="true" className={`absolute -top-6 -right-6 size-[92px] rounded-full ${colors.deco}`} />
-            <span className={`relative flex size-11 items-center justify-center rounded-full bg-white ${colors.ink}`}>
+            <span className={`relative flex size-11 items-center justify-center rounded-full bg-surface ${colors.ink}`}>
                 <Icon aria-hidden="true" className="size-6" strokeWidth={1.75} />
             </span>
             <span className="relative flex flex-col gap-0.5">
@@ -193,7 +193,7 @@ export default function Index({ baby, clock, sessions, last, lastBreastAt, nextA
             onClick={() => setSection(id)}
             aria-current={section === id ? 'true' : undefined}
             className={`flex min-h-11 shrink-0 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                section === id ? 'bg-primary font-semibold text-white' : 'bg-surface font-medium text-ink'
+                section === id ? 'bg-primary font-semibold text-on-primary' : 'bg-surface font-medium text-ink'
             }`}
         >
             {label}

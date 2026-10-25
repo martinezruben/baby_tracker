@@ -69,7 +69,7 @@ export default function TimeBlock({ label, value, onChange, now, error, shortcut
                             aria-pressed={selected}
                             onClick={() => onChange(target)}
                             className={`flex min-h-12 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                                selected ? 'bg-primary font-semibold text-white' : 'border border-line bg-surface font-medium text-ink'
+                                selected ? 'bg-primary font-semibold text-on-primary' : 'border border-line bg-surface font-medium text-ink'
                             }`}
                         >
                             {selected && <Check aria-hidden="true" className="size-4" strokeWidth={2.5} />}
@@ -79,7 +79,7 @@ export default function TimeBlock({ label, value, onChange, now, error, shortcut
                 })}
             </div>
             {error && (
-                <p role="alert" className="text-sm font-medium text-red-700">
+                <p role="alert" className="text-sm font-medium text-danger-ink">
                     {error}
                 </p>
             )}

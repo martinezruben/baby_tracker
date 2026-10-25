@@ -34,7 +34,7 @@ function BreastBanner({ session }) {
             >
                 {session.paused ? <Play aria-hidden="true" className="size-[22px]" strokeWidth={1.75} /> : <Pause aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />}
             </button>
-            <button type="button" onClick={() => act('finalizar')} aria-label={t('session.finish')} className={`${circleButton} bg-ink text-white`}>
+            <button type="button" onClick={() => act('finalizar')} aria-label={t('session.finish')} className={`${circleButton} bg-ink text-on-ink`}>
                 <Square aria-hidden="true" className="size-5" strokeWidth={1.75} />
             </button>
         </div>
@@ -59,7 +59,7 @@ function SleepBanner({ session }) {
             <button
                 type="button"
                 onClick={() => router.patch(`/sueno/${session.id}/despertar`, {}, { preserveScroll: true })}
-                className="min-h-12 shrink-0 rounded-full bg-ink px-5 text-[15px] font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="min-h-12 shrink-0 rounded-full bg-ink px-5 text-[15px] font-semibold text-on-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
                 {t('session.wake')}
             </button>

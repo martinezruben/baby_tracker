@@ -89,7 +89,7 @@ function CaretakerForm({ caretaker, colors, languages, onDone }) {
                 options={[{ value: 'user', label: t('ajustes.caretakers.role_user') }, { value: 'admin', label: t('ajustes.caretakers.role_admin') }]}
             />
             <p className="-mt-2 text-sm text-ink-soft">{t('ajustes.caretakers.role_help')}</p>
-            {errors.role && <p role="alert" className="text-sm font-medium text-red-700">{errors.role}</p>}
+            {errors.role && <p role="alert" className="text-sm font-medium text-danger-ink">{errors.role}</p>}
             <Swatches colors={colors} value={data.badge_color} onChange={(v) => setData('badge_color', v)} label={t('ajustes.caretakers.color')} />
             <ChoiceChips
                 label={t('ajustes.caretakers.language')}
@@ -139,11 +139,11 @@ function Row({ caretaker, colors, languages }) {
                     {caretaker.is_active ? (
                         !caretaker.is_me &&
                         (confirming ? (
-                            <Button variant="secondary" className="border-red-300 text-red-700" disabled={processing} onClick={() => post(`/ajustes/cuidadores/${caretaker.id}/baja`, { preserveScroll: true })}>
+                            <Button variant="secondary" className="border-danger-line text-danger-ink" disabled={processing} onClick={() => post(`/ajustes/cuidadores/${caretaker.id}/baja`, { preserveScroll: true })}>
                                 {t('ajustes.caretakers.deactivate_confirm')}
                             </Button>
                         ) : (
-                            <Button variant="ghost" className="text-red-700" onClick={() => setConfirming(true)}>
+                            <Button variant="ghost" className="text-danger-ink" onClick={() => setConfirming(true)}>
                                 {t('ajustes.caretakers.deactivate')}
                             </Button>
                         ))

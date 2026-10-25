@@ -1,11 +1,12 @@
 import { Link, router, useForm, usePage } from '@inertiajs/react';
-import { Bell, ChevronRight, KeyRound, LogOut, Settings, Users } from 'lucide-react';
+import { Bell, ChevronRight, KeyRound, LogOut, MoonStar, Settings, Users } from 'lucide-react';
 import { useState } from 'react';
 import Button from '../components/Button';
 import Field from '../components/Field';
 import InstallHint from '../components/InstallHint';
 import ChoiceChips from '../components/form/Chips';
 import PushToggle from '../components/PushToggle';
+import { enterNursery, setTheme, THEMES, useTheme } from '../lib/theme';
 import AppLayout from '../layouts/AppLayout';
 import { KINDS } from '../lib/activities';
 import { useT } from '../lib/i18n';
@@ -62,6 +63,22 @@ function ChangePin() {
                     </Button>
                 </form>
             )}
+        </div>
+    );
+}
+
+function Appearance() {
+    const t = useT();
+    const { pref } = useTheme();
+
+    return (
+        <div className="flex flex-col gap-3 rounded-3xl bg-surface p-4 shadow-card">
+            <ChoiceChips label={t('more.appearance')} value={pref} onChange={setTheme} options={THEMES.map((k) => ({ value: k, label: t(`more.theme_${k}`) }))} />
+            <p className="text-sm text-ink-soft">{t('more.theme_help')}</p>
+            <Link href="/nursery" onClick={enterNursery} className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-ink/10 text-base font-semibold text-ink focus-visible:outline-2 focus-visible:outline-primary">
+                <MoonStar aria-hidden="true" className="size-5" strokeWidth={1.75} />
+                {t('more.open_nursery')}
+            </Link>
         </div>
     );
 }
@@ -129,6 +146,7 @@ export default function Mas({ caretakers, slug, language, languages }) {
 
                 <section className="flex flex-col gap-3">
                     <h2 className="text-[19px] font-bold">{t('more.account')}</h2>
+                    <Appearance />
                     <MyLanguage language={language} languages={languages} />
                     <ChangePin />
                     {caretakers > 1 && (

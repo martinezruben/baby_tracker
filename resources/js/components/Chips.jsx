@@ -15,7 +15,7 @@ export default function Chips({ options, value, onChange, label }) {
                         onClick={() => toggle(option.value)}
                         className={`min-h-12 rounded-full border px-4 text-base font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
                             selected
-                                ? 'border-primary bg-primary text-white'
+                                ? 'border-primary bg-primary text-on-primary'
                                 : 'border-ink/20 bg-surface text-ink hover:bg-ink/5'
                         }`}
                     >

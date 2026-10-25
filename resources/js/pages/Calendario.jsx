@@ -31,7 +31,7 @@ const DOTS = [
 const STATE_STYLES = {
     done: 'bg-vaccine text-vaccine-ink',
     pending: 'bg-appointment text-appointment-ink',
-    overdue: 'bg-red-100 text-red-800',
+    overdue: 'bg-danger-soft text-danger-ink',
     skipped: 'bg-ink/10 text-ink-soft',
 };
 
@@ -205,7 +205,7 @@ export default function Calendario({ today, data }) {
                                     aria-label={`${dayLong(date, locale)}, ${summary(day)}`}
                                     onClick={() => setSelected(date)}
                                     className={`mx-auto flex h-14 w-full max-w-12 flex-col items-center justify-center gap-1 rounded-2xl text-[15px] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary ${
-                                        isSelected ? 'bg-primary font-bold text-white' : isToday ? 'font-bold ring-2 ring-primary ring-inset' : 'font-medium hover:bg-canvas'
+                                        isSelected ? 'bg-primary font-bold text-on-primary' : isToday ? 'font-bold ring-2 ring-primary ring-inset' : 'font-medium hover:bg-canvas'
                                     }`}
                                 >
                                     <span>{n}</span>

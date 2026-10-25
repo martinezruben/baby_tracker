@@ -82,7 +82,7 @@ function Files({ appointment }) {
                                 type="button"
                                 aria-label={`${t('citas.files.delete')}: ${file.name}`}
                                 onClick={() => router.delete(`/citas/${appointment.id}/archivos/${file.id}`, { preserveScroll: true })}
-                                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface text-red-700 focus-visible:outline-2 focus-visible:outline-primary"
+                                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface text-danger-ink focus-visible:outline-2 focus-visible:outline-primary"
                             >
                                 <Trash2 aria-hidden="true" className="size-5" strokeWidth={1.75} />
                             </button>
@@ -106,7 +106,7 @@ function Files({ appointment }) {
             </Button>
             <p className="text-sm text-ink-soft">{t('citas.files.hint')}</p>
             {error && (
-                <p role="alert" className="text-sm font-medium text-red-700">
+                <p role="alert" className="text-sm font-medium text-danger-ink">
                     {error}
                 </p>
             )}
@@ -174,7 +174,7 @@ function AddPrescription({ appointment, medicines, intervals, clock }) {
                 onChange={pick}
                 options={[...medicines.map((m) => ({ value: m.id, label: m.name })), { value: '', label: t('citas.rx.other') }]}
             />
-            {errors.medicine_id && <p role="alert" className="text-sm font-medium text-red-700">{errors.medicine_id}</p>}
+            {errors.medicine_id && <p role="alert" className="text-sm font-medium text-danger-ink">{errors.medicine_id}</p>}
             {isNew && <Field label={t('citas.rx.name')} value={data.new_medicine} onChange={(e) => setData('new_medicine', e.target.value)} error={errors.new_medicine} maxLength={80} />}
 
             <Stepper label={t('citas.rx.dose')} value={data.dose} onChange={(v) => setData('dose', v)} step={0.5} min={0} max={10000} error={errors.dose} />
@@ -198,7 +198,7 @@ function AddPrescription({ appointment, medicines, intervals, clock }) {
             <p role="status" className="text-sm font-medium text-primary">
                 {t('citas.rx.preview', { n: totalDoses, date: lastLabel })}
             </p>
-            {(errors.total_doses || errors.interval_hours) && <p role="alert" className="text-sm font-medium text-red-700">{errors.total_doses ?? errors.interval_hours}</p>}
+            {(errors.total_doses || errors.interval_hours) && <p role="alert" className="text-sm font-medium text-danger-ink">{errors.total_doses ?? errors.interval_hours}</p>}
             <p className="text-sm text-ink-soft">{t('citas.rx.auto_note')}</p>
 
             <div className="flex gap-3">
@@ -281,7 +281,7 @@ function Prescription({ rx }) {
                                     <button
                                         type="button"
                                         onClick={() => act(dose, 'dada')}
-                                        className="flex min-h-12 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                                        className="flex min-h-12 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-on-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                                     >
                                         <Check aria-hidden="true" className="size-4" strokeWidth={2.5} />
                                         {t('citas.rx.give')}
@@ -309,11 +309,11 @@ function Prescription({ rx }) {
 
             {active &&
                 (confirming ? (
-                    <Button variant="secondary" className="border-red-300 text-red-700" onClick={() => router.delete(`/recetas/${rx.id}`, { preserveScroll: true })}>
+                    <Button variant="secondary" className="border-danger-line text-danger-ink" onClick={() => router.delete(`/recetas/${rx.id}`, { preserveScroll: true })}>
                         {t('citas.rx.suspend_confirm')}
                     </Button>
                 ) : (
-                    <Button variant="ghost" className="text-red-700" onClick={() => setConfirming(true)}>
+                    <Button variant="ghost" className="text-danger-ink" onClick={() => setConfirming(true)}>
                         {t('citas.rx.suspend')}
                     </Button>
                 ))}

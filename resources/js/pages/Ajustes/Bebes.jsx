@@ -85,11 +85,11 @@ function Row({ baby, today, last }) {
                     <p className="text-sm text-ink-soft">{t('ajustes.babies.hint')}</p>
                     {!last &&
                         (confirming ? (
-                            <Button variant="secondary" className="border-red-300 text-red-700" disabled={processing} onClick={() => destroy(`/ajustes/bebes/${baby.id}`, { preserveScroll: true })}>
+                            <Button variant="secondary" className="border-danger-line text-danger-ink" disabled={processing} onClick={() => destroy(`/ajustes/bebes/${baby.id}`, { preserveScroll: true })}>
                                 {t('ajustes.babies.delete_confirm')}
                             </Button>
                         ) : (
-                            <Button variant="ghost" className="text-red-700" onClick={() => setConfirming(true)}>
+                            <Button variant="ghost" className="text-danger-ink" onClick={() => setConfirming(true)}>
                                 {t('ajustes.babies.delete')}
                             </Button>
                         ))}

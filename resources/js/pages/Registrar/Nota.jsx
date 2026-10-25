@@ -39,7 +39,7 @@ export default function Nota({ record, baby, clock, lastAt }) {
                     className="min-h-32 rounded-[20px] bg-canvas p-4 text-base focus-visible:outline-2 focus-visible:outline-primary"
                 />
                 {errors.content && (
-                    <p role="alert" className="text-sm font-medium text-red-700">
+                    <p role="alert" className="text-sm font-medium text-danger-ink">
                         {errors.content}
                     </p>
                 )}

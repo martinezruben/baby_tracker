@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { ArrowRight, Baby, Bell, ChevronDown, ChevronRight, Milk, Moon, Pill, Ruler, Stethoscope, Syringe } from 'lucide-react';
+import { ArrowRight, Baby, Bell, ChevronDown, ChevronRight, Milk, Moon, MoonStar, Pill, Ruler, Stethoscope, Syringe } from 'lucide-react';
 import ActiveSessions from '../components/ActiveSessions';
 import DonutChart from '../components/DonutChart';
 import AppLayout from '../layouts/AppLayout';
@@ -62,12 +62,19 @@ function Header({ baby, clock, babies, activeBabyId, hasAlerts }) {
                 )}
             </div>
             <Link
+                href="/nursery"
+                aria-label={t('nursery.open')}
+                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface text-ink shadow-soft focus-visible:outline-2 focus-visible:outline-primary"
+            >
+                <MoonStar aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />
+            </Link>
+            <Link
                 href="/recordatorios"
                 aria-label={hasAlerts ? t('home.reminders_pending') : t('home.reminders')}
                 className="relative flex size-12 shrink-0 items-center justify-center rounded-full bg-surface text-ink shadow-soft focus-visible:outline-2 focus-visible:outline-primary"
             >
                 <Bell aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />
-                {hasAlerts && <span aria-hidden="true" className="absolute top-[11px] right-3 size-[9px] rounded-full border-2 border-white bg-danger" />}
+                {hasAlerts && <span aria-hidden="true" className="absolute top-[11px] right-3 size-[9px] rounded-full border-2 border-surface bg-danger" />}
             </Link>
         </header>
     );
@@ -104,7 +111,7 @@ function Hero({ baby, today }) {
             </span>
             <span className="relative mt-1.5 flex min-h-12 items-center gap-2.5 self-start rounded-full bg-accent py-0 pr-[7px] pl-5 text-base font-bold text-accent-ink">
                 {t('home.hero.cta')}
-                <span className="flex size-[34px] items-center justify-center rounded-full bg-white">
+                <span className="flex size-[34px] items-center justify-center rounded-full bg-surface text-ink">
                     <ArrowRight aria-hidden="true" className="size-[18px]" strokeWidth={2} />
                 </span>
             </span>
@@ -181,7 +188,7 @@ function Summary({ summary }) {
                             aria-pressed={selected}
                             onClick={() => setRange(rango)}
                             className={`min-h-10 rounded-full px-[18px] text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                                selected ? 'bg-primary font-semibold text-white' : 'border border-line bg-surface font-medium text-ink'
+                                selected ? 'bg-primary font-semibold text-on-primary' : 'border border-line bg-surface font-medium text-ink'
                             }`}
                         >
                             {t(`home.summary.range_${rango}`)}
@@ -253,7 +260,7 @@ function Upcoming({ upcoming }) {
                                     className={`relative flex size-[156px] flex-col justify-between overflow-hidden rounded-3xl p-4 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${KINDS[kind].bg}`}
                                 >
                                     <span aria-hidden="true" className={`absolute -right-[30px] -bottom-[30px] size-[100px] rounded-full ${KINDS[kind].deco}`} />
-                                    <span className={`relative flex size-11 items-center justify-center rounded-full bg-white ${KINDS[kind].ink}`}>
+                                    <span className={`relative flex size-11 items-center justify-center rounded-full bg-surface ${KINDS[kind].ink}`}>
                                         <Icon aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />
                                     </span>
                                     <span className="relative flex flex-col gap-0.5">

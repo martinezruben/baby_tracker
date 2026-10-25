@@ -28,7 +28,15 @@
     --color-night-1: #6a5340;
     --color-night-2: #7a614b;
 
+    /* Texto sobre relleno primario y sobre relleno de tinta (pastillas oscuras) */
+    --color-on-primary: #ffffff;
+    --color-on-ink: #ffffff;
+    --color-scrim: rgba(18, 32, 48, 0.45);
+
     /* Estado */
+    --color-danger-ink: #b91c1c;
+    --color-danger-line: #fca5a5;
+    --color-danger-soft: #fee2e2;
     --color-danger: #e0533d;
     --color-live: #16a34a;
     --color-live-soft: #4ade80;
@@ -36,19 +44,19 @@
     /* Pastel por tipo de actividad: fondo / círculo decorativo / icono */
     --color-food: #fceba6;
     --color-food-deco: #f7dc72;
-    --color-food-ink: #a15c07;
+    --color-food-ink: #8f5206;
     --color-sleep: #e4e1fb;
     --color-sleep-deco: #cfcaf7;
     --color-sleep-ink: #4c46b6;
     --color-diaper: #cfe7fb;
     --color-diaper-deco: #b5d9f7;
-    --color-diaper-ink: #1d6fb0;
+    --color-diaper-ink: #1a639e;
     --color-medicine: #f9ddf3;
     --color-medicine-deco: #f3c4e8;
     --color-medicine-ink: #a63a86;
     --color-vaccine: #e3f2c4;
     --color-vaccine-deco: #d2e8a8;
-    --color-vaccine-ink: #4d7a12;
+    --color-vaccine-ink: #456d10;
     --color-appointment: #dce4f2;
     --color-appointment-deco: #c8d4ea;
     --color-appointment-ink: #3a5288;
@@ -57,7 +65,7 @@
     --color-growth-ink: #7d5a3c;
     --color-moment: #ffe1d1;
     --color-moment-deco: #ffcdb2;
-    --color-moment-ink: #b4532f;
+    --color-moment-ink: #a24a29;
 
     /* Colores de gráficos */
     --color-chart-food: #e0a21b;
@@ -91,5 +99,168 @@ select {
     * {
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
+    }
+}
+
+/* Temas: solo redefinen las variables. "auto" resuelve a claro u oscuro en lib/theme.js; el modo
+   nursery (fondo casi negro, texto ámbar tenue) se elige a mano. Contrastes comprobados en
+   tests/Unit/TemaContrasteTest. */
+:root {
+    color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+    color-scheme: dark;
+    --color-canvas: #1c1814;
+    --color-surface-base: #1c1814;
+    --color-surface: #26211b;
+    --color-ink: #efe8dd;
+    --color-ink-mid: #d3c9ba;
+    --color-ink-soft: #b8ad9e;
+    --color-line: #3a332b;
+    --color-track: #302a23;
+    --color-neutral-tile: #332d26;
+
+    --color-primary: #d2ae81;
+    --color-primary-dark: #e3c49c;
+    --color-accent: #ccaf87;
+    --color-accent-ink: #2a1f12;
+    --color-night: #3a2e22;
+    --color-night-1: #4a3b2c;
+    --color-night-2: #5a4836;
+    --color-on-primary: #2a1f12;
+    --color-on-ink: #1c1814;
+    --color-scrim: rgba(0, 0, 0, 0.6);
+
+    --color-danger-ink: #ffa797;
+    --color-danger-line: #8a3b2f;
+    --color-danger-soft: #4a2520;
+    --color-danger: #f0735c;
+    --color-live: #4ade80;
+    --color-live-soft: #86efac;
+
+    --color-food: #4a3a14;
+    --color-food-deco: #5c4a1a;
+    --color-food-ink: #f2ce70;
+    --color-sleep: #2e2b54;
+    --color-sleep-deco: #3b3770;
+    --color-sleep-ink: #bdb8f5;
+    --color-diaper: #19384f;
+    --color-diaper-deco: #214a68;
+    --color-diaper-ink: #8cc4f0;
+    --color-medicine: #4a2240;
+    --color-medicine-deco: #5c2c50;
+    --color-medicine-ink: #f0a6dc;
+    --color-vaccine: #2f4416;
+    --color-vaccine-deco: #3b551c;
+    --color-vaccine-ink: #b5db7a;
+    --color-appointment: #2a3550;
+    --color-appointment-deco: #354264;
+    --color-appointment-ink: #a9bde8;
+    --color-growth: #44381f;
+    --color-growth-deco: #54462a;
+    --color-growth-ink: #e3c898;
+    --color-moment: #4d2b1b;
+    --color-moment-deco: #613623;
+    --color-moment-ink: #f5b392;
+
+    --color-chart-food: #edb43a;
+    --color-chart-sleep: #8f88f0;
+    --color-chart-diaper: #5ba6ea;
+    --color-chart-medicine: #d872b8;
+    --color-chart-play: #d1a06c;
+
+    --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.3);
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-nav: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme='nursery'] {
+    color-scheme: dark;
+    --color-canvas: #0b0907;
+    --color-surface-base: #0b0907;
+    --color-surface: #1a140d;
+    --color-ink: #d9a864;
+    --color-ink-mid: #cc9c5a;
+    --color-ink-soft: #b8894f;
+    --color-line: #3a2c19;
+    --color-track: #2a1f12;
+    --color-neutral-tile: #2a1f12;
+
+    --color-primary: #d9a864;
+    --color-primary-dark: #e6bb7d;
+    --color-accent: #b8894f;
+    --color-accent-ink: #1a0f05;
+    --color-night: #2a1f12;
+    --color-night-1: #33261a;
+    --color-night-2: #3a2c19;
+    --color-on-primary: #1a0f05;
+    --color-on-ink: #0b0907;
+    --color-scrim: rgba(0, 0, 0, 0.7);
+
+    --color-danger-ink: #e69a72;
+    --color-danger-line: #6b3a22;
+    --color-danger-soft: #2f1a10;
+    --color-danger: #d98a5e;
+    --color-live: #d9a864;
+    --color-live-soft: #e6bb7d;
+
+    /* Sin colores fríos ni saturados: todos los tipos en tonos ámbar. */
+    --color-food: #1a140d;
+    --color-food-deco: #2a1f12;
+    --color-food-ink: #d9a864;
+    --color-sleep: #1a140d;
+    --color-sleep-deco: #2a1f12;
+    --color-sleep-ink: #d9a864;
+    --color-diaper: #1a140d;
+    --color-diaper-deco: #2a1f12;
+    --color-diaper-ink: #d9a864;
+    --color-medicine: #1a140d;
+    --color-medicine-deco: #2a1f12;
+    --color-medicine-ink: #d9a864;
+    --color-vaccine: #1a140d;
+    --color-vaccine-deco: #2a1f12;
+    --color-vaccine-ink: #d9a864;
+    --color-appointment: #1a140d;
+    --color-appointment-deco: #2a1f12;
+    --color-appointment-ink: #d9a864;
+    --color-growth: #1a140d;
+    --color-growth-deco: #2a1f12;
+    --color-growth-ink: #d9a864;
+    --color-moment: #1a140d;
+    --color-moment-deco: #2a1f12;
+    --color-moment-ink: #d9a864;
+
+    --color-chart-food: #d9a864;
+    --color-chart-sleep: #b8894f;
+    --color-chart-diaper: #8f6a3a;
+    --color-chart-medicine: #e6bb7d;
+    --color-chart-play: #a37b45;
+
+    --shadow-card: none;
+    --shadow-soft: none;
+    --shadow-nav: 0 0 0 1px #3a2c19;
+}
+
+/* Pantalla encendida pero tenue en modo nursery: velo negro sin interceptar toques. */
+.nursery-dim {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #000;
+    pointer-events: none;
+}
+
+@media print {
+    :root[data-theme] {
+        --color-canvas: #fff;
+        --color-surface: #fff;
+        --color-ink: #172033;
+        --color-ink-soft: #4b5563;
+        --color-line: #d1d5db;
+    }
+
+    .nursery-dim {
+        display: none;
     }
 }

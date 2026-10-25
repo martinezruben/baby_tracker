@@ -56,7 +56,7 @@ export default function Medicina({ record, baby, clock, lastAt, medicines }) {
                 options={[...medicines.map((m) => ({ value: m.id, label: m.name })), { value: '', label: t('registrar.medicine.other') }]}
             />
             {errors.medicine_id && (
-                <p role="alert" className="-mt-3 text-sm font-medium text-red-700">
+                <p role="alert" className="-mt-3 text-sm font-medium text-danger-ink">
                     {errors.medicine_id}
                 </p>
             )}

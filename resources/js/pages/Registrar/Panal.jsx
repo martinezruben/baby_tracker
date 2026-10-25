@@ -47,7 +47,7 @@ export default function Panal({ record, baby, clock, lastAt, last }) {
                 ]}
             />
             {errors.type && (
-                <p role="alert" className="-mt-3 text-sm font-medium text-red-700">
+                <p role="alert" className="-mt-3 text-sm font-medium text-danger-ink">
                     {errors.type}
                 </p>
             )}
