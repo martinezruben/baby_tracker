@@ -166,9 +166,10 @@ Una app Next.js (App Router) con Prisma sobre SQLite o PostgreSQL, Tailwind y Do
 
 ## Preguntas pendientes
 
-1. ¿Uso personal o comercial?
-2. ¿Inertia + React, o Livewire?
-3. ¿Qué funciones extra se quieren además de las del original?
+**Decidido:** uso **personal** (no comercial), así que se puede portar el código con la licencia y atribución de Sprout Track.
+
+1. ¿Inertia + React, o Livewire?
+2. ¿Qué funciones extra se quieren además de las del original?
 
 ## Fuentes
 
