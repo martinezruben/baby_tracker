@@ -166,10 +166,36 @@ Una app Next.js (App Router) con Prisma sobre SQLite o PostgreSQL, Tailwind y Do
 
 ## Preguntas pendientes
 
-**Decidido:** uso **personal** (no comercial), así que se puede portar el código con la licencia y atribución de Sprout Track.
+**Decidido:**
+- Uso **personal** (no comercial): se puede portar el código con la licencia y atribución de Sprout Track.
+- Frontend: **Inertia + React + Tailwind**.
+- Alcance: **todas** las funciones del original (menos las del servicio hospedado) **más un sistema de notificaciones configurable** (ver abajo).
 
-1. ¿Inertia + React, o Livewire?
-2. ¿Qué funciones extra se quieren además de las del original?
+## Notificaciones configurables (función extra)
+
+El original solo avisa al registrar una actividad y cuando vence un temporizador (alimentación, pañal, medicina), con un intervalo fijo por evento. Aquí debe poder configurarse todo.
+
+**Requisitos**
+- Reglas de notificación por usuario, bebé y tipo de evento (alimentación, pañal, sueño, medicina, vacuna, cita, recordatorio personalizado).
+- **Frecuencia configurable:** una vez, o repetida cada N minutos/horas, con límite de repeticiones o ventana horaria (por ejemplo, no avisar de noche).
+- **Más de un aviso por evento:** por ejemplo 1 día antes, 1 hora antes y al momento.
+- **Snooze:** posponer 5, 10, 15 o 30 minutos o un tiempo personalizado.
+- **Insistente hasta confirmar:** algunas reglas se repiten hasta que el usuario las acepta (confirmar o marcar como hecho).
+- **Confirmación compartida:** si una persona confirma, se detienen los avisos para los demás cuidadores de esa regla (configurable).
+- Canales: Web Push (PWA) como base; correo como respaldo; el resto queda para después.
+- Historial de notificaciones enviadas, confirmadas y pospuestas, con reintentos y limpieza de suscripciones caducadas.
+
+**Diseño propuesto (Laravel)**
+- Tablas: `notification_rules` (tipo de evento, bebé, destinatarios, canal, `repeat_every_minutes`, `max_repeats`, `quiet_hours`, `requires_ack`, `snooze_options`), `notification_schedules` (próximo envío por regla y evento) y `notification_deliveries` (estado: pendiente, enviada, vista, pospuesta, confirmada, fallida).
+- El scheduler de Laravel (cada minuto) encola jobs en Redis para los envíos que vencen; cada envío reprograma el siguiente si la regla repite y no hay confirmación.
+- Acciones sobre la notificación (Confirmar, Posponer) desde el propio push (acciones del service worker) y desde la app.
+- Web Push con `laravel-notification-channels/webpush` y claves VAPID en `.env` (nunca en el repo).
+- Pruebas con Pest para: repetición, snooze, confirmación compartida y horario silencioso.
+
+## Preguntas pendientes
+
+1. ¿Qué otras funciones extra quieres además de las notificaciones (por ejemplo citas médicas, fotos, eventos)?
+2. ¿Los avisos insistentes deben llegar a todos los cuidadores o solo a quien los configuró?
 
 ## Fuentes
 
