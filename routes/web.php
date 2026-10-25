@@ -5,6 +5,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AppointmentFileController;
 use App\Http\Controllers\BabySelectionController;
 use App\Http\Controllers\BreastFeedController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CaretakerPinController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LifeEventController;
@@ -48,6 +49,7 @@ Route::middleware('setup:required')->group(function () {
         Route::post('/registrar/{type}/repetir', [ActivityController::class, 'repeat'])->name('records.repeat');
         Route::delete('/registros/{type}/{id}', [ActivityController::class, 'destroy'])->whereNumber('id')->name('records.destroy');
         Route::get('/bitacora', LogController::class)->name('log');
+        Route::get('/calendario', CalendarController::class)->name('calendar');
 
         Route::prefix('citas')->name('appointments.')->group(function () {
             Route::get('/', [AppointmentController::class, 'index'])->name('index');

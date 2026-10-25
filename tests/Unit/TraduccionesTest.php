@@ -90,6 +90,18 @@ class TraduccionesTest extends TestCase
         foreach (['applied', 'overdue', 'soon', 'later'] as $k) {
             array_push($dynamic, "vacunas.status.{$k}", "vacunas.sections.{$k}");
         }
+        foreach (['appointment', 'reminder', 'vaccine', 'dose', 'life_event'] as $k) {
+            $dynamic[] = "calendario.kinds.{$k}";
+        }
+        foreach (['done', 'pending', 'overdue', 'skipped'] as $k) {
+            $dynamic[] = "calendario.states.{$k}";
+        }
+        foreach (['feed', 'sleep', 'diaper', 'medicine'] as $k) {
+            $dynamic[] = "calendario.counts.{$k}";
+        }
+        foreach (['appointment', 'vaccine', 'medicine', 'life_event', 'feed', 'sleep', 'diaper'] as $k) {
+            $dynamic[] = "calendario.legend.{$k}";
+        }
         foreach (['scheduled', 'completed', 'cancelled'] as $k) {
             $dynamic[] = "citas.states.{$k}";
         }

@@ -66,6 +66,11 @@ Proyecto: Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en español.
 - `VaccineSchedule` calcula el estado de cada dosis para un bebé desde su fecha de nacimiento: `applied`, `overdue`, `soon` (≤ 60 días) o `later`. Una aplicación (`Vaccination`) puede estar o no ligada a una dosis del esquema; una dosis se aplica una sola vez por bebé.
 - `SyncVaccineReminders` deja una regla por bebé y dosis pendiente (avisos 1 semana antes, 1 día antes y el día, a las 9:00 locales) y apaga la de las aplicadas, vencidas o borradas. Se llama al aplicar, deshacer, editar el esquema o importar; es idempotente.
 
+## Calendario
+
+- `/calendario` (`CalendarData`): un mes del bebé activo agrupado por día **de la familia**: citas (no canceladas), vacunas (por aplicar y aplicadas), tomas de medicina, recordatorios, momentos, y solo el **conteo** de tomas, sueños, pañales y medicinas registradas. Cada día enlaza al detalle de cada cosa y a `/bitacora?dia=YYYY-MM-DD`.
+- Al añadir un módulo con fechas, súmalo en `CalendarData::month()` y en `ITEM_STYLES` / `DOTS` de `pages/Calendario.jsx`.
+
 ## Notificaciones (Web Push)
 
 - Canal `push` = `WebPushChannel` (librería `minishlink/web-push`); el cliente de envío es `PushClient` (se sustituye por un falso en las pruebas).

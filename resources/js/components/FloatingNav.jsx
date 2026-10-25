@@ -11,7 +11,7 @@ export default function FloatingNav() {
     const t = useT();
     const path = url.split('?')[0];
 
-    const active = path === '/' ? 'home' : path.startsWith('/bitacora') ? 'log' : path.startsWith('/mas') || path.startsWith('/recordatorios') ? 'more' : null;
+    const active = path === '/' ? 'home' : path.startsWith('/bitacora') ? 'log' : path.startsWith('/calendario') ? 'calendar' : path.startsWith('/mas') || path.startsWith('/recordatorios') ? 'more' : null;
 
     const item = (key, href, Icon, label) =>
         active === key ? (
@@ -41,7 +41,7 @@ export default function FloatingNav() {
             className="fixed inset-x-5 bottom-[max(1.5rem,env(safe-area-inset-bottom))] z-20 mx-auto flex h-[72px] max-w-[430px] items-center justify-between rounded-[36px] bg-surface p-2 shadow-nav"
         >
             {item('home', '/', Home, t('nav.home'))}
-            {soon(CalendarDays, t('nav.calendar'))}
+            {item('calendar', '/calendario', CalendarDays, t('nav.calendar'))}
             <Link
                 href="/registrar"
                 aria-label={t('nav.register')}

@@ -47,13 +47,14 @@ class Timeline
     /**
      * @return array{entries: array<int, array<string, mixed>>, next: ?string}
      */
-    public function page(Baby $baby, ?string $type = null, ?string $cursor = null): array
+    public function page(Baby $baby, ?string $type = null, ?string $cursor = null, ?string $day = null): array
     {
+        [$dayFrom, $dayTo] = $this->dayBounds($baby, $day);
         [$cursorAt, $cursorType, $cursorId] = $this->parseCursor($cursor);
 
         $entries = collect($this->sources())
             ->filter(fn ($source, $slug) => $type === null || $type === $slug)
-            ->flatMap(function (array $source, string $slug) use ($baby, $cursorAt) {
+            ->flatMap(function (array $source, string $slug) use ($baby, $cursorAt, $dayFrom, $dayTo) {
                 [$model, $column, $scope] = $source;
 
                 $query = $model::query()->where('baby_id', $baby->id)->with('caretaker:id,name');
@@ -62,6 +63,9 @@ class Timeline
                 }
                 if ($cursorAt) {
                     $query->where($column, '<=', $cursorAt);
+                }
+                if ($dayFrom) {
+                    $query->where($column, '>=', $dayFrom)->where($column, '<', $dayTo);
                 }
 
                 return $query->orderByDesc($column)->orderByDesc('id')->limit(self::PAGE + 10)->get()
@@ -83,6 +87,22 @@ class Timeline
             'entries' => $page->all(),
             'next' => $hasMore && $last ? "{$last['at']}|{$last['type']}|{$last['id']}" : null,
         ];
+    }
+
+    /** Límites UTC de un día (YYYY-MM-DD en hora de la familia); [null, null] si no hay día o no es válido. */
+    private function dayBounds(Baby $baby, ?string $day): array
+    {
+        if (! $day || ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $day)) {
+            return [null, null];
+        }
+
+        try {
+            $start = CarbonImmutable::createFromFormat('Y-m-d H:i:s', "{$day} 00:00:00", FamilyClock::for($baby->family)->timezone);
+        } catch (\Throwable) {
+            return [null, null];
+        }
+
+        return [$start->utc(), $start->addDay()->utc()];
     }
 
     /** Orden de la lista: instante descendente, luego tipo ascendente, luego id descendente. */

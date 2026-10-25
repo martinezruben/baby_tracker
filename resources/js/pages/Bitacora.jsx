@@ -1,5 +1,5 @@
 import { router, usePage } from '@inertiajs/react';
-import { BookOpen, Trash2 } from 'lucide-react';
+import { BookOpen, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import Button from '../components/Button';
 import AppLayout from '../layouts/AppLayout';
@@ -97,16 +97,16 @@ function Entry({ entry }) {
     );
 }
 
-export default function Bitacora({ tipo, types, entries, next }) {
+export default function Bitacora({ tipo, dia, types, entries, next }) {
     const t = useT();
     const format = useFormat();
     const { babies, activeBabyId, timezone } = usePage().props;
     const baby = babies.find((b) => b.id === activeBabyId);
 
     const setType = (value) =>
-        router.get('/bitacora', value ? { tipo: value } : {}, { only: ['tipo', 'entries', 'next'], reset: ['entries'], preserveScroll: true, preserveState: true });
+        router.get('/bitacora', { ...(value ? { tipo: value } : {}), ...(dia ? { dia } : {}) }, { only: ['tipo', 'dia', 'entries', 'next'], reset: ['entries'], preserveScroll: true, preserveState: true });
 
-    const loadMore = () => router.reload({ data: { antes: next, ...(tipo ? { tipo } : {}) }, only: ['entries', 'next'], preserveScroll: true, preserveUrl: true });
+    const loadMore = () => router.reload({ data: { antes: next, ...(tipo ? { tipo } : {}), ...(dia ? { dia } : {}) }, only: ['entries', 'next'], preserveScroll: true, preserveUrl: true });
 
     const today = dayKey(new Date().toISOString(), timezone);
     const yesterday = dayKey(new Date(Date.now() - 86400000).toISOString(), timezone);
@@ -149,6 +149,22 @@ export default function Bitacora({ tipo, types, entries, next }) {
                     <h1 className="text-2xl leading-tight font-bold">{t('log.title')}</h1>
                     {baby && <div className="text-sm text-ink-soft">{t('log.subtitle', { name: baby.first_name })}</div>}
                 </header>
+
+                {dia && (
+                    <div className="flex items-center gap-2">
+                        <span className="rounded-full bg-appointment px-4 py-2 text-sm font-semibold text-appointment-ink">
+                            {t('log.day_filter', { date: new Intl.DateTimeFormat(format.locale, { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${dia}T12:00:00Z`)) })}
+                        </span>
+                        <button
+                            type="button"
+                            aria-label={t('log.clear_day')}
+                            onClick={() => router.get('/bitacora', tipo ? { tipo } : {}, { only: ['tipo', 'dia', 'entries', 'next'], reset: ['entries'], preserveScroll: true, preserveState: true, replace: true })}
+                            className="flex size-12 items-center justify-center rounded-full bg-surface text-ink shadow-soft focus-visible:outline-2 focus-visible:outline-primary"
+                        >
+                            <X aria-hidden="true" className="size-5" />
+                        </button>
+                    </div>
+                )}
 
                 <nav aria-label={t('log.filters')} className="-mr-5 flex gap-2 overflow-x-auto pr-5 [scrollbar-width:none]">
                     {chip(null, t('log.all'))}

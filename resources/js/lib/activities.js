@@ -47,7 +47,7 @@ export const GROUPS = {
 
 /** "Todo sobre el bebé": 12 módulos del mockup más Recordatorios. `href` = ya existe. */
 export const MODULES = [
-    { key: 'calendar', icon: CalendarDays, kind: 'diaper' },
+    { key: 'calendar', icon: CalendarDays, kind: 'diaper', href: '/calendario' },
     { key: 'reminders', icon: Bell, kind: 'appointment', href: '/recordatorios' },
     { key: 'appointments', icon: Stethoscope, kind: 'appointment', href: '/citas' },
     { key: 'vaccines', icon: Syringe, kind: 'vaccine', href: '/vacunas' },
