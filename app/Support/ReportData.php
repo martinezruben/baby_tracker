@@ -21,6 +21,7 @@ class ReportData
     /** @return array<string, mixed> */
     public function build(Baby $baby, int $days): array
     {
+        $unit = $baby->family->settings->volume_unit ?? 'ml';
         $today = $this->clock->now()->startOfDay();
         $first = $today->subDays($days - 1);
         $from = $first->utc();
@@ -28,16 +29,16 @@ class ReportData
 
         $rows = [];
         for ($i = 0; $i < $days; $i++) {
-            $rows[$first->addDays($i)->toDateString()] = ['date' => $first->addDays($i)->toDateString(), 'feeds' => 0, 'ml' => 0, 'breast_minutes' => 0, 'sleep_minutes' => 0, 'diapers' => 0, 'wet' => 0, 'dirty' => 0, 'medicines' => 0];
+            $rows[$first->addDays($i)->toDateString()] = ['date' => $first->addDays($i)->toDateString(), 'feeds' => 0, 'volume' => 0, 'breast_minutes' => 0, 'sleep_minutes' => 0, 'diapers' => 0, 'wet' => 0, 'dirty' => 0, 'medicines' => 0];
         }
         $day = fn ($at) => CarbonImmutable::instance($at)->setTimezone($this->clock->timezone)->toDateString();
 
         FeedLog::where('baby_id', $baby->id)->where('occurred_at', '>=', $from)->where('occurred_at', '<', $to)->get()
-            ->each(function (FeedLog $f) use (&$rows, $day) {
+            ->each(function (FeedLog $f) use (&$rows, $day, $unit) {
                 $k = $day($f->occurred_at);
                 $rows[$k]['feeds']++;
-                if ($f->type === FeedType::Bottle && $f->unit === 'ml') {
-                    $rows[$k]['ml'] += (float) $f->amount;
+                if ($f->type === FeedType::Bottle) {
+                    $rows[$k]['volume'] += Units::volume((float) $f->amount, $f->unit, $unit);
                 }
                 if ($f->type === FeedType::Breast) {
                     $rows[$k]['breast_minutes'] += (int) round(($f->duration_seconds ?? 0) / 60);
@@ -66,18 +67,19 @@ class ReportData
                 $rows[$day($at)]['medicines']++;
             });
 
-        $series = array_values($rows);
+        $series = array_map(fn (array $r) => ['volume' => Units::round($r['volume'], $unit)] + $r, array_values($rows));
         // Promedios solo con los días que tienen algún registro, para no diluirlos con días sin usar la app.
         $active = collect($series)->filter(fn ($r) => $r['feeds'] + $r['diapers'] + $r['sleep_minutes'] + $r['medicines'] > 0);
         $avg = fn (string $key) => $active->isEmpty() ? 0 : round($active->avg($key), 1);
 
         return [
             'days' => $days,
+            'volume_unit' => $unit,
             'series' => $series,
             'active_days' => $active->count(),
             'averages' => [
                 'feeds' => $avg('feeds'),
-                'ml' => (int) round($active->avg('ml') ?? 0),
+                'volume' => Units::round((float) ($active->avg('volume') ?? 0), $unit),
                 'sleep_hours' => round(($active->avg('sleep_minutes') ?? 0) / 60, 1),
                 'diapers' => $avg('diapers'),
             ],

@@ -70,7 +70,7 @@ export default function Reportes({ baby, ranges, report }) {
     const dayText = (row) => new Intl.DateTimeFormat(format.locale, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${row.date}T12:00:00Z`));
 
     const cards = [
-        { label: t('reportes.avg_feeds'), value: num(averages.feeds), hint: averages.ml ? `${averages.ml} ml` : null },
+        { label: t('reportes.avg_feeds'), value: num(averages.feeds), hint: averages.volume ? `${num(averages.volume)} ${report.volume_unit}` : null },
         { label: t('reportes.avg_sleep'), value: `${num(averages.sleep_hours)} h` },
         { label: t('reportes.avg_diapers'), value: num(averages.diapers) },
     ];
@@ -117,7 +117,7 @@ export default function Reportes({ baby, ranges, report }) {
                         </section>
                         <p className="-mt-3 text-[13px] text-ink-soft">{t('reportes.avg_note', { n: report.active_days })}</p>
 
-                        <BarChart title={t('reportes.feeds')} series={series} value={(r) => r.feeds} colorClass="fill-chart-food" textFor={(r) => `${dayText(r)}: ${r.feeds} · ${r.ml} ml`} />
+                        <BarChart title={t('reportes.feeds')} series={series} value={(r) => r.feeds} colorClass="fill-chart-food" textFor={(r) => `${dayText(r)}: ${r.feeds} · ${num(r.volume)} ${report.volume_unit}`} />
                         <BarChart title={t('reportes.sleep')} series={series} value={(r) => Math.round((r.sleep_minutes / 60) * 10) / 10} colorClass="fill-chart-sleep" textFor={(r) => `${dayText(r)}: ${num(r.sleep_minutes / 60)} h`} />
                         <BarChart title={t('reportes.diapers')} series={series} value={(r) => r.diapers} colorClass="fill-chart-diaper" textFor={(r) => `${dayText(r)}: ${r.diapers} (${r.wet} ${t('reportes.wet')}, ${r.dirty} ${t('reportes.dirty')})`} />
 
@@ -137,7 +137,7 @@ export default function Reportes({ baby, ranges, report }) {
                                         {[...series].reverse().map((r) => (
                                             <tr key={r.date} className="border-t border-line">
                                                 <td className="py-2 pr-3">{dayText(r)}</td>
-                                                <td className="px-2">{r.feeds}{r.ml ? ` · ${r.ml} ml` : ''}</td>
+                                                <td className="px-2">{r.feeds}{r.volume ? ` · ${num(r.volume)} ${report.volume_unit}` : ''}</td>
                                                 <td className="px-2">{num(r.sleep_minutes / 60)} h</td>
                                                 <td className="px-2">{r.diapers}</td>
                                             </tr>

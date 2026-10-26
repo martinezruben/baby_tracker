@@ -4,15 +4,18 @@ import MoreDetails from '../../components/form/MoreDetails';
 import RegistersAs from '../../components/form/RegistersAs';
 import Stepper from '../../components/form/Stepper';
 import TimeBlock from '../../components/form/TimeBlock';
+import UnitSwitch from '../../components/form/UnitSwitch';
 import SheetLayout from '../../layouts/SheetLayout';
 import { lastSubtitle, useActivityForm } from '../../lib/forms';
 import { useT } from '../../lib/i18n';
+import { convertVolume } from '../../lib/units';
 
 export default function Extraccion({ record, baby, clock, lastAt, volumeUnit }) {
     const t = useT();
-    const unit = record?.unit ?? volumeUnit;
-    const [form, save] = useActivityForm('extraccion', { occurred_at: clock.now, left_amount: 0, right_amount: 0, unit, duration_minutes: '' }, record);
+    const [form, save] = useActivityForm('extraccion', { occurred_at: clock.now, left_amount: 0, right_amount: 0, unit: volumeUnit, duration_minutes: '' }, record);
     const { data, setData, errors } = form;
+    const unit = data.unit;
+    const switchUnit = (next) => setData((d) => ({ ...d, unit: next, left_amount: convertVolume(d.left_amount, d.unit, next), right_amount: convertVolume(d.right_amount, d.unit, next) }));
     const step = unit === 'oz' ? 0.5 : 10;
     const total = (Number(data.left_amount) || 0) + (Number(data.right_amount) || 0);
 
@@ -32,6 +35,7 @@ export default function Extraccion({ record, baby, clock, lastAt, volumeUnit }) 
             }}
         >
             <TimeBlock value={data.occurred_at} onChange={(v) => setData('occurred_at', v)} now={clock.now} error={errors.occurred_at} />
+            {!record && <UnitSwitch value={unit} onChange={switchUnit} />}
             <Stepper label={t('registrar.pump.left')} value={data.left_amount} onChange={(v) => setData('left_amount', v)} step={step} min={0} max={1000} unit={unit} error={errors.left_amount} />
             <Stepper label={t('registrar.pump.right')} value={data.right_amount} onChange={(v) => setData('right_amount', v)} step={step} min={0} max={1000} unit={unit} error={errors.right_amount} />
             <p role="status" className="text-center text-base font-semibold">
