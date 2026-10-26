@@ -1,6 +1,7 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import { ArrowRight, Baby, Bell, ChevronDown, ChevronRight, Milk, Moon, MoonStar, Pill, Ruler, Stethoscope, Syringe } from 'lucide-react';
 import ActiveSessions from '../components/ActiveSessions';
+import useTicker from '../components/useTicker';
 import DonutChart from '../components/DonutChart';
 import AppLayout from '../layouts/AppLayout';
 import { KINDS, MODULES } from '../lib/activities';
@@ -27,7 +28,7 @@ function SectionTitle({ children, href, linkLabel }) {
 function Header({ baby, clock, babies, activeBabyId, hasAlerts }) {
     const t = useT();
     const { locale } = usePage().props;
-    const now = new Date();
+    const now = new Date(useTicker(30000));
 
     return (
         <header className="flex min-h-14 items-center gap-3">
@@ -38,7 +39,7 @@ function Header({ baby, clock, babies, activeBabyId, hasAlerts }) {
                 <Baby className="size-7" strokeWidth={1.75} />
             </div>
             <div className="flex min-w-0 grow flex-col">
-                <div className="truncate text-sm text-ink-soft">
+                <div className="text-sm leading-tight text-ink-soft">
                     {longDate(now, locale, clock.timezone)} · {ageLabel(t, baby.birth_date, now)}
                 </div>
                 {babies.length > 1 ? (
