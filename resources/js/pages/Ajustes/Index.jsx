@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, Baby, ChevronRight, SlidersHorizontal, Syringe, Users } from 'lucide-react';
+import { ArchiveRestore, ArrowLeft, Baby, ChevronRight, SlidersHorizontal, Syringe, Users } from 'lucide-react';
 import AppLayout from '../../layouts/AppLayout';
 import { KINDS } from '../../lib/activities';
 import { useT } from '../../lib/i18n';
@@ -42,6 +42,7 @@ export default function Index({ family_name, counts }) {
                     <Item href="/ajustes/cuidadores" icon={Users} kind="sleep" title={t('ajustes.hub.caretakers')} help={`${t.choice('ajustes.hub.active', counts.caretakers)} · ${t('ajustes.hub.caretakers_help')}`} />
                     <Item href="/ajustes/bebes" icon={Baby} kind="diaper" title={t('ajustes.hub.babies')} help={`${t.choice('ajustes.hub.count_babies', counts.babies)} · ${t('ajustes.hub.babies_help')}`} />
                     <Item href="/ajustes/preferencias" icon={SlidersHorizontal} kind="growth" title={t('ajustes.hub.preferences')} help={t('ajustes.hub.preferences_help')} />
+                    <Item href="/ajustes/respaldos" icon={ArchiveRestore} kind="appointment" title={t('ajustes.hub.backups')} help={t('ajustes.hub.backups_help')} />
                     <Item href="/vacunas/esquema" icon={Syringe} kind="vaccine" title={t('ajustes.hub.vaccines')} help={t('ajustes.hub.vaccines_help')} />
                 </ul>
             </div>

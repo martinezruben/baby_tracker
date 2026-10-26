@@ -92,6 +92,13 @@ Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
 - El nombre de la app es **Kidu Baby Tracker** (`app.name` en `lang/*/ui.php`, `APP_NAME`, manifest; nombre corto «Kidu»). Úsalo siempre así en pantallas, avisos, correos y documentos.
 - Logo (carrito con reloj, tonos beige): original en `resources/brand/kidu-logo.png`; `php scripts/make-icons.php` genera `public/brand/kidu-mark.png` (fondo transparente) y los iconos de la PWA. La interfaz mantiene los tokens de color de `app.css`.
 
+## Respaldos
+
+- `BackupService`: ZIP con `manifest.json` (formato, conteos y sha256 por tabla), `data/{tabla}.jsonl` (una fila JSON por línea) y, opcional, `files/photos` y `files/appointments`. Las tablas se descubren del esquema y se ordenan por llaves foráneas (padres primero); no se respaldan sesiones, caché, cola, `push_subscriptions` ni entregas de avisos. **Nunca viajan los PIN** (`caretakers.pin`): al restaurar, el primer administrador recibe el PIN nuevo que se elige y el resto queda con uno aleatorio para que el administrador se lo cambie en Ajustes > Cuidadores.
+- Restaurar solo en una instalación **vacía** (`/configuracion/restaurar`, `RestoreController`, mismo `setup:pending` que el asistente) o por consola `php artisan backup:restore archivo.zip [--wipe]` (con `--wipe` borra lo que haya, con confirmación). Verifica manifiesto y sha256 antes de tocar nada, rechaza rutas no permitidas (zip-slip), inserta solo columnas que existen y cancela los avisos pendientes ya vencidos para que no salgan todos de golpe.
+- `php artisan backup:run [--files] [--keep=N]` guarda en `storage/app/private/backups/kidu-YYYYMMDD-HHMMSS[-files].zip` y conserva los últimos N (`config/backup.php`: `BACKUP_KEEP` 7, `BACKUP_TIME` 03:10, `BACKUP_AUTO_FILES` falso). Está en el scheduler (necesita el cron de `schedule:run`). `/ajustes/respaldos` (solo administradores): descargar uno nuevo, guardar uno en el servidor, listar, bajar y borrar; los nombres se validan con regex (sin recorrer rutas).
+- Los respaldos en el mismo servidor no protegen si el servidor se pierde: la pantalla lo avisa y recomienda bajar uno de vez en cuando.
+
 ## Contactos y alergias
 
 - Contactos (`Contact`, `/contactos`, `ContactController`): directorio **de la familia** (nombre, quién es, teléfono, correo, dirección, notas). Teléfono con `tel:`, correo con `mailto:`, dirección con enlace a mapas (solo se abre al tocar). Borrar = borrado lógico con deshacer (`contacts.restore`).

@@ -6,6 +6,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AppointmentFileController;
 use App\Http\Controllers\BabyAdminController;
 use App\Http\Controllers\BabySelectionController;
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\BreastFeedController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CaretakerAdminController;
@@ -27,6 +28,7 @@ use App\Http\Controllers\RegistrarController;
 use App\Http\Controllers\ReminderActionController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RestoreController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SetupController;
@@ -39,6 +41,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('setup:pending')->group(function () {
     Route::get('/configuracion', [SetupController::class, 'show'])->name('setup.show');
     Route::post('/configuracion', [SetupController::class, 'store'])->name('setup.store');
+    Route::get('/configuracion/restaurar', [RestoreController::class, 'show'])->name('restore.show');
+    Route::post('/configuracion/restaurar', [RestoreController::class, 'store'])->name('restore.store');
 });
 
 Route::middleware('setup:required')->group(function () {
@@ -151,6 +155,12 @@ Route::middleware('setup:required')->group(function () {
             Route::put('/cuidadores/{caretaker}', [CaretakerAdminController::class, 'update'])->name('caretakers.update');
             Route::post('/cuidadores/{caretaker}/baja', [CaretakerAdminController::class, 'deactivate'])->name('caretakers.deactivate');
             Route::post('/cuidadores/{caretaker}/alta', [CaretakerAdminController::class, 'reactivate'])->name('caretakers.reactivate');
+
+            Route::get('/respaldos', [BackupController::class, 'index'])->name('backups');
+            Route::post('/respaldos', [BackupController::class, 'store'])->name('backups.store');
+            Route::get('/respaldos/exportar', [BackupController::class, 'export'])->name('backups.export');
+            Route::get('/respaldos/{name}', [BackupController::class, 'download'])->name('backups.download');
+            Route::delete('/respaldos/{name}', [BackupController::class, 'destroy'])->name('backups.destroy');
 
             Route::get('/bebes', [BabyAdminController::class, 'index'])->name('babies');
             Route::post('/bebes', [BabyAdminController::class, 'store'])->name('babies.store');

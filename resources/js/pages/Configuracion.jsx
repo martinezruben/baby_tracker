@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import Button from '../components/Button';
 import Field from '../components/Field';
@@ -68,6 +68,9 @@ export default function Configuracion() {
                         <div>
                             <h1 className="text-2xl font-semibold">{t('setup.family.title')}</h1>
                             <p className="mt-1 text-base text-ink-soft">{t('setup.family.intro')}</p>
+                            <Link href="/configuracion/restaurar" className="mt-2 inline-flex min-h-12 items-center text-base font-medium text-primary underline">
+                                {t('respaldos.have_backup')}
+                            </Link>
                         </div>
                         <Field
                             label={t('setup.family.name')}

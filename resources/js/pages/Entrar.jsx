@@ -1,4 +1,4 @@
-import { router, useForm } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import Button from '../components/Button';
 import Field from '../components/Field';
@@ -9,6 +9,8 @@ export default function Entrar({ needsFamily, family, caretakers }) {
     const t = useT();
     const [code, setCode] = useState('');
     const form = useForm({ caretaker_id: caretakers[0]?.id ?? null, pin: '' });
+    const { flash } = usePage().props;
+    const restored = flash?.restored;
 
     if (needsFamily) {
         return (
@@ -43,6 +45,13 @@ export default function Entrar({ needsFamily, family, caretakers }) {
 
     return (
         <GuestLayout title={t('auth.login_title')}>
+            {restored && (
+                <div role="status" className="mb-4 rounded-2xl bg-vaccine p-4 text-base text-vaccine-ink">
+                    <p className="font-semibold">{t('respaldos.restored_title')}</p>
+                    <p>{t('respaldos.restored_body', { rows: restored.rows, files: restored.files })}</p>
+                    {restored.reset_pin.length > 0 && <p className="mt-1">{t('respaldos.restored_reset', { names: restored.reset_pin.join(', ') })}</p>}
+                </div>
+            )}
             <h1 className="text-2xl font-semibold">{family.name}</h1>
 
             {caretakers.length === 0 ? (
