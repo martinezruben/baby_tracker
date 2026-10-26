@@ -20,6 +20,16 @@ createInertiaApp({
     },
 });
 
+// Con la pantalla ya pintada y el navegador libre, se bajan en segundo plano las pantallas más usadas: al tocar
+// el menú el código ya está aquí y solo falta la respuesta del servidor. No se hace con "ahorro de datos".
+const warm = ['Inicio', 'Registrar/Index', 'Bitacora', 'Calendario', 'Mas', 'Registrar/Panal', 'Registrar/Biberon', 'Registrar/Sueno', 'Registrar/Pecho'];
+window.addEventListener('load', () => {
+    if (navigator.connection?.saveData) return;
+    const pages = import.meta.glob('./pages/**/*.jsx');
+    const run = () => warm.forEach((name) => pages[`./pages/${name}.jsx`]?.().catch(() => {}));
+    'requestIdleCallback' in window ? window.requestIdleCallback(run, { timeout: 4000 }) : setTimeout(run, 2000);
+});
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
 }

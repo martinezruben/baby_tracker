@@ -1,7 +1,42 @@
 /* Service worker de Kidu Baby Tracker: avisos push con botones Confirmar / Posponer. */
 
+const ASSETS = 'kidu-assets-v1';
+const MAX_ASSETS = 150;
+
 self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()));
+self.addEventListener('activate', (event) =>
+    event.waitUntil(
+        (async () => {
+            // Borra cachés de versiones anteriores del propio service worker.
+            for (const key of await caches.keys()) if (key.startsWith('kidu-assets-') && key !== ASSETS) await caches.delete(key);
+            await self.clients.claim();
+        })(),
+    ),
+);
+
+// Los archivos de /build/assets/ llevan el hash en el nombre (nunca cambian): primero la copia local, así las
+// visitas siguientes no esperan a la red. Los datos (páginas, API) siempre van al servidor.
+self.addEventListener('fetch', (event) => {
+    const { request } = event;
+    const url = new URL(request.url);
+    if (request.method !== 'GET' || url.origin !== self.location.origin || !url.pathname.startsWith('/build/assets/')) return;
+
+    event.respondWith(
+        caches.open(ASSETS).then(async (cache) => {
+            const hit = await cache.match(request);
+            if (hit) return hit;
+
+            const response = await fetch(request);
+            if (response.ok) {
+                cache.put(request, response.clone());
+                // Cada despliegue trae archivos nuevos: se conservan los más recientes.
+                cache.keys().then((keys) => keys.length > MAX_ASSETS && Promise.all(keys.slice(0, keys.length - MAX_ASSETS).map((k) => cache.delete(k))));
+            }
+
+            return response;
+        }),
+    );
+});
 
 self.addEventListener('push', (event) => {
     let payload = {};
