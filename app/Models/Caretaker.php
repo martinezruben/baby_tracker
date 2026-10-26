@@ -15,6 +15,11 @@ class Caretaker extends Authenticatable
 
     protected $guarded = ['id'];
 
+    public function isAdmin(): bool
+    {
+        return $this->role === CaretakerRole::Admin;
+    }
+
     protected function casts(): array
     {
         return [

@@ -64,5 +64,22 @@ export async function sendTestPush() {
         headers: { Accept: 'application/json', ...csrfHeader() },
     });
     const body = await response.json().catch(() => ({}));
+    // `detail` (motivo técnico) solo llega a los administradores.
+    return [body.message, body.detail].filter(Boolean).join(' · ');
+}
+
+/** Recordatorio real que vence en 1 minuto: prueba cron, envío y botones. */
+export async function scheduleTestPush() {
+    const response = await fetch('/push/prueba-programada', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json', ...csrfHeader() },
+    });
+    const body = await response.json().catch(() => ({}));
     return body.message ?? '';
+}
+
+export async function fetchPushStatus() {
+    const response = await fetch('/push/estado', { credentials: 'same-origin', headers: { Accept: 'application/json' } });
+    return response.ok ? response.json() : null;
 }

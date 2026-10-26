@@ -1,8 +1,8 @@
 import { usePage } from '@inertiajs/react';
-import { Bell, BellOff, Send } from 'lucide-react';
+import { Bell, BellOff, Send, Timer } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useT } from '../lib/i18n';
-import { currentSubscription, disablePush, enablePush, pushSupported, sendTestPush } from '../lib/push';
+import { currentSubscription, disablePush, enablePush, pushSupported, scheduleTestPush, sendTestPush } from '../lib/push';
 import Button from './Button';
 
 export default function PushToggle() {
@@ -47,6 +47,15 @@ export default function PushToggle() {
         }
     };
 
+    const sendScheduled = async () => {
+        setBusy(true);
+        try {
+            setTestMessage(await scheduleTestPush());
+        } finally {
+            setBusy(false);
+        }
+    };
+
     if (state === 'loading') return null;
 
     const messages = {
@@ -81,6 +90,10 @@ export default function PushToggle() {
                     <Button variant="ghost" className="mt-2 w-full sm:ml-2 sm:w-auto" onClick={sendTest} disabled={busy}>
                         <Send aria-hidden="true" className="size-5" />
                         {t('push.test_button')}
+                    </Button>
+                    <Button variant="ghost" className="mt-2 w-full sm:ml-2 sm:w-auto" onClick={sendScheduled} disabled={busy}>
+                        <Timer aria-hidden="true" className="size-5" />
+                        {t('push.scheduled_button')}
                     </Button>
                     {testMessage && (
                         <p role="status" className="mt-2 text-sm text-ink-soft">

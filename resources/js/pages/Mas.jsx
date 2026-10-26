@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import Field from '../components/Field';
 import InstallHint from '../components/InstallHint';
 import ChoiceChips from '../components/form/Chips';
+import PushStatus from '../components/PushStatus';
 import PushToggle from '../components/PushToggle';
 import { enterNursery, setTheme, THEMES, useTheme } from '../lib/theme';
 import AppLayout from '../layouts/AppLayout';
@@ -129,6 +130,7 @@ export default function Mas({ caretakers, slug, language, languages }) {
                         <ChevronRight aria-hidden="true" className="size-5 text-ink-soft" strokeWidth={2} />
                     </Link>
                     <PushToggle />
+                    {auth.caretaker.role === 'admin' && <PushStatus />}
                     <InstallHint />
                     {auth.caretaker.role === 'admin' && (
                         <Link href="/ajustes" className={row}>
