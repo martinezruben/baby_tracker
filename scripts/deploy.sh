@@ -15,8 +15,7 @@ npm run build
 
 php artisan migrate --force
 php artisan storage:link 2>/dev/null || true
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# Cachea configuración, rutas, vistas y eventos: evita leer y analizar decenas de archivos en cada petición.
+php artisan optimize
 
 echo "Listo. Programa en cron: * * * * * php $(pwd)/artisan schedule:run >> /dev/null 2>&1"

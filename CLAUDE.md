@@ -132,6 +132,13 @@ Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
 - Pruebas y diagnóstico: "Probar un aviso en 1 minuto" (`/push/prueba-programada`) crea un recordatorio real que insiste hasta confirmar y recorre cron + despachador + envío + botones; en Más, los administradores ven el **estado de los avisos** (`/push/estado`, `PushDiagnostics`: claves VAPID, HTTPS, extensiones, cron, avisos vencidos, dispositivos). `reminders:dispatch` deja una señal de vida en caché; `php artisan webpush:check [--send="Nombre"]` hace lo mismo por consola. `MinishlinkPushClient` filtra los avisos informativos de la librería (si falta GMP/BCMath lanzaba un notice que Laravel convertía en excepción y el envío fallaba).
 - iPhone: los avisos solo funcionan con la app instalada en la pantalla de inicio (el manifest PWA ya existe).
 
+## Rendimiento
+
+- Las traducciones (`t`, ~43 KB) son una prop `Inertia::once(...)->as("t.{idioma}")`: viajan en la primera carga y el navegador las recuerda (cada navegación pesa ~5 KB en vez de ~44); al cambiar de idioma la clave cambia y se vuelven a pedir. No leas `t` fuera de `useT()`.
+- `ActiveBaby::all($request)` carga los bebés **una vez por petición** (con su familia ya asignada) y lo usan el middleware y los controladores: no consultes `family->babies()` para el bebé activo; usa `ActiveBaby::for`.
+- `app.jsx` descarga en segundo plano (ocioso, no con «ahorro de datos») las pantallas más usadas; `public/sw.js` guarda con caché-primero solo `/build/assets/` (archivos con hash) y nunca datos ni páginas.
+- Para producción: `SESSION_DRIVER`/`CACHE_STORE` en `file` o `redis` (no `database`), `php artisan optimize` en cada despliegue, OPcache y compresión/caché de estáticos en el servidor web (ver README, «Rendimiento»). `tests/Feature/RendimientoTest` cubre las prop `once`, el número de consultas y el service worker.
+
 ## Comandos
 
 - Pruebas: `php artisan test` (usan SQLite en memoria). Estilo: `vendor/bin/pint` (CI corre `--test`).
