@@ -457,6 +457,7 @@ return [
         'clear_day' => 'Quitar el filtro de día',
     ],
     'registrar' => [
+        'unit' => 'Unidad',
         'undone' => 'Registro deshecho.',
         'saved' => [
             'solidos' => 'Sólidos guardados',
@@ -1197,7 +1198,8 @@ return [
             'h12' => '12 horas (4:30 p. m.)',
             'h24' => '24 horas (16:30)',
             'units' => 'Unidades',
-            'volume' => 'Líquidos',
+            'volume' => 'Leche (biberón y extracción)',
+            'volume_help' => 'Es la unidad que se propone al registrar y la que verás en los resúmenes y la bitácora. Lo ya registrado en la otra unidad se convierte al mostrarlo; al registrar puedes cambiar de unidad en ese momento.',
             'weight' => 'Peso',
             'height' => 'Talla',
             'temperature' => 'Temperatura',

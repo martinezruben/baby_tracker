@@ -54,7 +54,7 @@ class ReportesTest extends TestCase
             ->has('report.series', 7)
             ->where('report.series.6.date', '2026-11-03')
             ->where('report.series.6.feeds', 1)
-            ->where('report.series.6.ml', 80)
+            ->where('report.series.6.volume', 80)
             ->where('report.series.6.wet', 1)
             ->where('report.series.6.dirty', 1)
             ->where('report.series.5.date', '2026-11-02')

@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Enums\AppointmentStatus;
 use App\Enums\DoseStatus;
+use App\Enums\FeedType;
 use App\Enums\NotificationEventType;
 use App\Enums\PrescriptionStatus;
 use App\Models\ActiveBreastFeed;
@@ -29,6 +30,7 @@ class DashboardData
     public function summary(Baby $baby, string $range): array
     {
         [$from, $to] = $this->clock->range($range);
+        $unit = $baby->family->settings->volume_unit ?? 'ml';
 
         $feeds = FeedLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to->subSecond()]);
         $sleeps = SleepLog::where('baby_id', $baby->id)->whereBetween('started_at', [$from, $to->subSecond()]);
@@ -51,12 +53,21 @@ class DashboardData
             'range' => $range,
             'total' => $segments->sum('count'),
             'segments' => $segments->values(),
-            'feed' => ['count' => $feedCount, 'ml' => (int) round((clone $feeds)->where('unit', 'ml')->sum('amount'))],
+            'feed' => ['count' => $feedCount, 'amount' => $this->bottleVolume(clone $feeds, $unit), 'unit' => $unit],
             'sleep' => ['count' => $sleepCount, 'minutes' => (int) (clone $sleeps)->sum('duration_minutes')],
             'diaper' => $diapers,
             'medicine' => $medicines,
             'play' => $plays,
         ];
+    }
+
+    /** Leche de biberón del rango en la unidad de la familia (los registros en otra unidad se convierten). */
+    private function bottleVolume($feeds, string $unit): float
+    {
+        $total = $feeds->where('type', FeedType::Bottle)->get(['amount', 'unit'])
+            ->sum(fn (FeedLog $f) => Units::volume((float) $f->amount, $f->unit, $unit));
+
+        return Units::round($total, $unit);
     }
 
     /** Sesiones en curso: lactancia y sueño abierto. */

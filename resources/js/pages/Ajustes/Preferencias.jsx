@@ -52,6 +52,7 @@ export default function Preferencias({ prefs, languages, timezones }) {
 
                 <Section title={t('ajustes.prefs.units')}>
                     {chips('volume_unit', t('ajustes.prefs.volume'), [{ value: 'ml', label: 'ml' }, { value: 'oz', label: 'oz' }])}
+                    <p className="-mt-2 text-sm text-ink-soft">{t('ajustes.prefs.volume_help')}</p>
                     {chips('weight_unit', t('ajustes.prefs.weight'), [{ value: 'kg', label: 'kg' }, { value: 'lb', label: 'lb' }])}
                     {chips('height_unit', t('ajustes.prefs.height'), [{ value: 'cm', label: 'cm' }, { value: 'in', label: 'in' }])}
                     {chips('temperature_unit', t('ajustes.prefs.temperature'), [{ value: 'C', label: '°C' }, { value: 'F', label: '°F' }])}

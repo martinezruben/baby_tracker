@@ -5,22 +5,27 @@ import MoreDetails from '../../components/form/MoreDetails';
 import RegistersAs from '../../components/form/RegistersAs';
 import Stepper from '../../components/form/Stepper';
 import TimeBlock from '../../components/form/TimeBlock';
+import UnitSwitch from '../../components/form/UnitSwitch';
 import SheetLayout from '../../layouts/SheetLayout';
 import { lastSubtitle, useActivityForm } from '../../lib/forms';
 import { useT } from '../../lib/i18n';
+import { convertVolume } from '../../lib/units';
 
 export default function Biberon({ record, baby, clock, lastAt, last, volumeUnit }) {
     const t = useT();
-    const unit = record?.unit ?? last?.unit ?? volumeUnit;
-    const quick = unit === 'oz' ? [2, 3, 4, 5] : [60, 90, 120, 150];
     const [form, save] = useActivityForm('biberon', {
         occurred_at: clock.now,
-        amount: last?.amount ?? (unit === 'oz' ? 4 : 120),
-        unit,
+        // La unidad es la de la familia (Ajustes); lo último que se dio se convierte a ella.
+        amount: last ? convertVolume(last.amount, last.unit, volumeUnit) : volumeUnit === 'oz' ? 4 : 120,
+        unit: volumeUnit,
         bottle_type: '',
         notes: '',
     }, record);
     const { data, setData, errors } = form;
+    const unit = data.unit;
+    const quick = unit === 'oz' ? [2, 3, 4, 5] : [60, 90, 120, 150];
+
+    const switchUnit = (next) => setData((d) => ({ ...d, unit: next, amount: convertVolume(d.amount, d.unit, next) }));
 
     return (
         <SheetLayout
@@ -48,6 +53,7 @@ export default function Biberon({ record, baby, clock, lastAt, last, volumeUnit 
                 unit={unit}
                 error={errors.amount}
             />
+            {!record && <UnitSwitch value={unit} onChange={switchUnit} />}
             <ChoiceChips
                 columns={4}
                 options={quick.map((n) => ({ value: n, label: `${n} ${unit}` }))}

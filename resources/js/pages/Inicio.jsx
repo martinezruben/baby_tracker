@@ -164,7 +164,7 @@ function Summary({ summary }) {
     const t = useT();
 
     const value = {
-        feed: summary.feed.ml > 0 ? `${summary.feed.count} · ${summary.feed.ml} ml` : summary.feed.count,
+        feed: summary.feed.amount > 0 ? `${summary.feed.count} · ${String(summary.feed.amount).replace('.', ',')} ${summary.feed.unit}` : summary.feed.count,
         sleep: summary.sleep.minutes > 0 ? durationLabel(t, summary.sleep.minutes) : '0',
         diaper: summary.diaper,
         medicine: summary.medicine,

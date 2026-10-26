@@ -457,6 +457,7 @@ return [
         'clear_day' => 'Remove the day filter',
     ],
     'registrar' => [
+        'unit' => 'Unit',
         'undone' => 'Entry undone.',
         'saved' => [
             'solidos' => 'Solids saved',
@@ -1197,7 +1198,8 @@ return [
             'h12' => '12-hour (4:30 pm)',
             'h24' => '24-hour (16:30)',
             'units' => 'Units',
-            'volume' => 'Liquids',
+            'volume' => 'Milk (bottle and pumping)',
+            'volume_help' => 'This is the unit suggested when logging and the one shown in summaries and the log. Entries saved in the other unit are converted when displayed; when logging you can switch units for that entry.',
             'weight' => 'Weight',
             'height' => 'Length',
             'temperature' => 'Temperature',

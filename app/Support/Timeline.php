@@ -28,6 +28,8 @@ class Timeline
 {
     public const PAGE = 30;
 
+    private string $volumeUnit = 'ml';
+
     /** @var array<string, array{0: class-string<Model>, 1: string, 2: ?callable}> tipo => [modelo, columna de fecha, restricción] */
     private function sources(): array
     {
@@ -59,6 +61,7 @@ class Timeline
      */
     public function page(Baby $baby, ?string $type = null, ?string $cursor = null, ?string $day = null): array
     {
+        $this->volumeUnit = $baby->family->settings->volume_unit ?? 'ml';
         [$dayFrom, $dayTo] = $this->dayBounds($baby, $day);
         [$cursorAt, $cursorType, $cursorId] = $this->parseCursor($cursor);
 
@@ -157,7 +160,8 @@ class Timeline
     private function data(string $slug, Model $log): array
     {
         return match ($slug) {
-            'biberon' => ['amount' => (float) $log->amount, 'unit' => $log->unit, 'bottle_type' => $log->bottle_type, 'notes' => $log->notes],
+            // La leche se muestra siempre en la unidad de la familia (ml u oz), aunque se guardara en la otra.
+            'biberon' => ['amount' => Units::display((float) $log->amount, $log->unit, $this->volumeUnit), 'unit' => $this->volumeUnit, 'bottle_type' => $log->bottle_type, 'notes' => $log->notes],
             'pecho' => [
                 'seconds' => (int) $log->duration_seconds, 'left' => $log->left_seconds, 'right' => $log->right_seconds,
                 'side' => $log->side?->value,
@@ -171,7 +175,7 @@ class Timeline
                 'food' => $log->food?->name, 'amount' => $log->amount === null ? null : (float) $log->amount, 'unit' => $log->unit,
                 'enjoyment' => $log->enjoyment?->value, 'reaction' => (bool) $log->had_reaction,
             ],
-            'extraccion' => ['amount' => (float) $log->total_amount, 'unit' => $log->unit, 'minutes' => $log->duration_minutes],
+            'extraccion' => ['amount' => Units::display((float) $log->total_amount, $log->unit, $this->volumeUnit), 'unit' => $this->volumeUnit, 'minutes' => $log->duration_minutes],
             'bano' => ['bath_type' => $log->bath_type, 'soap' => (bool) $log->soap_used, 'shampoo' => (bool) $log->shampoo_used],
             'juego' => ['type' => $log->type->value, 'minutes' => $log->duration_minutes, 'notes' => $log->activities],
             'animo' => ['mood' => $log->mood->value, 'intensity' => $log->intensity, 'minutes' => $log->duration_minutes],

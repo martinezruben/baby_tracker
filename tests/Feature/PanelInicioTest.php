@@ -92,7 +92,7 @@ class PanelInicioTest extends TestCase
         MedicineLog::create($this->owner() + ['medicine_id' => $medicine->id, 'occurred_at' => '2026-11-03 09:30:00', 'dose' => 1]);
 
         $this->actingAs($this->mama)->get('/')->assertInertia(fn (Assert $page) => $page
-            ->where('summary.feed', ['count' => 3, 'ml' => 210])
+            ->where('summary.feed', ['count' => 3, 'amount' => 210, 'unit' => 'ml'])
             ->where('summary.sleep', ['count' => 2, 'minutes' => 130])
             ->where('summary.total', 7)
             ->where('summary.segments.0', ['key' => 'feed', 'count' => 3])
