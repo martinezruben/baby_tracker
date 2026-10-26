@@ -172,6 +172,8 @@ class AppointmentController extends Controller
                 'mime' => $f->mime,
                 'size' => $f->size,
                 'is_image' => $f->isImage(),
+                'category' => $f->category,
+                'description' => $f->description,
                 'url' => route('appointments.files.show', [$appointment, $f]),
             ])->values(),
             'prescriptions' => $appointment->prescriptions->map(fn (Prescription $p) => $this->prescription($p))->values(),

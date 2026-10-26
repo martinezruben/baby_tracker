@@ -1,6 +1,7 @@
 import { Link, router, useForm } from '@inertiajs/react';
-import { ArrowLeft, Check, ChevronDown, ExternalLink, FileText, Pencil, Pill, Plus, SkipForward, Trash2, Upload } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { ArrowLeft, Check, ChevronDown, Pencil, Pill, Plus, SkipForward, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import AppointmentFiles from '../../components/AppointmentFiles';
 import Button from '../../components/Button';
 import Field from '../../components/Field';
 import ChoiceChips from '../../components/form/Chips';
@@ -24,93 +25,6 @@ function Fact({ label, children }) {
             <dt className="text-[13px] font-semibold text-ink-soft">{label}</dt>
             <dd className="text-base break-words whitespace-pre-line">{children}</dd>
         </div>
-    );
-}
-
-function Files({ appointment }) {
-    const t = useT();
-    const input = useRef(null);
-    const [error, setError] = useState(null);
-    const [busy, setBusy] = useState(false);
-
-    const upload = (fileList) => {
-        const files = Array.from(fileList);
-        if (files.length === 0) return;
-
-        setBusy(true);
-        setError(null);
-        router.post(`/citas/${appointment.id}/archivos`, { files }, {
-            forceFormData: true,
-            preserveScroll: true,
-            onError: (errors) => setError(Object.values(errors)[0]),
-            onFinish: () => {
-                setBusy(false);
-                if (input.current) input.current.value = '';
-            },
-        });
-    };
-
-    return (
-        <Section title={t('citas.files.title')}>
-            {appointment.files.length === 0 ? (
-                <p className="text-[15px] text-ink-soft">{t('citas.files.empty')}</p>
-            ) : (
-                <ul className="flex flex-col gap-2">
-                    {appointment.files.map((file) => (
-                        <li key={file.id} className="flex items-center gap-3 rounded-2xl bg-canvas p-2">
-                            {file.is_image ? (
-                                <img src={file.url} alt="" loading="lazy" className="size-14 shrink-0 rounded-xl object-cover" />
-                            ) : (
-                                <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-appointment text-appointment-ink">
-                                    <FileText aria-hidden="true" className="size-6" strokeWidth={1.75} />
-                                </span>
-                            )}
-                            <span className="min-w-0 grow">
-                                <span className="block truncate text-[15px] font-semibold">{file.name}</span>
-                                <span className="text-xs text-ink-soft">{(file.size / 1024 / 1024 >= 1 ? `${(file.size / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(file.size / 1024))} KB`)}</span>
-                            </span>
-                            <a
-                                href={file.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                aria-label={`${t('citas.files.open')}: ${file.name}`}
-                                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface text-ink focus-visible:outline-2 focus-visible:outline-primary"
-                            >
-                                <ExternalLink aria-hidden="true" className="size-5" strokeWidth={1.75} />
-                            </a>
-                            <button
-                                type="button"
-                                aria-label={`${t('citas.files.delete')}: ${file.name}`}
-                                onClick={() => router.delete(`/citas/${appointment.id}/archivos/${file.id}`, { preserveScroll: true })}
-                                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-surface text-danger-ink focus-visible:outline-2 focus-visible:outline-primary"
-                            >
-                                <Trash2 aria-hidden="true" className="size-5" strokeWidth={1.75} />
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            )}
-
-            <input
-                ref={input}
-                type="file"
-                multiple
-                accept="application/pdf,image/jpeg,image/png,image/webp,image/heic,image/heif"
-                className="sr-only"
-                id="appointment-files"
-                onChange={(e) => upload(e.target.files)}
-            />
-            <Button variant="secondary" disabled={busy} onClick={() => input.current?.click()}>
-                <Upload aria-hidden="true" className="size-5" />
-                {busy ? t('citas.files.uploading') : t('citas.files.add')}
-            </Button>
-            <p className="text-sm text-ink-soft">{t('citas.files.hint')}</p>
-            {error && (
-                <p role="alert" className="text-sm font-medium text-danger-ink">
-                    {error}
-                </p>
-            )}
-        </Section>
     );
 }
 
@@ -384,7 +298,7 @@ export default function Show({ appointment, clock, medicines, intervals }) {
                     </Section>
                 )}
 
-                <Files appointment={appointment} />
+                <AppointmentFiles appointment={appointment} />
 
                 <Section title={t('citas.rx.title')}>
                     {appointment.prescriptions.length === 0 ? (
