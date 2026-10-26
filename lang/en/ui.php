@@ -31,6 +31,8 @@ return [
     ],
     'time' => [
         'just_now' => 'Just now',
+        'pick_day' => 'Change the day',
+        'days_ago' => ':n days ago',
         'ago_min' => ':m min ago',
         'ago_h' => ':h h ago',
         'ago_hm' => ':h h :m min ago',

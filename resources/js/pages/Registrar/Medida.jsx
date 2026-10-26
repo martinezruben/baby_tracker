@@ -48,7 +48,7 @@ export default function Medida({ record, baby, clock, lastAt, last, units }) {
                 error={errors.value}
             />
 
-            <TimeBlock label={t('registrar.measure.date')} value={data.occurred_at} onChange={(v) => setData('occurred_at', v)} now={clock.now} error={errors.occurred_at} />
+            <TimeBlock dateOnly label={t('registrar.measure.date')} value={data.occurred_at} onChange={(v) => setData('occurred_at', v)} now={clock.now} error={errors.occurred_at} />
 
             <RegistersAs />
         </SheetLayout>
