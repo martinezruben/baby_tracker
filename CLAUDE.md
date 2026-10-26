@@ -117,6 +117,7 @@ Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
 - El aviso solo lleva el título y el texto de la regla: nunca fotos ni ubicación.
 - Pantalla `/recordatorios` (`ReminderController`, `SaveReminder`): recordatorios sueltos (tipo `custom`) con varios momentos de aviso, repetición, "insistir hasta confirmar", snooze, horario silencioso y destinatarios. La fecha se escribe en la zona horaria de la familia y se guarda en UTC. Otros módulos (citas, medicinas, vacunas) crearán sus reglas con `NotificationScheduler`.
 - "Enviar aviso de prueba" (`/push/prueba`) comprueba que el dispositivo recibe avisos.
+- Pruebas y diagnóstico: "Probar un aviso en 1 minuto" (`/push/prueba-programada`) crea un recordatorio real que insiste hasta confirmar y recorre cron + despachador + envío + botones; en Más, los administradores ven el **estado de los avisos** (`/push/estado`, `PushDiagnostics`: claves VAPID, HTTPS, extensiones, cron, avisos vencidos, dispositivos). `reminders:dispatch` deja una señal de vida en caché; `php artisan webpush:check [--send="Nombre"]` hace lo mismo por consola. `MinishlinkPushClient` filtra los avisos informativos de la librería (si falta GMP/BCMath lanzaba un notice que Laravel convertía en excepción y el envío fallaba).
 - iPhone: los avisos solo funcionan con la app instalada en la pantalla de inicio (el manifest PWA ya existe).
 
 ## Comandos

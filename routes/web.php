@@ -162,6 +162,8 @@ Route::middleware('setup:required')->group(function () {
         Route::post('/push/suscripciones', [PushSubscriptionController::class, 'store'])->name('push.store');
         Route::delete('/push/suscripciones', [PushSubscriptionController::class, 'destroy'])->name('push.destroy');
         Route::post('/push/prueba', PushTestController::class)->name('push.test');
+        Route::post('/push/prueba-programada', [PushTestController::class, 'scheduled'])->name('push.test.scheduled');
+        Route::get('/push/estado', [PushTestController::class, 'status'])->name('push.status');
 
         Route::prefix('recordatorios')->name('reminders.')->group(function () {
             Route::get('/', [ReminderController::class, 'index'])->name('index');
