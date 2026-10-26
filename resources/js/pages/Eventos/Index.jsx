@@ -1,14 +1,15 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { ArrowLeft, Plus, Star } from 'lucide-react';
 import AppLayout from '../../layouts/AppLayout';
 import { KINDS } from '../../lib/activities';
 import { useT } from '../../lib/i18n';
-import { dayLabel, EVENT_TYPES, eventTitle, monthLabel } from '../../lib/lifeEvents';
+import { dayLabel, EVENT_TYPES, eventTitle, monthLabel, RATINGS } from '../../lib/lifeEvents';
 
 function EventCard({ event }) {
     const t = useT();
     const { locale } = usePage().props;
     const { icon: Icon, kind } = EVENT_TYPES[event.type];
+    const Rating = event.type === 'food' && event.rating ? RATINGS[event.rating] : null;
 
     return (
         <li>
@@ -19,7 +20,17 @@ function EventCard({ event }) {
                     </span>
                     <span className="flex min-w-0 grow flex-col">
                         <span className="text-base font-bold break-words">{eventTitle(t, event)}</span>
-                        <span className="text-[13px] text-ink-soft">{dayLabel(event.occurred_on, locale)}</span>
+                        <span className="flex items-center gap-1.5 text-[13px] text-ink-soft">
+                            {dayLabel(event.occurred_on, locale)}
+                            {Rating && (
+                                <>
+                                    <span aria-hidden="true">·</span>
+                                    <Rating aria-hidden="true" className="size-4" strokeWidth={1.75} />
+                                    <span>{t(`registrar.solids.enjoy_${event.rating}`)}</span>
+                                </>
+                            )}
+                        </span>
+                        {event.seasonings && <span className="line-clamp-1 text-[13px] text-ink-soft/80 italic">{t('eventos.with_seasonings', { list: event.seasonings })}</span>}
                     </span>
                 </span>
                 {event.notes && <span className="line-clamp-2 text-sm text-ink-mid">{event.notes}</span>}
@@ -35,10 +46,29 @@ function EventCard({ event }) {
     );
 }
 
-export default function Index({ events }) {
+export default function Index({ events, tipo, counts }) {
     const t = useT();
     const { babies, activeBabyId, locale } = usePage().props;
     const baby = babies.find((b) => b.id === activeBabyId);
+
+    const total = Object.values(counts).reduce((sum, n) => sum + Number(n), 0);
+
+    const setType = (value) => router.get('/eventos', value ? { tipo: value } : {}, { preserveScroll: true, preserveState: true, replace: true, only: ['events', 'tipo', 'counts'] });
+
+    const chip = (value, label) => {
+        const selected = (tipo ?? null) === value;
+        return (
+            <button
+                key={label}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => setType(value)}
+                className={`flex min-h-11 shrink-0 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${selected ? 'bg-primary font-semibold text-on-primary' : 'bg-surface font-medium text-ink'}`}
+            >
+                {label}
+            </button>
+        );
+    };
 
     const groups = [];
     for (const event of events) {
@@ -70,10 +100,19 @@ export default function Index({ events }) {
                     </Link>
                 </header>
 
+                {total > 0 && (
+                    <nav aria-label={t('eventos.filters')} className="-mr-5 flex gap-2 overflow-x-auto pr-5 [scrollbar-width:none]">
+                        {chip(null, `${t('eventos.all')} · ${total}`)}
+                        {Object.keys(EVENT_TYPES)
+                            .filter((type) => counts[type] > 0)
+                            .map((type) => chip(type, `${t(`eventos.types.${type}`)} · ${counts[type]}`))}
+                    </nav>
+                )}
+
                 {events.length === 0 ? (
                     <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-8 text-center shadow-card">
                         <Star aria-hidden="true" className="size-10 text-primary" strokeWidth={1.75} />
-                        <p className="text-base text-ink-soft">{t('eventos.empty')}</p>
+                        <p className="text-base text-ink-soft">{tipo ? t('eventos.empty_filter') : t('eventos.empty')}</p>
                     </div>
                 ) : (
                     groups.map((group) => (

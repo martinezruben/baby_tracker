@@ -67,6 +67,7 @@ Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
 - Fotos (`Photo`, `PhotoStorage`): solo JPG, PNG y WebP (HEIC no: Safari lo convierte al elegirlo). La copia guardada se **vuelve a codificar**: se gira según su orientación, se reduce a 2048 px, se le quita todo el EXIF y se crea una miniatura de 480 px, en el disco privado `local`. La fecha y el GPS del EXIF pasan a `taken_at`, `latitude` y `longitude`, editables; "Quitar ubicación" los borra. Se sirven solo por `photos.file` / `photos.thumb` con sesión de la familia. Cuota por familia en `family_settings.photo_quota_mb` (2048 MB).
 - Etiquetas (`Tag`): por familia, siempre en minúsculas (`Tag::normalize`). La galería filtra por etiqueta, favoritas, mes (en hora de la familia) y lugar, paginada por cursor `taken_at|id` con `Inertia::merge`.
 - Momentos (`LifeEvent`, `/eventos`): diente, comida nueva, primeros pasos, gateo, palabra, viaje, enfermedad u otro; con fotos (`photos.life_event_id`). La fecha de la foto manda; si no trae EXIF, se usa el día del momento. Borrar un momento deja sus fotos en la galería.
+- `/eventos` se filtra por tipo (`?tipo=`; los chips solo muestran los tipos que existen, con su conteo, que no depende del filtro). Un momento de **comida nueva** puede llevar `seasonings` (condimentos, texto libre) y `rating` (misma escala `FoodEnjoyment` que los sólidos); se ignoran en otros tipos y se muestran con discreción (icono pequeño y «con ajo, cilantro» en cursiva gris).
 - Las fotos y la ubicación nunca van en notificaciones.
 
 ## Vacunas
