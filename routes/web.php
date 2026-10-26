@@ -74,6 +74,7 @@ Route::middleware('setup:required')->group(function () {
         Route::get('/contactos', [ContactController::class, 'index'])->name('contacts');
         Route::post('/contactos', [ContactController::class, 'store'])->name('contacts.store');
         Route::put('/contactos/{id}', [ContactController::class, 'update'])->whereNumber('id')->name('contacts.update');
+        Route::get('/contactos/{id}/foto', [ContactController::class, 'photo'])->whereNumber('id')->name('contacts.photo');
         Route::delete('/contactos/{id}', [ContactController::class, 'destroy'])->whereNumber('id')->name('contacts.destroy');
         Route::post('/contactos/{id}/restaurar', [ContactController::class, 'restore'])->whereNumber('id')->name('contacts.restore');
         Route::get('/alergias', [AllergyController::class, 'index'])->name('allergies');

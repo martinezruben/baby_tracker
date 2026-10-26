@@ -31,7 +31,7 @@ class BackupService
     private const EXCLUDED_COLUMNS = ['caretakers' => ['pin', 'remember_token']];
 
     /** Carpetas del disco privado que forman parte del respaldo completo. */
-    public const FILE_DIRS = ['photos', 'appointments'];
+    public const FILE_DIRS = ['photos', 'appointments', 'contacts'];
 
     public const DIR = 'backups';
 

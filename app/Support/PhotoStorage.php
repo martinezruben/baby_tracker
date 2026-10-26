@@ -158,7 +158,7 @@ class PhotoStorage
         return in_array(strtoupper($ref), ['S', 'W'], true) ? -$degrees : $degrees;
     }
 
-    private function orient(GdImage $image, int $orientation): GdImage
+    public function orient(GdImage $image, int $orientation): GdImage
     {
         $rotated = match ($orientation) {
             3, 4 => imagerotate($image, 180, 0),
@@ -198,7 +198,7 @@ class PhotoStorage
         return $canvas;
     }
 
-    private function encode(GdImage $image, string $mime): string
+    public function encode(GdImage $image, string $mime): string
     {
         ob_start();
         match ($mime) {
