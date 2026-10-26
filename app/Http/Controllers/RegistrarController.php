@@ -10,6 +10,7 @@ use App\Models\BabyAllergen;
 use App\Models\FeedLog;
 use App\Models\Food;
 use App\Models\Medicine;
+use App\Models\MedicineLog;
 use App\Models\SleepLog;
 use App\Support\ActiveBaby;
 use App\Support\Activities\ActivityRegistry;
@@ -18,6 +19,7 @@ use App\Support\BreastFeedSession;
 use App\Support\DashboardData;
 use App\Support\FamilyClock;
 use App\Support\VaccineSchedule;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -88,7 +90,7 @@ class RegistrarController extends Controller
             'last' => $last ? $activity->summary($last) : null,
             'volumeUnit' => $family->settings->volume_unit,
             'medicines' => $type === 'medicina'
-                ? Medicine::where('family_id', $family->id)->where('is_active', true)->orderBy('name')->get(['id', 'name', 'typical_dose', 'unit'])
+                ? $this->medicinesWithLastDose($family->id, $baby->id)
                 : [],
             'allergies' => in_array($type, ['solidos', 'medicina'], true)
                 ? BabyAllergen::where('baby_id', $baby->id)->whereIn('type', $type === 'solidos' ? ['food'] : ['medicine'])->pluck('name')->all()
@@ -98,6 +100,16 @@ class RegistrarController extends Controller
             'units' => ['weight' => $family->settings->weight_unit, 'height' => $family->settings->height_unit, 'temperature' => $family->settings->temperature_unit],
             'breastActive' => ActiveBreastFeed::where('baby_id', $baby->id)->exists(),
         ]);
+    }
+
+    /** Medicinas activas con su intervalo mínimo y cuándo se dio la última dosis a este bebé (para avisar si es pronto). */
+    private function medicinesWithLastDose(int $familyId, int $babyId)
+    {
+        $last = MedicineLog::where('baby_id', $babyId)->selectRaw('medicine_id, max(occurred_at) as last_at')->groupBy('medicine_id')->pluck('last_at', 'medicine_id');
+
+        return Medicine::where('family_id', $familyId)->where('is_active', true)->orderBy('name')
+            ->get(['id', 'name', 'typical_dose', 'unit', 'min_interval_minutes'])
+            ->map(fn (Medicine $m) => $m->toArray() + ['last_given_at' => isset($last[$m->id]) ? CarbonImmutable::parse($last[$m->id], 'UTC')->toIso8601String() : null]);
     }
 
     /** @return array{name: string, due_on: string, overdue: bool}|null */

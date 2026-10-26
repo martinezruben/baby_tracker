@@ -56,6 +56,11 @@ Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
 - Medicinas (`Prescription` + `PrescriptionDose`): `SavePrescription` genera todas las tomas (cada N horas) y una regla `Medicine` que insiste cada 10 min hasta confirmar y no respeta el horario silencioso. Confirmar el aviso dispara `ReminderAcknowledged` y `LogDoseWhenAcknowledged` marca la toma como dada y crea el `MedicineLog`. `RecordDose` (dar, omitir, deshacer) es la única vía para cambiar una toma.
 - No se programan avisos para tomas que pasaron hace más de 10 minutos.
 
+## Medicinas (pantalla `/medicinas`)
+
+- `MedicineController`: **tratamientos en curso** (recetas activas del bebé con progreso, próxima toma y "Dar la próxima toma" vía `doses.give`), **medicinas de la familia** (`Medicine`: dosis habitual, unidad, intervalo mínimo en horas → `min_interval_minutes`, suplemento, notas; se **archivan** con `is_active`, no se borran, para conservar el historial) y las últimas dosis. Un tratamiento puede crearse **sin cita** (`POST /medicinas/tratamientos`, `SavePrescription` con cita nula).
+- `components/PrescriptionForm.jsx` lo usan la cita y esta pantalla. Si una medicina tiene intervalo mínimo, el formulario de dosis (`Registrar/Medicina.jsx`) avisa —sin bloquear— cuando la última dosis fue hace menos tiempo (`last_given_at` viene de `RegistrarController::medicinesWithLastDose`).
+
 ## Fotos y momentos
 
 - Fotos (`Photo`, `PhotoStorage`): solo JPG, PNG y WebP (HEIC no: Safari lo convierte al elegirlo). La copia guardada se **vuelve a codificar**: se gira según su orientación, se reduce a 2048 px, se le quita todo el EXIF y se crea una miniatura de 480 px, en el disco privado `local`. La fecha y el GPS del EXIF pasan a `taken_at`, `latitude` y `longitude`, editables; "Quitar ubicación" los borra. Se sirven solo por `photos.file` / `photos.thumb` con sesión de la familia. Cuota por familia en `family_settings.photo_quota_mb` (2048 MB).

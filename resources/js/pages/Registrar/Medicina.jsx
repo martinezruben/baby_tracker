@@ -7,6 +7,8 @@ import Stepper from '../../components/form/Stepper';
 import TimeBlock from '../../components/form/TimeBlock';
 import SheetLayout from '../../layouts/SheetLayout';
 import { lastSubtitle, useActivityForm } from '../../lib/forms';
+import { agoLabel } from '../../lib/i18n';
+import { minutesSince } from '../../lib/time';
 import { useT } from '../../lib/i18n';
 
 export default function Medicina({ record, baby, clock, lastAt, medicines, allergies }) {
@@ -21,6 +23,9 @@ export default function Medicina({ record, baby, clock, lastAt, medicines, aller
     }, record);
     const { data, setData, errors } = form;
     const isNew = data.medicine_id === '';
+    const chosen = medicines.find((m) => m.id === data.medicine_id);
+    const sinceLast = chosen?.last_given_at ? minutesSince(chosen.last_given_at) : null;
+    const tooSoon = !record && chosen?.min_interval_minutes && sinceLast !== null && sinceLast < chosen.min_interval_minutes;
     const medicineName = isNew ? data.new_medicine : medicines.find((m) => m.id === data.medicine_id)?.name;
 
     const pick = (id) => {
@@ -73,6 +78,11 @@ export default function Medicina({ record, baby, clock, lastAt, medicines, aller
             )}
 
             <AllergyWarning allergies={allergies} name={medicineName} babyName={baby.first_name} />
+            {tooSoon && (
+                <div role="alert" className="rounded-[20px] border border-danger-line bg-danger-soft p-4 text-base font-semibold text-danger-ink">
+                    {t('medicinas.too_soon', { name: chosen.name, ago: agoLabel(t, sinceLast).toLowerCase(), h: String(Math.round((chosen.min_interval_minutes / 60) * 10) / 10).replace('.', ',') })}
+                </div>
+            )}
 
             <Stepper label={t('registrar.medicine.dose')} value={data.dose} onChange={(v) => setData('dose', v)} step={0.5} min={0} max={10000} error={errors.dose} />
             <Field

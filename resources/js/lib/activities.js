@@ -51,7 +51,7 @@ export const MODULES = [
     { key: 'reminders', icon: Bell, kind: 'appointment', href: '/recordatorios' },
     { key: 'appointments', icon: Stethoscope, kind: 'appointment', href: '/citas' },
     { key: 'vaccines', icon: Syringe, kind: 'vaccine', href: '/vacunas' },
-    { key: 'medicines', icon: Pill, kind: 'medicine' },
+    { key: 'medicines', icon: Pill, kind: 'medicine', href: '/medicinas' },
     { key: 'growth', icon: TrendingUp, kind: 'growth', href: '/crecimiento' },
     { key: 'photos', icon: Camera, kind: 'moment', href: '/fotos' },
     { key: 'moments', icon: Star, kind: 'moment', href: '/eventos' },
