@@ -465,7 +465,11 @@ return [
         'restored_body' => ':rows records and :files files were loaded. Sign in with the new administrator PIN.',
         'restored_reset' => 'These caregivers need a new PIN (Settings > Caregivers): :names.',
         'errors' => [
-            'failed' => 'The backup could not be created. Check disk space and storage/ permissions.',
+            'failed' => 'The backup could not be created.',
+            'reason' => 'Reason: :reason',
+            'no_zip' => 'PHP is missing the zip extension (install php-zip or enable extension=zip).',
+            'no_write' => 'Cannot write to :path. Give the web server user write permission on storage/ (for example: chown -R www-data storage bootstrap/cache).',
+            'disk_full' => 'Also check the free disk space.',
             'not_zip' => 'The file is not a valid ZIP.',
             'not_backup' => 'The file is not a backup of this app or comes from a version that cannot be read.',
             'not_empty' => 'This installation already has data. You can only restore on an empty installation.',

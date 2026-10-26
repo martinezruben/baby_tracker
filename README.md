@@ -67,3 +67,5 @@ No subas `.env`, claves VAPID ni datos reales del bebé. Cambia las credenciales
 5. Dale permisos de escritura al servidor web sobre `storage/` y `bootstrap/cache/`.
 
 **Error 500 en todas las páginas:** casi siempre es `Vite manifest not found`. La carpeta `public/build` no se sube con git; hay que generarla con `npm ci && npm run build` en el servidor (o compilarla en tu equipo y subirla). Otras causas habituales: falta `.env` o `APP_KEY`, `vendor/` sin instalar (`composer install --no-dev`), `storage/` sin permisos de escritura, migraciones sin correr, o `CACHE_STORE`/`SESSION_DRIVER`/`QUEUE_CONNECTION` apuntando a Redis sin tenerlo (usa `database`). El detalle está en `storage/logs/laravel.log`.
+
+**Error al crear un respaldo:** la pantalla muestra el motivo. Las causas habituales son que `storage/` no tenga permiso de escritura para el usuario del servidor web (`chown -R www-data storage bootstrap/cache`; en contenedores suele pertenecer a root), que a PHP le falte la extensión `zip`, o que se acabe el espacio en disco. El detalle también queda en `storage/logs/laravel.log`.
