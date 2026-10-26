@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FoodEnjoyment;
 use App\Enums\LifeEventType;
 use App\Models\LifeEvent;
 use App\Models\Photo;
@@ -20,11 +21,17 @@ class LifeEventController extends Controller
     {
         $baby = ActiveBaby::for($request);
 
+        $type = LifeEventType::tryFrom((string) $request->query('tipo'));
+
         $events = LifeEvent::where('baby_id', $baby->id)
+            ->when($type, fn ($q) => $q->where('type', $type))
             ->with(['photos' => fn ($q) => $q->limit(4)])
             ->orderByDesc('occurred_on')->orderByDesc('id')->limit(200)->get();
 
         return Inertia::render('Eventos/Index', [
+            'tipo' => $type?->value,
+            // Cuántos momentos hay de cada tipo: los filtros solo ofrecen los que existen.
+            'counts' => LifeEvent::where('baby_id', $baby->id)->selectRaw('type, count(*) as n')->groupBy('type')->pluck('n', 'type'),
             'events' => $events->map(fn (LifeEvent $e) => $this->card($e))->all(),
         ]);
     }
@@ -76,6 +83,8 @@ class LifeEventController extends Controller
                 'occurred_on' => $event->occurred_on->toDateString(),
                 'title' => $event->title,
                 'detail' => $event->detail,
+                'seasonings' => $event->seasonings,
+                'rating' => $event->rating,
                 'notes' => $event->notes,
             ],
         ]);
@@ -130,6 +139,8 @@ class LifeEventController extends Controller
             'occurred_on' => ['required', 'date_format:Y-m-d', 'before_or_equal:'.$clock->now()->addDay()->toDateString()],
             'title' => ['nullable', 'string', 'max:120', 'required_if:type,other'],
             'detail' => ['nullable', 'string', 'max:120'],
+            'seasonings' => ['nullable', 'string', 'max:200'],
+            'rating' => ['nullable', Rule::enum(FoodEnjoyment::class)],
             'notes' => ['nullable', 'string', 'max:5000'],
         ];
 
@@ -149,6 +160,9 @@ class LifeEventController extends Controller
             'occurred_on' => $data['occurred_on'],
             'title' => $data['title'] ?? null,
             'detail' => $data['detail'] ?? null,
+            // Condimentos y calificación solo tienen sentido en una comida nueva.
+            'seasonings' => $data['type'] === 'food' ? ($data['seasonings'] ?? null) : null,
+            'rating' => $data['type'] === 'food' ? ($data['rating'] ?? null) : null,
             'notes' => $data['notes'] ?? null,
         ];
     }
@@ -179,6 +193,8 @@ class LifeEventController extends Controller
             'occurred_on' => $event->occurred_on->toDateString(),
             'title' => $event->title,
             'detail' => $event->detail,
+            'seasonings' => $event->seasonings,
+            'rating' => $event->rating,
             'notes' => $event->notes,
             'photos' => $event->photos->map(fn (Photo $p) => [
                 'id' => $p->id,

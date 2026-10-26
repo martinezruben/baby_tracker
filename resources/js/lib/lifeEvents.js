@@ -1,4 +1,4 @@
-import { Baby, Footprints, MessageCircle, Plane, Smile, Star, Thermometer, Utensils } from 'lucide-react';
+import { Baby, Footprints, Frown, Laugh, Meh, MessageCircle, Plane, Smile, Star, Thermometer, Utensils } from 'lucide-react';
 
 /** Tipos de momento: icono y color (de los pasteles por tipo de actividad). */
 export const EVENT_TYPES = {
@@ -11,6 +11,9 @@ export const EVENT_TYPES = {
     illness: { icon: Thermometer, kind: 'medicine' },
     other: { icon: Star, kind: 'moment' },
 };
+
+/** Calificación de una comida nueva (misma escala que los sólidos): icono discreto. */
+export const RATINGS = { hated: Frown, disliked: Frown, neutral: Meh, liked: Smile, loved: Laugh };
 
 /** "Diente · Incisivo central inferior" o el título propio del momento. */
 export function eventTitle(t, event) {

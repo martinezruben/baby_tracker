@@ -6,7 +6,7 @@ import Section from '../../components/form/Section';
 import AppLayout from '../../layouts/AppLayout';
 import { KINDS } from '../../lib/activities';
 import { useT } from '../../lib/i18n';
-import { dayLabel, EVENT_TYPES, eventTitle } from '../../lib/lifeEvents';
+import { dayLabel, EVENT_TYPES, eventTitle, RATINGS } from '../../lib/lifeEvents';
 
 export default function Show({ event }) {
     const t = useT();
@@ -48,6 +48,20 @@ export default function Show({ event }) {
                         <div className="min-w-0">
                             <h1 className="text-2xl leading-tight font-bold break-words">{eventTitle(t, event)}</h1>
                             <div className="text-sm text-ink-soft">{dayLabel(event.occurred_on, locale, true)}</div>
+                            {event.type === 'food' && (event.rating || event.seasonings) && (
+                                <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[13px] text-ink-soft">
+                                    {event.rating && (
+                                        <span className="inline-flex items-center gap-1">
+                                            {(() => {
+                                                const Rating = RATINGS[event.rating];
+                                                return <Rating aria-hidden="true" className="size-4" strokeWidth={1.75} />;
+                                            })()}
+                                            {t(`registrar.solids.enjoy_${event.rating}`)}
+                                        </span>
+                                    )}
+                                    {event.seasonings && <span className="italic">{t('eventos.with_seasonings', { list: event.seasonings })}</span>}
+                                </div>
+                            )}
                         </div>
                     </div>
                     <Link

@@ -3,6 +3,7 @@ import { Star } from 'lucide-react';
 import { useRef, useState } from 'react';
 import Button from '../../components/Button';
 import Field from '../../components/Field';
+import ChoiceChips from '../../components/form/Chips';
 import OptionGrid from '../../components/form/OptionGrid';
 import RegistersAs from '../../components/form/RegistersAs';
 import SheetLayout from '../../layouts/SheetLayout';
@@ -23,6 +24,8 @@ export default function Form({ event, baby, today, types }) {
         occurred_on: event?.occurred_on ?? today,
         title: event?.title ?? '',
         detail: event?.detail ?? '',
+        seasonings: event?.seasonings ?? '',
+        rating: event?.rating ?? '',
         notes: event?.notes ?? '',
         photos: [],
     });
@@ -42,7 +45,7 @@ export default function Form({ event, baby, today, types }) {
             processing={form.processing}
             onSubmit={(e) => {
                 e.preventDefault();
-                form.transform((d) => ({ ...d, title: d.title || null, detail: d.detail || null, notes: d.notes || null, ...(editing ? { photos: undefined } : {}) }));
+                form.transform((d) => ({ ...d, title: d.title || null, detail: d.detail || null, seasonings: d.type === 'food' ? d.seasonings || null : null, rating: d.type === 'food' ? d.rating || null : null, notes: d.notes || null, ...(editing ? { photos: undefined } : {}) }));
                 editing ? form.put(`/eventos/${event.id}`) : form.post('/eventos');
             }}
         >
@@ -71,6 +74,26 @@ export default function Form({ event, baby, today, types }) {
                 error={errors.detail}
                 maxLength={120}
             />
+            {data.type === 'food' && (
+                <>
+                    <Field
+                        label={t('eventos.form.seasonings')}
+                        optional={t('common.optional')}
+                        placeholder={t('eventos.form.seasonings_ph')}
+                        value={data.seasonings}
+                        onChange={(e) => setData('seasonings', e.target.value)}
+                        error={errors.seasonings}
+                        maxLength={200}
+                    />
+                    <ChoiceChips
+                        label={t('eventos.form.rating')}
+                        value={data.rating}
+                        onChange={(v) => setData('rating', data.rating === v ? '' : v)}
+                        options={['hated', 'disliked', 'neutral', 'liked', 'loved'].map((k) => ({ value: k, label: t(`registrar.solids.enjoy_${k}`) }))}
+                    />
+                    {errors.rating && <p role="alert" className="-mt-3 text-sm font-medium text-danger-ink">{errors.rating}</p>}
+                </>
+            )}
             <Field label={t('eventos.form.notes')} optional={t('common.optional')} error={errors.notes}>
                 {({ id }) => (
                     <textarea
