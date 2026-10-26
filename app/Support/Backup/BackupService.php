@@ -57,29 +57,58 @@ class BackupService
         return $ordered;
     }
 
+    /**
+     * Carpeta de trabajo con permiso de escritura: `storage/app/private/tmp` o, si el servidor no deja, la temporal
+     * del sistema (en contenedores `storage/` a veces pertenece a otro usuario que el que ejecuta PHP).
+     */
+    public function workDir(): string
+    {
+        foreach ([storage_path('app/private/tmp'), sys_get_temp_dir().'/kidu-backup'] as $base) {
+            if ((is_dir($base) || @mkdir($base, 0775, true)) && is_writable($base)) {
+                return $base;
+            }
+        }
+
+        throw new RuntimeException(trans('ui.respaldos.errors.no_write', ['path' => storage_path('app/private')]));
+    }
+
+    private function ensureWritableDir(string $dir): void
+    {
+        if (! is_dir($dir) && ! @mkdir($dir, 0775, true) && ! is_dir($dir)) {
+            throw new RuntimeException(trans('ui.respaldos.errors.no_write', ['path' => $dir]));
+        }
+        if (! is_writable($dir)) {
+            throw new RuntimeException(trans('ui.respaldos.errors.no_write', ['path' => $dir]));
+        }
+    }
+
     /** Crea el ZIP en `$path` (ruta absoluta) y devuelve el manifiesto. */
     public function create(string $path, bool $withFiles): array
     {
-        $tmp = storage_path('app/private/tmp/'.Str::uuid());
-        @mkdir($tmp, 0775, true);
-        @mkdir(dirname($path), 0775, true);
+        if (! class_exists(ZipArchive::class)) {
+            throw new RuntimeException(trans('ui.respaldos.errors.no_zip'));
+        }
+
+        $tmp = $this->workDir().'/'.Str::uuid();
+        $this->ensureWritableDir($tmp);
+        $this->ensureWritableDir(dirname($path));
 
         try {
             $zip = new ZipArchive;
             if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-                throw new RuntimeException('No se pudo crear el archivo de respaldo.');
+                throw new RuntimeException(trans('ui.respaldos.errors.no_write', ['path' => dirname($path)]));
             }
 
             $tables = [];
             foreach ($this->tables() as $table) {
                 $file = "{$tmp}/{$table}.jsonl";
-                $handle = fopen($file, 'w');
+                $handle = fopen($file, 'w') ?: throw new RuntimeException(trans('ui.respaldos.errors.no_write', ['path' => $tmp]));
                 $count = 0;
                 $skip = array_flip(self::EXCLUDED_COLUMNS[$table] ?? []);
 
                 DB::table($table)->orderBy(Schema::hasColumn($table, 'id') ? 'id' : Schema::getColumnListing($table)[0])->chunk(500, function ($rows) use ($handle, $skip, &$count) {
                     foreach ($rows as $row) {
-                        fwrite($handle, json_encode(array_diff_key((array) $row, $skip), JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)."\n");
+                        fwrite($handle, json_encode(array_diff_key((array) $row, $skip), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR)."\n");
                         $count++;
                     }
                 });
@@ -111,7 +140,7 @@ class BackupService
 
             // addFile lee al cerrar: los temporales deben seguir ahí hasta este punto.
             if (! $zip->close()) {
-                throw new RuntimeException('No se pudo terminar el archivo de respaldo.');
+                throw new RuntimeException(trans('ui.respaldos.errors.no_write', ['path' => dirname($path)]).' '.trans('ui.respaldos.errors.disk_full'));
             }
 
             return $manifest;

@@ -465,7 +465,11 @@ return [
         'restored_body' => 'Se cargaron :rows registros y :files archivos. Entra con el PIN nuevo del administrador.',
         'restored_reset' => 'Estos cuidadores necesitan un PIN nuevo (Ajustes > Cuidadores): :names.',
         'errors' => [
-            'failed' => 'No se pudo crear el respaldo. Revisa el espacio en disco y los permisos de storage/.',
+            'failed' => 'No se pudo crear el respaldo.',
+            'reason' => 'Motivo: :reason',
+            'no_zip' => 'A PHP le falta la extensión zip (instala php-zip o activa extension=zip).',
+            'no_write' => 'No se puede escribir en :path. Dale permiso de escritura al usuario del servidor web sobre storage/ (por ejemplo: chown -R www-data storage bootstrap/cache).',
+            'disk_full' => 'Revisa también el espacio libre en disco.',
             'not_zip' => 'El archivo no es un ZIP válido.',
             'not_backup' => 'El archivo no es un respaldo de esta aplicación o es de una versión que no se puede leer.',
             'not_empty' => 'Esta instalación ya tiene datos. Solo se puede restaurar en una instalación vacía.',

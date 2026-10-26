@@ -34,7 +34,7 @@ class BackupController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->withErrors(['backup' => trans('ui.respaldos.errors.failed')]);
+            return back()->withErrors(['backup' => $this->failure($e)]);
         }
 
         $backups->prune((int) config('backup.keep'));
@@ -46,17 +46,23 @@ class BackupController extends Controller
     public function export(Request $request, BackupService $backups): BinaryFileResponse|RedirectResponse
     {
         $withFiles = $request->boolean('files');
-        $path = storage_path('app/private/tmp/'.$backups->newName($withFiles));
 
         try {
+            $path = $backups->workDir().'/'.$backups->newName($withFiles);
             $backups->create($path, $withFiles);
         } catch (Throwable $e) {
             report($e);
 
-            return back()->withErrors(['backup' => trans('ui.respaldos.errors.failed')]);
+            return back()->withErrors(['backup' => $this->failure($e)]);
         }
 
         return response()->download($path, basename($path), ['Content-Type' => 'application/zip'])->deleteFileAfterSend(true);
+    }
+
+    /** El motivo real, para quien administra (esta pantalla es solo de administradores). */
+    private function failure(Throwable $e): string
+    {
+        return trans('ui.respaldos.errors.failed').' '.trans('ui.respaldos.errors.reason', ['reason' => $e->getMessage()]);
     }
 
     public function download(string $name, BackupService $backups): BinaryFileResponse

@@ -379,4 +379,29 @@ class RespaldosTest extends TestCase
         $this->post('/configuracion/restaurar', ['pin' => '135792', 'pin_confirmation' => '135792'])->assertSessionHasErrors('backup');
         $this->assertSame(0, Family::count());
     }
+
+    public function test_a_failed_backup_tells_the_admin_the_real_reason(): void
+    {
+        $this->actingAs($this->mama);
+        $this->mock(BackupService::class, function ($mock) {
+            $mock->shouldReceive('newName')->andReturn('kidu-20261103-120000.zip');
+            $mock->shouldReceive('path')->andReturn('/x/kidu-20261103-120000.zip');
+            $mock->shouldReceive('create')->andThrow(new \RuntimeException('No se puede escribir en /app/storage'));
+        });
+
+        $this->post('/ajustes/respaldos')->assertSessionHasErrors(['backup' => 'No se pudo crear el respaldo. Motivo: No se puede escribir en /app/storage']);
+    }
+
+    public function test_the_work_dir_is_writable_and_a_backup_can_be_created_into_a_new_folder(): void
+    {
+        $service = app(BackupService::class);
+        $this->assertTrue(is_writable($service->workDir()));
+
+        $target = $service->workDir().'/nueva-'.uniqid().'/kidu-test.zip';
+        $service->create($target, false);
+
+        $this->assertFileExists($target);
+        @unlink($target);
+        @rmdir(dirname($target));
+    }
 }
