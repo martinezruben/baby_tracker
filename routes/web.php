@@ -12,6 +12,7 @@ use App\Http\Controllers\CaretakerAdminController;
 use App\Http\Controllers\CaretakerPinController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\GrowthController;
 use App\Http\Controllers\LifeEventController;
 use App\Http\Controllers\LogController;
@@ -75,6 +76,7 @@ Route::middleware('setup:required')->group(function () {
         Route::get('/reportes', [ReportController::class, 'index'])->name('reports');
         Route::get('/reportes/exportar', [ReportController::class, 'export'])->name('reports.export');
 
+        Route::get('/documentos', DocumentController::class)->name('documents');
         Route::prefix('citas')->name('appointments.')->group(function () {
             Route::get('/', [AppointmentController::class, 'index'])->name('index');
             Route::get('/nueva', [AppointmentController::class, 'create'])->name('create');
@@ -85,6 +87,7 @@ Route::middleware('setup:required')->group(function () {
             Route::delete('/{appointment}', [AppointmentController::class, 'destroy'])->name('destroy');
             Route::post('/{appointment}/archivos', [AppointmentFileController::class, 'store'])->name('files.store');
             Route::get('/{appointment}/archivos/{attachment}', [AppointmentFileController::class, 'show'])->name('files.show');
+            Route::patch('/{appointment}/archivos/{attachment}', [AppointmentFileController::class, 'update'])->name('files.update');
             Route::delete('/{appointment}/archivos/{attachment}', [AppointmentFileController::class, 'destroy'])->name('files.destroy');
             Route::post('/{appointment}/medicinas', [PrescriptionController::class, 'store'])->name('prescriptions.store');
         });

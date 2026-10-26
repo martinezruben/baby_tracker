@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, Paperclip, Pill, Plus, Stethoscope } from 'lucide-react';
+import { ArrowLeft, FolderSearch, Paperclip, Pill, Plus, Stethoscope } from 'lucide-react';
 import AppLayout from '../../layouts/AppLayout';
 import { KINDS } from '../../lib/activities';
 import { useT } from '../../lib/i18n';
@@ -89,6 +89,16 @@ export default function Index({ upcoming, past }) {
                         {t('citas.new')}
                     </Link>
                 </header>
+
+                <Link href="/documentos" className="flex min-h-14 items-center gap-3 rounded-[22px] bg-surface p-3 shadow-card focus-visible:outline-2 focus-visible:outline-primary">
+                    <span className={`flex size-[46px] shrink-0 items-center justify-center rounded-2xl ${KINDS.appointment.bg} ${KINDS.appointment.ink}`}>
+                        <FolderSearch aria-hidden="true" className="size-6" strokeWidth={1.75} />
+                    </span>
+                    <span className="flex min-w-0 grow flex-col">
+                        <span className="text-base font-bold">{t('documentos.link')}</span>
+                        <span className="text-[13px] text-ink-soft">{t('documentos.link_help')}</span>
+                    </span>
+                </Link>
 
                 {upcoming.length === 0 && past.length === 0 ? (
                     <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-8 text-center shadow-card">
