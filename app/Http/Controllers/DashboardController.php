@@ -29,6 +29,9 @@ class DashboardController extends Controller
             'summary' => $range === 'hoy' ? $today : $data->summary($baby, $range),
             'sessions' => $data->sessions($baby),
             'upcoming' => $data->upcoming($baby),
+            'last' => $data->lastTimes($baby),
+            'growth' => $data->latestGrowth($baby),
+            'marks' => $data->dayMarks($baby),
         ]);
     }
 }

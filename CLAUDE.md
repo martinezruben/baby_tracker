@@ -12,6 +12,11 @@ Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
    - `Actividad.dc.html`: resumen de actividad y crecimiento.
    - `Oscuro.dc.html` y `Nursery.dc.html`: modo oscuro y modo nursery. El modo oscuro aún usa la distribución anterior; aplica las reglas de la guía.
 
+## Estilo visual vigente: «Aire»
+
+- Referencia: `docs/mockup/aire.png` (sustituye a la dirección beige/marrón de los `.dc.html` y de la sección 15 de la guía). Fondo frío `#f3f4fa`, tarjetas blancas, azul primario `#3a56f5`, pasteles por tipo (toma = durazno, sueño = lavanda, pañal = azul, medicina = rosa, vacuna/sólidos = verde, medidas = amarillo). Los tokens siguen en `app.css`; oscuro = azul noche; nursery sin cambios.
+- Barra inferior (`FloatingNav`): Inicio, Calendario, **+** elevado, Bitácora, Más (con etiquetas). Inicio: «Desde la última vez» (`DashboardData::lastTimes`), registro rápido, «Hoy» con línea del día (`dayMarks`) y conteos, crecimiento (`latestGrowth`) y próximos. Los módulos («Todo sobre el bebé») viven en **Más**. Registrar: búsqueda + filtros Todo/Rutina/Salud/Momentos. Acceso: tarjetas de cuidador y teclado de PIN (`PinPad`, con campo oculto para teclado físico).
+
 ## Reglas al implementar
 
 - Móvil primero (360–390 px); escritorio es una expansión, no un rediseño.

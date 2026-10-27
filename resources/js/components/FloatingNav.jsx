@@ -1,11 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
-import { CalendarDays, Home, List, MoreHorizontal, Plus } from 'lucide-react';
+import { CalendarDays, Home, List, LayoutGrid, Plus } from 'lucide-react';
 import { useT } from '../lib/i18n';
 
-const circle =
-    'flex size-[52px] items-center justify-center rounded-full bg-canvas text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
-
-/** Barra flotante en forma de pastilla (docs/mockup/Main.dc.html). El destino activo va en oscuro con su etiqueta. */
+/** Barra inferior estilo Aire: cuatro destinos con etiqueta y el botón + elevado en el centro. */
 export default function FloatingNav() {
     const { url } = usePage();
     const t = useT();
@@ -13,44 +10,41 @@ export default function FloatingNav() {
 
     const active = path === '/' ? 'home' : path.startsWith('/bitacora') ? 'log' : path.startsWith('/calendario') ? 'calendar' : path.startsWith('/mas') || path.startsWith('/recordatorios') ? 'more' : null;
 
-    const item = (key, href, Icon, label) =>
-        active === key ? (
+    const item = (key, href, Icon, label) => {
+        const on = active === key;
+        return (
             <Link
+                key={key}
                 href={href}
-                aria-current="page"
-                className="flex h-14 items-center gap-2 rounded-[28px] bg-ink pr-[18px] pl-3.5 text-[15px] font-semibold text-on-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                aria-current={on ? 'page' : undefined}
+                className={`flex min-h-12 min-w-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl text-[12px] leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                    on ? 'font-bold text-primary' : 'font-medium text-ink-soft'
+                }`}
             >
-                <Icon aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />
+                <Icon aria-hidden="true" className="size-[22px]" strokeWidth={on ? 2.25 : 1.75} />
                 {label}
             </Link>
-        ) : (
-            <Link href={href} aria-label={label} className={circle}>
-                <Icon aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />
-            </Link>
         );
-
-    const soon = (Icon, label) => (
-        <span role="img" aria-label={`${label} (${t('common.soon')})`} className={`${circle} opacity-40`}>
-            <Icon aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />
-        </span>
-    );
+    };
 
     return (
         <nav
             aria-label={t('nav.main')}
-            className="fixed print:hidden inset-x-5 bottom-[max(1.5rem,env(safe-area-inset-bottom))] z-20 mx-auto flex h-[72px] max-w-[430px] items-center justify-between rounded-[36px] bg-surface p-2 shadow-nav"
+            className="fixed print:hidden inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-20 mx-auto flex h-[68px] max-w-[430px] items-center rounded-[30px] bg-surface px-2 shadow-nav"
         >
             {item('home', '/', Home, t('nav.home'))}
             {item('calendar', '/calendario', CalendarDays, t('nav.calendar'))}
-            <Link
-                href="/registrar"
-                aria-label={t('nav.register')}
-                className="flex size-[52px] items-center justify-center rounded-full bg-primary text-on-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-            >
-                <Plus aria-hidden="true" className="size-[26px]" strokeWidth={2} />
-            </Link>
+            <div className="relative flex flex-1 justify-center">
+                <Link
+                    href="/registrar"
+                    aria-label={t('nav.register')}
+                    className="-mt-7 flex size-14 items-center justify-center rounded-full border-4 border-canvas bg-primary text-on-primary shadow-fab focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                >
+                    <Plus aria-hidden="true" className="size-7" strokeWidth={2.25} />
+                </Link>
+            </div>
             {item('log', '/bitacora', List, t('nav.log'))}
-            {item('more', '/mas', MoreHorizontal, t('nav.more'))}
+            {item('more', '/mas', LayoutGrid, t('nav.more'))}
         </nav>
     );
 }
