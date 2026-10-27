@@ -1,5 +1,5 @@
 import { Link, router } from '@inertiajs/react';
-import { ChevronLeft, History, Moon } from 'lucide-react';
+import { ChevronLeft, History, Moon, Search } from 'lucide-react';
 import { useState } from 'react';
 import useBreastTimer from '../../components/useBreastTimer';
 import AppLayout from '../../layouts/AppLayout';
@@ -164,6 +164,7 @@ export default function Index({ baby, clock, sessions, last, lastBreastAt, nextA
     const t = useT();
     const format = useFormat();
     const [section, setSection] = useState('todo');
+    const [query, setQuery] = useState('');
     const breast = useBreastTimer(sessions.breast);
 
     const lastBy = Object.fromEntries(last.map((entry) => [entry.type, entry]));
@@ -187,18 +188,23 @@ export default function Index({ baby, clock, sessions, last, lastBreastAt, nextA
     const dots = { biberon: 'bg-chart-food', panal: 'bg-chart-diaper', medicina: 'bg-chart-medicine' };
 
     const chip = (id, label) => (
-        <a
+        <button
             key={id}
-            href={`#${id}`}
+            type="button"
+            aria-pressed={section === id}
             onClick={() => setSection(id)}
-            aria-current={section === id ? 'true' : undefined}
-            className={`flex min-h-11 shrink-0 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                section === id ? 'bg-primary font-semibold text-on-primary' : 'bg-surface font-medium text-ink'
+            className={`flex min-h-12 shrink-0 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                section === id ? 'bg-ink font-semibold text-on-ink' : 'bg-surface font-medium text-ink'
             }`}
         >
             {label}
-        </a>
+        </button>
     );
+
+    const needle = query.trim().toLowerCase();
+    const slugsOf = (group) => GROUPS[group].filter((slug) => !needle || t(`registrar.tiles.${slug}`).toLowerCase().includes(needle));
+    const shows = (group) => (section === 'todo' || section === group) && slugsOf(group).length > 0;
+    const noResults = !['rutina', 'salud', 'momentos'].some(shows);
 
     return (
         <AppLayout title={t('registrar.title')}>
@@ -214,19 +220,31 @@ export default function Index({ baby, clock, sessions, last, lastBreastAt, nextA
                     <span className="size-12" aria-hidden="true" />
                 </header>
 
-                <nav aria-label={t('registrar.sections')} className="-mr-5 flex gap-2 overflow-x-auto pr-5 [scrollbar-width:none]">
+                <label className="flex min-h-12 items-center gap-2 rounded-2xl bg-surface px-4 shadow-card focus-within:outline-2 focus-within:outline-primary">
+                    <Search aria-hidden="true" className="size-5 shrink-0 text-ink-soft" strokeWidth={1.75} />
+                    <span className="sr-only">{t('registrar.search')}</span>
+                    <input
+                        type="search"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder={t('registrar.search_placeholder')}
+                        className="min-h-12 grow bg-transparent text-base outline-none placeholder:text-ink-soft"
+                    />
+                </label>
+
+                <div role="group" aria-label={t('registrar.sections')} className="-mr-5 flex gap-2 overflow-x-auto pr-5 [scrollbar-width:none]">
                     {chip('todo', t('registrar.all'))}
                     {chip('rutina', t('registrar.routine'))}
                     {chip('salud', t('registrar.health'))}
                     {chip('momentos', t('registrar.moments'))}
-                </nav>
+                </div>
 
                 <div id="todo" className="flex flex-col gap-3">
                     {sessions.breast && <BreastCard session={sessions.breast} />}
                     {sessions.sleep && <SleepCard session={sessions.sleep} />}
                 </div>
 
-                {repeatable.length > 0 && (
+                {repeatable.length > 0 && !needle && (
                     <section className="flex flex-col gap-2.5">
                         <div className="flex items-center gap-2 text-[15px] font-semibold text-ink-soft">
                             <History aria-hidden="true" className="size-[18px]" strokeWidth={2} />
@@ -249,26 +267,39 @@ export default function Index({ baby, clock, sessions, last, lastBreastAt, nextA
                     </section>
                 )}
 
-                <GroupTitle id="rutina" title={t('registrar.routine_title')} count={GROUPS.rutina.length} />
-                <div className="-mt-1.5 grid grid-cols-2 gap-3">
-                    {GROUPS.rutina.map((slug) => (
-                        <RoutineTile key={slug} slug={slug} subtitle={subtitle(slug)} active={slug === 'pecho' && Boolean(sessions.breast)} />
-                    ))}
-                </div>
+                {shows('rutina') && (
+                    <>
+                    <GroupTitle id="rutina" title={t('registrar.routine_title')} count={slugsOf('rutina').length} />
+                    <div className="-mt-1.5 grid grid-cols-2 gap-3">
+                        {slugsOf('rutina').map((slug) => (
+                            <RoutineTile key={slug} slug={slug} subtitle={subtitle(slug)} active={slug === 'pecho' && Boolean(sessions.breast)} />
+                        ))}
+                    </div>
+                    </>
+                )}
 
-                <GroupTitle id="salud" title={t('registrar.health')} count={GROUPS.salud.length} />
-                <div className="-mt-1.5 grid grid-cols-2 gap-3">
-                    {GROUPS.salud.map((slug) => (
-                        <ListTile key={slug} slug={slug} subtitle={subtitle(slug)} />
-                    ))}
-                </div>
+                {shows('salud') && (
+                    <>
+                    <GroupTitle id="salud" title={t('registrar.health')} count={slugsOf('salud').length} />
+                    <div className="-mt-1.5 grid grid-cols-2 gap-3">
+                        {slugsOf('salud').map((slug) => (
+                            <ListTile key={slug} slug={slug} subtitle={subtitle(slug)} />
+                        ))}
+                    </div>
+                    </>
+                )}
 
-                <GroupTitle id="momentos" title={t('registrar.moments')} count={GROUPS.momentos.length} />
-                <div className="-mt-1.5 grid grid-cols-2 gap-3">
-                    {GROUPS.momentos.map((slug) => (
-                        <ListTile key={slug} slug={slug} subtitle={subtitle(slug)} />
-                    ))}
-                </div>
+                {shows('momentos') && (
+                    <>
+                    <GroupTitle id="momentos" title={t('registrar.moments')} count={slugsOf('momentos').length} />
+                    <div className="-mt-1.5 grid grid-cols-2 gap-3">
+                        {slugsOf('momentos').map((slug) => (
+                            <ListTile key={slug} slug={slug} subtitle={subtitle(slug)} />
+                        ))}
+                    </div>
+                    </>
+                )}
+                {noResults && <p className="py-6 text-center text-base text-ink-soft">{t('registrar.no_results')}</p>}
             </div>
         </AppLayout>
     );

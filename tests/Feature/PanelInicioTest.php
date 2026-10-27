@@ -11,6 +11,7 @@ use App\Models\Baby;
 use App\Models\Caretaker;
 use App\Models\DiaperLog;
 use App\Models\FeedLog;
+use App\Models\Measurement;
 use App\Models\Medicine;
 use App\Models\MedicineLog;
 use App\Models\NotificationRule;
@@ -97,6 +98,60 @@ class PanelInicioTest extends TestCase
             ->where('summary.total', 7)
             ->where('summary.segments.0', ['key' => 'feed', 'count' => 3])
             ->where('today', ['feeds' => 3, 'diapers' => 1, 'sleep_minutes' => 130, 'total' => 7]));
+    }
+
+    public function test_since_last_time_shows_the_latest_feed_diaper_and_finished_sleep(): void
+    {
+        FeedLog::create($this->owner() + ['occurred_at' => '2026-11-03 09:00:00', 'type' => FeedType::Bottle, 'amount' => 2, 'unit' => 'oz']);
+        FeedLog::create($this->owner() + ['occurred_at' => '2026-11-03 07:00:00', 'type' => FeedType::Breast]);
+        $this->diaper('2026-11-03 10:00:00');
+        SleepLog::create($this->owner() + ['started_at' => '2026-11-03 05:00:00', 'ended_at' => '2026-11-03 07:07:00', 'duration_minutes' => 127, 'type' => SleepType::Nap]);
+
+        $this->actingAs($this->mama)->get('/')->assertInertia(fn (Assert $page) => $page
+            ->where('last.feed.type', 'bottle')
+            ->where('last.feed.at', '2026-11-03T09:00:00+00:00')
+            ->where('last.feed.amount', 59) // 2 oz en la unidad de la familia (ml)
+            ->where('last.diaper.type', 'wet')
+            ->where('last.sleep.minutes', 127));
+    }
+
+    public function test_since_last_time_is_empty_without_records(): void
+    {
+        $this->actingAs($this->mama)->get('/')->assertInertia(fn (Assert $page) => $page
+            ->where('last', ['feed' => null, 'diaper' => null, 'sleep' => null])
+            ->where('growth', [])
+            ->where('marks', []));
+    }
+
+    public function test_growth_card_uses_the_latest_measure_of_each_type(): void
+    {
+        $baby = $this->baby();
+        $this->measure($baby, 'weight', 5.2, 'kg', '2026-10-01');
+        $this->measure($baby, 'weight', 6.1, 'kg', '2026-11-01');
+        $this->measure($baby, 'height', 61.5, 'cm', '2026-11-01');
+
+        $this->actingAs($this->mama)->get('/')->assertInertia(fn (Assert $page) => $page
+            ->where('growth', [
+                ['type' => 'weight', 'value' => 6.1, 'unit' => 'kg'],
+                ['type' => 'height', 'value' => 61.5, 'unit' => 'cm'],
+            ]));
+    }
+
+    public function test_day_marks_give_the_family_local_minute_of_each_record_today_only(): void
+    {
+        $this->diaper('2026-11-03 10:30:00'); // 06:30 en la familia
+        $this->diaper('2026-11-02 10:30:00'); // ayer
+        FeedLog::create($this->owner() + ['occurred_at' => '2026-11-03 04:00:00', 'type' => FeedType::Bottle, 'amount' => 90, 'unit' => 'ml']); // 00:00
+
+        $this->actingAs($this->mama)->get('/')->assertInertia(fn (Assert $page) => $page
+            ->has('marks', 2)
+            ->where('marks.0', ['kind' => 'feed', 'minute' => 0])
+            ->where('marks.1', ['kind' => 'diaper', 'minute' => 390]));
+    }
+
+    private function measure(Baby $baby, string $type, float $value, string $unit, string $on): void
+    {
+        Measurement::create(['family_id' => $baby->family_id, 'baby_id' => $baby->id, 'caretaker_id' => $this->mama->id, 'measured_on' => $on, 'type' => $type, 'value' => $value, 'unit' => $unit]);
     }
 
     public function test_week_and_month_ranges_include_older_records_but_today_does_not(): void

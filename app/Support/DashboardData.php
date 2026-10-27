@@ -12,6 +12,7 @@ use App\Models\Appointment;
 use App\Models\Baby;
 use App\Models\DiaperLog;
 use App\Models\FeedLog;
+use App\Models\Measurement;
 use App\Models\MedicineLog;
 use App\Models\NotificationRule;
 use App\Models\PlayLog;
@@ -59,6 +60,75 @@ class DashboardData
             'medicine' => $medicines,
             'play' => $plays,
         ];
+    }
+
+    /**
+     * "Desde la última vez": última toma, último pañal y último sueño (con cuándo y qué fue).
+     *
+     * @return array<string, array<string, mixed>|null>
+     */
+    public function lastTimes(Baby $baby): array
+    {
+        $unit = $baby->family->settings->volume_unit ?? 'ml';
+        $feed = FeedLog::where('baby_id', $baby->id)->latest('occurred_at')->first();
+        $diaper = DiaperLog::where('baby_id', $baby->id)->latest('occurred_at')->first();
+        $sleep = SleepLog::where('baby_id', $baby->id)->whereNotNull('ended_at')->latest('ended_at')->first();
+
+        return [
+            'feed' => $feed ? [
+                'at' => $feed->occurred_at->toIso8601String(),
+                'type' => $feed->type->value,
+                'amount' => $feed->type === FeedType::Bottle && $feed->amount !== null
+                    ? Units::round(Units::volume((float) $feed->amount, $feed->unit, $unit), $unit) : null,
+                'unit' => $unit,
+            ] : null,
+            'diaper' => $diaper ? ['at' => $diaper->occurred_at->toIso8601String(), 'type' => $diaper->type->value] : null,
+            'sleep' => $sleep ? [
+                'at' => $sleep->ended_at->toIso8601String(),
+                'started_at' => $sleep->started_at->toIso8601String(),
+                'minutes' => (int) $sleep->duration_minutes,
+            ] : null,
+        ];
+    }
+
+    /**
+     * Medida más reciente de peso, talla y perímetro cefálico (ya guardadas en las unidades de la familia).
+     *
+     * @return array<int, array{type: string, value: float, unit: string}>
+     */
+    public function latestGrowth(Baby $baby): array
+    {
+        $types = ['weight', 'height', 'head_circumference'];
+        $rows = Measurement::where('baby_id', $baby->id)->whereIn('type', $types)->orderByDesc('measured_on')->orderByDesc('id')->get();
+
+        return collect($types)
+            ->map(fn (string $type) => ($m = $rows->first(fn (Measurement $r) => $r->type->value === $type))
+                ? ['type' => $type, 'value' => (float) $m->value, 'unit' => $m->unit] : null)
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Marcas del día para la línea de tiempo de "Hoy": minuto del día (hora de la familia) de tomas,
+     * sueños, pañales y medicinas.
+     *
+     * @return array<int, array{kind: string, minute: int}>
+     */
+    public function dayMarks(Baby $baby): array
+    {
+        [$from, $to] = $this->clock->range('hoy');
+        $to = $to->subSecond();
+        $tz = $this->clock->timezone;
+        $minute = fn ($at) => (int) $at->copy()->setTimezone($tz)->format('G') * 60 + (int) $at->copy()->setTimezone($tz)->format('i');
+
+        return collect()
+            ->concat(FeedLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->pluck('occurred_at')->map(fn ($a) => ['kind' => 'feed', 'minute' => $minute($a)]))
+            ->concat(SleepLog::where('baby_id', $baby->id)->whereBetween('started_at', [$from, $to])->pluck('started_at')->map(fn ($a) => ['kind' => 'sleep', 'minute' => $minute($a)]))
+            ->concat(DiaperLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->pluck('occurred_at')->map(fn ($a) => ['kind' => 'diaper', 'minute' => $minute($a)]))
+            ->concat(MedicineLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->pluck('occurred_at')->map(fn ($a) => ['kind' => 'medicine', 'minute' => $minute($a)]))
+            ->values()
+            ->all();
     }
 
     /** Leche de biberón del rango en la unidad de la familia (los registros en otra unidad se convierten). */

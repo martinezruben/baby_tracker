@@ -9,13 +9,35 @@ import PushStatus from '../components/PushStatus';
 import PushToggle from '../components/PushToggle';
 import { enterNursery, setTheme, THEMES, useTheme } from '../lib/theme';
 import AppLayout from '../layouts/AppLayout';
-import { KINDS } from '../lib/activities';
+import { KINDS, MODULES } from '../lib/activities';
 import { useT } from '../lib/i18n';
 
 const row = 'flex min-h-16 items-center gap-3 rounded-[22px] bg-surface p-3 text-left shadow-card focus-visible:outline-2 focus-visible:outline-primary';
 
 function Icon({ kind, children }) {
     return <span className={`flex size-[46px] shrink-0 items-center justify-center rounded-2xl ${KINDS[kind].bg} ${KINDS[kind].ink}`}>{children}</span>;
+}
+
+function Modules({ name, admin }) {
+    const t = useT();
+
+    return (
+        <section className="flex flex-col gap-3.5">
+            <h2 className="text-[19px] font-bold">{t('home.everything', { name })}</h2>
+            <ul className="grid grid-cols-4 gap-x-2 gap-y-4">
+                {MODULES.filter((m) => !m.adminOnly || admin).map(({ key, icon: ModuleIcon, kind, href }) => (
+                    <li key={key} className="flex justify-center">
+                        <Link href={href} className="flex flex-col items-center gap-2 focus-visible:outline-2 focus-visible:outline-primary">
+                            <span className={`flex size-[58px] items-center justify-center rounded-[20px] ${KINDS[kind].bg} ${KINDS[kind].ink}`}>
+                                <ModuleIcon aria-hidden="true" className="size-[26px]" strokeWidth={1.75} />
+                            </span>
+                            <span className="text-[13px] font-medium">{t(`home.modules.${key}`)}</span>
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </section>
+    );
 }
 
 function ChangePin() {
@@ -107,8 +129,9 @@ function MyLanguage({ language, languages }) {
 
 export default function Mas({ caretakers, slug, language, languages }) {
     const t = useT();
-    const { auth } = usePage().props;
+    const { auth, babies, activeBabyId } = usePage().props;
     const name = auth.caretaker.name;
+    const babyName = babies.find((b) => b.id === activeBabyId)?.first_name ?? '';
 
     return (
         <AppLayout title={t('nav.more')}>
@@ -120,6 +143,8 @@ export default function Mas({ caretakers, slug, language, languages }) {
                         <div className="text-sm text-ink-soft">{t(`more.role_${auth.caretaker.role}`)}</div>
                     </div>
                 </header>
+
+                <Modules name={babyName} admin={auth.caretaker.role === 'admin'} />
 
                 <section className="flex flex-col gap-3">
                     <Link href="/recordatorios" className={row}>

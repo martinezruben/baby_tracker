@@ -1,5 +1,5 @@
 import {
-    Baby, BarChart3, BookOpen, Bath, Bell, Camera, CalendarDays, Droplet, Globe, Heart, Milk, Moon, Pill, Ruler,
+    Baby, BarChart3, Bath, Bell, Camera, CalendarDays, Droplet, Globe, Heart, Milk, Moon, Pill, Ruler,
     Settings, ShieldAlert, Smile, Star, Stethoscope, StickyNote, Syringe, TrendingUp, Users, Utensils,
 } from 'lucide-react';
 
@@ -56,8 +56,7 @@ export const MODULES = [
     { key: 'photos', icon: Camera, kind: 'moment', href: '/fotos' },
     { key: 'moments', icon: Star, kind: 'moment', href: '/eventos' },
     { key: 'reports', icon: BarChart3, kind: 'growth', href: '/reportes' },
-    { key: 'log', icon: BookOpen, kind: 'diaper', href: '/bitacora' },
     { key: 'allergies', icon: ShieldAlert, kind: 'food', href: '/alergias' },
     { key: 'contacts', icon: Users, kind: 'sleep', href: '/contactos' },
-    { key: 'settings', icon: Settings, kind: 'neutral', href: '/mas' },
+    { key: 'settings', icon: Settings, kind: 'neutral', href: '/ajustes', adminOnly: true },
 ];
