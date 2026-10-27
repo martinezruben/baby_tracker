@@ -1200,6 +1200,7 @@ return [
         ],
     ],
     'ajustes' => [
+        'device' => ['title' => 'This device'],
         'title' => 'Family settings',
         'back' => 'Back to settings',
         'saved' => 'Changes saved',
@@ -1209,6 +1210,8 @@ return [
         'baby_added' => 'Baby added',
         'baby_deleted' => 'Baby removed',
         'hub' => [
+            'device' => 'This device',
+            'device_help' => 'Alerts, install, appearance, language and PIN',
             'caretakers' => 'Caretakers',
             'caretakers_help' => 'Who signs in and with which PIN',
             'babies' => 'Babies',

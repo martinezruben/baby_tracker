@@ -58,5 +58,5 @@ export const MODULES = [
     { key: 'reports', icon: BarChart3, kind: 'growth', href: '/reportes' },
     { key: 'allergies', icon: ShieldAlert, kind: 'food', href: '/alergias' },
     { key: 'contacts', icon: Users, kind: 'sleep', href: '/contactos' },
-    { key: 'settings', icon: Settings, kind: 'neutral', href: '/ajustes', adminOnly: true },
+    { key: 'settings', icon: Settings, kind: 'neutral', href: '/ajustes' },
 ];
