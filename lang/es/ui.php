@@ -1200,6 +1200,7 @@ return [
         ],
     ],
     'ajustes' => [
+        'device' => ['title' => 'Este dispositivo'],
         'title' => 'Ajustes de la familia',
         'back' => 'Volver a ajustes',
         'saved' => 'Cambios guardados',
@@ -1209,6 +1210,8 @@ return [
         'baby_added' => 'Bebé añadido',
         'baby_deleted' => 'Bebé dado de baja',
         'hub' => [
+            'device' => 'Este dispositivo',
+            'device_help' => 'Avisos, instalación, apariencia, idioma y PIN',
             'caretakers' => 'Cuidadores',
             'caretakers_help' => 'Quién entra y con qué PIN',
             'babies' => 'Bebés',

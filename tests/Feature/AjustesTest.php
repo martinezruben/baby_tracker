@@ -50,6 +50,19 @@ class AjustesTest extends TestCase
         return $o + ['name' => 'Abuela Rosa', 'type' => 'Abuela', 'role' => 'user', 'badge_color' => '#A63A86', 'language' => null, 'pin' => '246802', 'pin_confirmation' => '246802'];
     }
 
+    public function test_every_caretaker_reaches_the_device_settings(): void
+    {
+        $helper = $this->mama->family->caretakers()->create(['login_id' => 'ab2', 'name' => 'Abuela', 'pin' => '246802', 'role' => CaretakerRole::User]);
+
+        $this->actingAs($helper)->get('/ajustes/dispositivo')->assertOk()->assertInertia(fn ($page) => $page
+            ->component('Ajustes/Dispositivo')
+            ->has('languages'));
+        $this->actingAs($this->mama)->get('/ajustes/dispositivo')->assertOk();
+
+        auth()->logout();
+        $this->get('/ajustes/dispositivo')->assertRedirect(route('login'));
+    }
+
     // ---- Solo administradores ------------------------------------------------------------------
 
     public function test_only_admins_reach_the_family_settings(): void

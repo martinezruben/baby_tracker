@@ -8,7 +8,7 @@ export default function FloatingNav() {
     const t = useT();
     const path = url.split('?')[0];
 
-    const active = path === '/' ? 'home' : path.startsWith('/bitacora') ? 'log' : path.startsWith('/calendario') ? 'calendar' : path.startsWith('/mas') || path.startsWith('/recordatorios') ? 'more' : null;
+    const active = path === '/' ? 'home' : path.startsWith('/bitacora') ? 'log' : path.startsWith('/calendario') ? 'calendar' : path.startsWith('/mas') || path.startsWith('/recordatorios') || path.startsWith('/ajustes') ? 'more' : null;
 
     const item = (key, href, Icon, label) => {
         const on = active === key;

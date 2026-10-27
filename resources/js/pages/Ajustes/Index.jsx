@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ArchiveRestore, ArrowLeft, Baby, ChevronRight, SlidersHorizontal, Syringe, Users } from 'lucide-react';
+import { ArchiveRestore, ArrowLeft, Baby, ChevronRight, SlidersHorizontal, Smartphone, Syringe, Users } from 'lucide-react';
 import AppLayout from '../../layouts/AppLayout';
 import { KINDS } from '../../lib/activities';
 import { useT } from '../../lib/i18n';
@@ -39,6 +39,7 @@ export default function Index({ family_name, counts }) {
                 </header>
 
                 <ul className="flex flex-col gap-3">
+                    <Item href="/ajustes/dispositivo" icon={Smartphone} kind="moment" title={t('ajustes.hub.device')} help={t('ajustes.hub.device_help')} />
                     <Item href="/ajustes/cuidadores" icon={Users} kind="sleep" title={t('ajustes.hub.caretakers')} help={`${t.choice('ajustes.hub.active', counts.caretakers)} · ${t('ajustes.hub.caretakers_help')}`} />
                     <Item href="/ajustes/bebes" icon={Baby} kind="diaper" title={t('ajustes.hub.babies')} help={`${t.choice('ajustes.hub.count_babies', counts.babies)} · ${t('ajustes.hub.babies_help')}`} />
                     <Item href="/ajustes/preferencias" icon={SlidersHorizontal} kind="growth" title={t('ajustes.hub.preferences')} help={t('ajustes.hub.preferences_help')} />

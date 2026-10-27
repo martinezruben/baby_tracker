@@ -146,6 +146,8 @@ Route::middleware('setup:required')->group(function () {
         Route::post('/salir', [SessionController::class, 'destroy'])->name('logout');
         Route::patch('/cuidador/idioma', [SettingsController::class, 'language'])->name('caretaker.language');
 
+        Route::get('/ajustes/dispositivo', [MoreController::class, 'device'])->name('settings.device');
+
         Route::middleware('admin')->prefix('ajustes')->name('settings.')->group(function () {
             Route::get('/', [SettingsController::class, 'index'])->name('index');
             Route::get('/preferencias', [SettingsController::class, 'preferences'])->name('preferences');
