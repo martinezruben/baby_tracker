@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, Camera, Heart, ImagePlus, MapPin, Search } from 'lucide-react';
+import { ArrowLeft, Camera, ChevronLeft, ChevronRight, Heart, ImagePlus, MapPin, Search } from 'lucide-react';
 import { useRef, useState } from 'react';
 import Button from '../../components/Button';
 import AppLayout from '../../layouts/AppLayout';
@@ -13,7 +13,7 @@ function Thumb({ photo }) {
                 href={`/fotos/${photo.id}`}
                 className="relative block aspect-square overflow-hidden rounded-2xl bg-track focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
-                <img src={photo.thumb_url} alt={photo.place_name ?? ''} loading="lazy" className="size-full object-cover" />
+                <img src={photo.thumb_url} alt={photo.place_name ?? ''} width="320" height="320" loading="lazy" decoding="async" className="size-full object-cover" />
                 {photo.favorite && (
                     <Heart aria-label="♥" className="absolute top-1.5 right-1.5 size-5 fill-white text-white drop-shadow" strokeWidth={1.5} />
                 )}
@@ -23,7 +23,59 @@ function Thumb({ photo }) {
     );
 }
 
-export default function Index({ filters, photos, next, tags, months, quota }) {
+/** Números de página con huecos: 1 … 4 5 6 … 20. */
+function pageList(page, pages) {
+    const set = new Set([1, pages, page - 1, page, page + 1].filter((n) => n >= 1 && n <= pages));
+    const sorted = [...set].sort((a, b) => a - b);
+    return sorted.flatMap((n, i) => (i > 0 && n - sorted[i - 1] > 1 ? ['gap-' + n, n] : [n]));
+}
+
+function Pagination({ pagination, onPage }) {
+    const t = useT();
+    const { page, pages, total, per } = pagination;
+    if (pages <= 1) return null;
+
+    const btn = 'flex size-12 shrink-0 items-center justify-center rounded-full text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-40';
+
+    return (
+        <nav aria-label={t('fotos.pages')} className="flex flex-col items-center gap-2">
+            <ul className="flex flex-wrap items-center justify-center gap-1">
+                <li>
+                    <button type="button" aria-label={t('fotos.prev')} disabled={page <= 1} onClick={() => onPage(page - 1)} className={`${btn} bg-surface`}>
+                        <ChevronLeft aria-hidden="true" className="size-5" />
+                    </button>
+                </li>
+                {pageList(page, pages).map((n) =>
+                    typeof n === 'string' ? (
+                        <li key={n} aria-hidden="true" className="px-1 text-ink-soft">
+                            …
+                        </li>
+                    ) : (
+                        <li key={n}>
+                            <button
+                                type="button"
+                                aria-current={n === page ? 'page' : undefined}
+                                aria-label={t('fotos.page_n', { n })}
+                                onClick={() => onPage(n)}
+                                className={`${btn} ${n === page ? 'bg-primary font-bold text-on-primary' : 'bg-surface font-medium'}`}
+                            >
+                                {n}
+                            </button>
+                        </li>
+                    ),
+                )}
+                <li>
+                    <button type="button" aria-label={t('fotos.next')} disabled={page >= pages} onClick={() => onPage(page + 1)} className={`${btn} bg-surface`}>
+                        <ChevronRight aria-hidden="true" className="size-5" />
+                    </button>
+                </li>
+            </ul>
+            <p className="text-xs text-ink-soft">{t('fotos.showing', { first: (page - 1) * per + 1, last: Math.min(page * per, total), total })}</p>
+        </nav>
+    );
+}
+
+export default function Index({ filters, photos, pagination, tags, months, quota }) {
     const t = useT();
     const { babies, activeBabyId, locale } = usePage().props;
     const baby = babies.find((b) => b.id === activeBabyId);
@@ -33,12 +85,14 @@ export default function Index({ filters, photos, next, tags, months, quota }) {
     const [place, setPlace] = useState(filters.lugar ?? '');
 
     const apply = (patch) => {
-        const params = { ...filters, ...patch };
+        const params = { ...filters, pagina: pagination.page, ...patch };
+        if (!('pagina' in patch)) delete params.pagina; // cambiar un filtro vuelve a la página 1
+        if (params.orden === 'recientes') delete params.orden;
         Object.keys(params).forEach((k) => (params[k] === null || params[k] === '' || params[k] === false) && delete params[k]);
-        router.get('/fotos', params, { only: ['filters', 'photos', 'next', 'tags', 'months'], reset: ['photos'], preserveState: true, preserveScroll: true, replace: true });
+        router.get('/fotos', params, { only: ['filters', 'photos', 'pagination', 'tags', 'months'], preserveState: true, preserveScroll: !('pagina' in patch), replace: true });
     };
 
-    const loadMore = () => router.reload({ data: { ...filters, antes: next }, only: ['photos', 'next'], preserveScroll: true, preserveUrl: true });
+    const goTo = (pagina) => apply({ pagina });
 
     const upload = (fileList) => {
         const files = Array.from(fileList);
@@ -136,6 +190,21 @@ export default function Index({ filters, photos, next, tags, months, quota }) {
                             </option>
                         ))}
                     </select>
+                    <label className="sr-only" htmlFor="photo-order">
+                        {t('fotos.order')}
+                    </label>
+                    <select
+                        id="photo-order"
+                        value={filters.orden}
+                        onChange={(e) => apply({ orden: e.target.value })}
+                        className="min-h-12 min-w-0 shrink-0 rounded-full border border-line bg-surface px-4 text-[15px]"
+                    >
+                        <option value="recientes">{t('fotos.newest')}</option>
+                        <option value="antiguas">{t('fotos.oldest')}</option>
+                    </select>
+                </div>
+
+                <div className="flex gap-2">
                     <form
                         className="relative min-w-0 grow"
                         role="search"
@@ -177,11 +246,7 @@ export default function Index({ filters, photos, next, tags, months, quota }) {
                     ))
                 )}
 
-                {next && (
-                    <Button variant="secondary" className="w-full" onClick={loadMore}>
-                        {t('fotos.load_more')}
-                    </Button>
-                )}
+                <Pagination pagination={pagination} onPage={goTo} />
 
                 <p className="text-center text-xs text-ink-soft">{t('fotos.quota', { used: quota.used_mb, total: quota.total_mb })}</p>
             </div>
