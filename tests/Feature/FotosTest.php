@@ -85,7 +85,8 @@ class FotosTest extends TestCase
         [$w, $h] = getimagesizefromstring($disk->get($photo->path));
         $this->assertSame(2048, max($w, $h)); // reducida al máximo
         [$tw, $th] = getimagesizefromstring($disk->get($photo->thumb_path));
-        $this->assertSame(480, max($tw, $th));
+        $this->assertSame(320, max($tw, $th));
+        $this->assertLessThan(40_000, $disk->size($photo->thumb_path)); // miniatura ligera
         $this->assertSame($photo->size, $disk->size($photo->path) + $disk->size($photo->thumb_path));
     }
 
@@ -173,25 +174,72 @@ class FotosTest extends TestCase
             ->where('quota.total_mb', 2048));
     }
 
-    public function test_cursor_pagination_has_no_gaps_or_repeats_even_with_equal_timestamps(): void
+    public function test_numbered_pagination_has_no_gaps_or_repeats_even_with_equal_timestamps(): void
     {
-        foreach (range(1, 60) as $i) {
+        foreach (range(1, 65) as $i) {
             $this->makePhoto($i <= 20 ? '2026-10-01 10:00:00' : Carbon::parse('2026-10-01 10:00:00')->addMinutes($i)->toDateTimeString());
         }
 
         $seen = [];
-        $cursor = null;
-        $pages = 0;
-        do {
-            $props = $this->get('/fotos'.($cursor ? '?antes='.urlencode($cursor) : ''))->viewData('page')['props'];
+        foreach ([1, 2, 3] as $page) {
+            $props = $this->get("/fotos?pagina={$page}")->viewData('page')['props'];
+            $this->assertSame(['page' => $page, 'pages' => 3, 'total' => 65, 'per' => 30], $props['pagination']);
             array_push($seen, ...array_column($props['photos'], 'id'));
-            $cursor = $props['next'];
-            $pages++;
-        } while ($cursor && $pages < 5);
+        }
 
-        $this->assertSame(60, count($seen));
-        $this->assertSame(60, count(array_unique($seen)));
-        $this->assertSame(2, $pages);
+        $this->assertSame(65, count($seen));
+        $this->assertSame(65, count(array_unique($seen)));
+        $this->assertCount(5, $this->get('/fotos?pagina=3')->viewData('page')['props']['photos']);
+        // Una página fuera de rango se acota a la última.
+        $this->assertSame(3, $this->get('/fotos?pagina=99')->viewData('page')['props']['pagination']['page']);
+        $this->assertSame(1, $this->get('/fotos?pagina=-4')->viewData('page')['props']['pagination']['page']);
+    }
+
+    public function test_filters_apply_before_paginating_and_the_order_can_be_reversed(): void
+    {
+        $old = $this->makePhoto('2026-01-01 10:00:00');
+        $new = $this->makePhoto('2026-10-01 10:00:00');
+        foreach (range(1, 31) as $i) {
+            $this->makePhoto('2026-10-02 10:00:00', ['is_favorite' => true]);
+        }
+
+        $props = $this->get('/fotos?favoritas=1')->viewData('page')['props'];
+        $this->assertSame(31, $props['pagination']['total']);
+        $this->assertSame(2, $props['pagination']['pages']);
+
+        $recent = $this->get('/fotos')->viewData('page')['props'];
+        $oldest = $this->get('/fotos?orden=antiguas')->viewData('page')['props'];
+        $this->assertSame('antiguas', $oldest['filters']['orden']);
+        $this->assertSame($old->id, $oldest['photos'][0]['id']);
+        $this->assertNotSame($old->id, $recent['photos'][0]['id']);
+        $this->assertSame('recientes', $this->get('/fotos?orden=raro')->viewData('page')['props']['filters']['orden']);
+    }
+
+    public function test_thumbnails_are_rebuilt_lighter_and_the_command_skips_light_ones(): void
+    {
+        $this->upload([$this->jpeg(['orientation' => 1], 3000, 2000)]);
+        $photo = Photo::firstOrFail();
+        $disk = Storage::disk('local');
+
+        // Miniatura antigua: 480 px y pesada.
+        $heavy = imagecreatetruecolor(480, 320);
+        imagefill($heavy, 0, 0, imagecolorallocate($heavy, 200, 120, 40));
+        for ($i = 0; $i < 4000; $i++) {
+            imagesetpixel($heavy, random_int(0, 479), random_int(0, 319), random_int(0, 16777215));
+        }
+        ob_start();
+        imagejpeg($heavy, null, 95);
+        $disk->put($photo->thumb_path, (string) ob_get_clean());
+        $this->assertGreaterThan(40_000, $disk->size($photo->thumb_path));
+
+        $this->artisan('photos:thumbnails')->expectsOutputToContain('1 regeneradas de 1')->assertSuccessful();
+
+        [$w, $h] = getimagesizefromstring($disk->get($photo->thumb_path));
+        $this->assertSame(320, max($w, $h));
+        $this->assertLessThan(40_000, $disk->size($photo->thumb_path));
+        $this->assertSame($disk->size($photo->path) + $disk->size($photo->thumb_path), $photo->fresh()->size);
+
+        $this->artisan('photos:thumbnails')->expectsOutputToContain('0 regeneradas de 1')->assertSuccessful();
     }
 
     // ---- Detalle y edición --------------------------------------------------------------------

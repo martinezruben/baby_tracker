@@ -21,7 +21,10 @@ class PhotoStorage
 {
     public const MAX_SIDE = 2048;
 
-    public const THUMB_SIDE = 480;
+    /** Miniatura de galería: ~320 px y calidad 70 (≈10–20 KB), suficiente para una rejilla de 3 columnas. */
+    public const THUMB_SIDE = 320;
+
+    public const THUMB_QUALITY = 70;
 
     public const MAX_PIXELS = 50_000_000;
 
@@ -55,7 +58,7 @@ class PhotoStorage
         $thumb = $this->fit($image, self::THUMB_SIDE, flatten: true);
 
         $original = $this->encode($image, $mime);
-        $thumbnail = $this->encode($thumb, 'image/jpeg');
+        $thumbnail = $this->encode($thumb, 'image/jpeg', self::THUMB_QUALITY);
         $size = strlen($original) + strlen($thumbnail);
 
         $this->ensureQuota($baby, $size);
@@ -86,6 +89,37 @@ class PhotoStorage
             'latitude' => $meta['latitude'] ?? null,
             'longitude' => $meta['longitude'] ?? null,
         ]);
+    }
+
+    /**
+     * Vuelve a crear la miniatura de una foto ya guardada con el tamaño y la calidad actuales
+     * (las subidas antes del cambio eran de 480 px y más pesadas). Devuelve false si ya era ligera.
+     */
+    public function rebuildThumbnail(Photo $photo): bool
+    {
+        @ini_set('memory_limit', '512M');
+        $disk = Storage::disk('local');
+
+        if (! $disk->exists($photo->path)) {
+            return false;
+        }
+
+        $current = $disk->exists($photo->thumb_path) ? $disk->get($photo->thumb_path) : null;
+        $info = $current ? @getimagesizefromstring($current) : null;
+        if ($info && max($info[0], $info[1]) <= self::THUMB_SIDE && strlen($current) < 40_000) {
+            return false;
+        }
+
+        $source = @imagecreatefromstring($disk->get($photo->path));
+        if (! $source instanceof GdImage) {
+            return false;
+        }
+
+        $thumbnail = $this->encode($this->fit($source, self::THUMB_SIDE, flatten: true), 'image/jpeg', self::THUMB_QUALITY);
+        $disk->put($photo->thumb_path, $thumbnail);
+        $photo->update(['size' => $disk->size($photo->path) + strlen($thumbnail)]);
+
+        return true;
     }
 
     /** Bytes que ocupan las fotos de una familia. */
@@ -198,13 +232,13 @@ class PhotoStorage
         return $canvas;
     }
 
-    public function encode(GdImage $image, string $mime): string
+    public function encode(GdImage $image, string $mime, int $quality = 85): string
     {
         ob_start();
         match ($mime) {
             'image/png' => imagepng($image, null, 6),
-            'image/webp' => imagewebp($image, null, 85),
-            default => imagejpeg($image, null, 85),
+            'image/webp' => imagewebp($image, null, $quality),
+            default => imagejpeg($image, null, $quality),
         };
 
         return (string) ob_get_clean();

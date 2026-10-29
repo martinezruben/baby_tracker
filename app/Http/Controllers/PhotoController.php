@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PhotoController extends Controller
 {
-    public const PAGE = 48;
+    public const PAGE = 30;
 
     public function index(Request $request, PhotoStorage $storage): Response
     {
@@ -30,6 +30,7 @@ class PhotoController extends Controller
             'favoritas' => $request->boolean('favoritas'),
             'mes' => preg_match('/^\d{4}-\d{2}$/', (string) $request->query('mes')) ? $request->query('mes') : null,
             'lugar' => trim((string) $request->query('lugar')) ?: null,
+            'orden' => $request->query('orden') === 'antiguas' ? 'antiguas' : 'recientes',
         ];
 
         $query = Photo::query()->where('baby_id', $baby->id)->with('tags:id,name');
@@ -48,19 +49,17 @@ class PhotoController extends Controller
             $query->where('place_name', 'like', '%'.addcslashes($filters['lugar'], '%_\\').'%');
         }
 
-        if ($cursor = $this->parseCursor($request->query('antes'))) {
-            [$at, $id] = $cursor;
-            $query->where(fn ($q) => $q->where('taken_at', '<', $at)->orWhere(fn ($q) => $q->where('taken_at', $at)->where('id', '<', $id)));
-        }
+        $total = (clone $query)->count();
+        $pages = max(1, (int) ceil($total / self::PAGE));
+        $current = min(max(1, $request->integer('pagina', 1)), $pages);
+        $dir = $filters['orden'] === 'antiguas' ? 'asc' : 'desc';
 
-        $rows = $query->orderByDesc('taken_at')->orderByDesc('id')->limit(self::PAGE + 1)->get();
-        $page = $rows->take(self::PAGE);
-        $last = $page->last();
+        $rows = $query->orderBy('taken_at', $dir)->orderBy('id', $dir)->forPage($current, self::PAGE)->get();
 
         return Inertia::render('Fotos/Index', [
             'filters' => $filters,
-            'photos' => Inertia::merge($page->map(fn (Photo $p) => $this->card($p))->values()->all()),
-            'next' => $rows->count() > self::PAGE && $last ? $last->taken_at->utc()->format('Y-m-d H:i:s').'|'.$last->id : null,
+            'photos' => $rows->map(fn (Photo $p) => $this->card($p))->values()->all(),
+            'pagination' => ['page' => $current, 'pages' => $pages, 'total' => $total, 'per' => self::PAGE],
             'tags' => $this->tagsWithCounts($family->id, $baby->id),
             'months' => $this->months($baby->id, $clock),
             'quota' => ['used_mb' => round($storage->usage($family->id) / 1048576, 1), 'total_mb' => $family->settings->photo_quota_mb],
@@ -186,7 +185,7 @@ class PhotoController extends Controller
         return Storage::disk('local')->response($path, $name, [
             'Content-Type' => $mime,
             'X-Content-Type-Options' => 'nosniff',
-            'Cache-Control' => 'private, max-age=604800',
+            'Cache-Control' => 'private, max-age=31536000, immutable',
         ], 'inline');
     }
 
@@ -230,21 +229,23 @@ class PhotoController extends Controller
             ->values()->all();
     }
 
-    /** Meses (en hora de la familia) en los que hay fotos, del más reciente al más antiguo. */
+    /**
+     * Meses (en hora de la familia) en los que hay fotos, del más reciente al más antiguo. Se parte de los
+     * días distintos (no de cada foto); solo los días que cruzan de mes en la zona de la familia se miran foto a foto.
+     */
     private function months(int $babyId, FamilyClock $clock): array
     {
-        return Photo::where('baby_id', $babyId)->pluck('taken_at')
-            ->map(fn ($at) => CarbonImmutable::instance($at)->setTimezone($clock->timezone)->format('Y-m'))
+        $month = fn (string $utc) => CarbonImmutable::parse($utc, 'UTC')->setTimezone($clock->timezone)->format('Y-m');
+
+        return Photo::where('baby_id', $babyId)->selectRaw('DISTINCT DATE(taken_at) as d')->pluck('d')
+            ->flatMap(function ($d) use ($month, $babyId) {
+                [$first, $last] = [$month($d.' 00:00:00'), $month($d.' 23:59:59')];
+
+                return $first === $last
+                    ? [$first]
+                    : Photo::where('baby_id', $babyId)->whereBetween('taken_at', [$d.' 00:00:00', $d.' 23:59:59'])
+                        ->pluck('taken_at')->map(fn ($at) => $month($at->utc()->format('Y-m-d H:i:s')))->all();
+            })
             ->unique()->sortDesc()->values()->all();
-    }
-
-    /** @return array{0: string, 1: int}|null */
-    private function parseCursor(mixed $cursor): ?array
-    {
-        if (! is_string($cursor) || ! preg_match('/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\|(\d+)$/', $cursor, $m)) {
-            return null;
-        }
-
-        return [$m[1], (int) $m[2]];
     }
 }
