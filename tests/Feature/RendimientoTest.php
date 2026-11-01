@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Actions\SetupFamily;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\Caretaker;
+use App\Support\Installation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -69,6 +70,19 @@ class RendimientoTest extends TestCase
         $this->assertSame(1, $sql->filter(fn ($q) => str_contains($q, 'from "babies"'))->count(), 'bebés consultados más de una vez');
         $this->assertLessThanOrEqual(1, $sql->filter(fn ($q) => str_contains($q, 'from "family_settings"'))->count(), 'ajustes consultados más de una vez');
         $this->assertLessThan(25, $sql->count());
+    }
+
+    public function test_the_installed_check_is_remembered_instead_of_querying_families_every_request(): void
+    {
+        Installation::forget();
+        $this->visit('/');
+
+        DB::enableQueryLog();
+        $this->visit('/');
+        $this->visit('/mas');
+        $families = collect(DB::getQueryLog())->pluck('query')->filter(fn ($q) => str_contains($q, 'from "families"'));
+
+        $this->assertCount(0, $families, 'families consultada en cada petición');
     }
 
     public function test_the_active_baby_still_follows_the_session_and_stays_inside_the_family(): void

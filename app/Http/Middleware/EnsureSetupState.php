@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Family;
+use App\Support\Installation;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +15,7 @@ class EnsureSetupState
 {
     public function handle(Request $request, Closure $next, string $state): Response
     {
-        $done = Family::query()->exists();
+        $done = Installation::hasFamily();
 
         if ($state === 'required' && ! $done) {
             return redirect()->route('setup.show');

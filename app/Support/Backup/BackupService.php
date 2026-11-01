@@ -4,6 +4,7 @@ namespace App\Support\Backup;
 
 use App\Enums\TargetStatus;
 use App\Models\Family;
+use App\Support\Installation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
@@ -189,6 +190,7 @@ class BackupService
             try {
                 DB::transaction(function () use ($zip, $manifest, $known, $wipe, $adminPin, &$rows, &$resetPins) {
                     if ($wipe) {
+                        Installation::forget();
                         foreach (array_reverse($known) as $table) {
                             DB::table($table)->delete();
                         }
