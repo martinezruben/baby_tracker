@@ -43,6 +43,7 @@ class VaccineController extends Controller
                 'total' => $rows->count(),
                 'applied' => $rows->where('status', 'applied')->count(),
                 'overdue' => $rows->where('status', 'overdue')->count(),
+                'upcoming' => $rows->whereIn('status', ['soon', 'later'])->count(),
             ],
             'doses' => $rows->map($row)->all(),
             'extra' => $baby->vaccinations()->whereNull('vaccine_dose_id')->orderByDesc('administered_at')->get()
