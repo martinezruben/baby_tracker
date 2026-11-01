@@ -1,6 +1,7 @@
 /* Service worker de Kidu Baby Tracker: avisos push con botones Confirmar / Posponer. */
 
-const ASSETS = 'kidu-assets-v1';
+// Súbelo cuando una copia guardada pueda estar dañada (p. ej. un despliegue que sirvió archivos rotos): al activarse se borra la anterior.
+const ASSETS = 'kidu-assets-v2';
 const MAX_ASSETS = 150;
 
 self.addEventListener('install', () => self.skipWaiting());
@@ -26,7 +27,8 @@ self.addEventListener('fetch', (event) => {
             const hit = await cache.match(request);
             if (hit) return hit;
 
-            const response = await fetch(request);
+            // 'reload' salta la caché HTTP del navegador: así nunca se guarda una copia vieja o rota de ese archivo.
+            const response = await fetch(request, { cache: 'reload' });
             if (response.ok) {
                 cache.put(request, response.clone());
                 // Cada despliegue trae archivos nuevos: se conservan los más recientes.
