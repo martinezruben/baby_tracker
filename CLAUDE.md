@@ -119,6 +119,7 @@ Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
 
 - Los componentes solo usan tokens de `resources/css/app.css`; `:root[data-theme='dark'|'nursery']` los redefinen (nunca colores sueltos: usa `text-on-primary`, `text-on-ink`, `text-danger-ink`, `bg-scrim`…, no `text-white` ni `text-red-*`). Oscuro = marrón grisáceo cálido, no negro puro; nursery = fondo casi negro y texto ámbar tenue, sin colores fríos.
 - Preferencia por **dispositivo** (`localStorage`: `kidu-theme` auto|light|dark|nursery, `kidu-brightness`, `kidu-theme-before`). `lib/theme.js` (`useTheme`, `setTheme`, `enterNursery`/`exitNursery`) y `components/ThemeEffects` (velo de brillo y Wake Lock en nursery); el script de `app.blade.php` aplica el tema antes de pintar. "Auto" sigue `prefers-color-scheme`.
+- El modo nursery activado al entrar a `/nursery` (o desde «Abrir el modo nursery») se quita solo al llegar a cualquier otra pantalla que no sea `/nursery` ni un formulario con `?nursery=1` (menú, botón atrás, reabrir la app): `leaveNurseryIfAuto` en `lib/theme.js`, llamado desde `ThemeEffects`. Si se elige «Nursery» a mano en Ajustes se respeta.
 - `/nursery` (`NurseryController`, `Nursery.jsx`): reloj grande, última toma y pañal, Pañal / Biberón / Pecho / Dormir (o Despertó) y brillo. Los formularios abiertos con `?nursery=1` vuelven a `/nursery` al guardar o cerrar.
 - `tests/Unit/TemaContrasteTest` exige contraste AA en los tres temas: si cambias un token, vuelve a correrlo.
 

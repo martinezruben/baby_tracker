@@ -7,7 +7,7 @@ import { useSyncExternalStore } from 'react';
  */
 export const THEMES = ['auto', 'light', 'dark', 'nursery'];
 
-const KEYS = { theme: 'kidu-theme', before: 'kidu-theme-before', brightness: 'kidu-brightness' };
+const KEYS = { theme: 'kidu-theme', before: 'kidu-theme-before', brightness: 'kidu-brightness', auto: 'kidu-nursery-auto' };
 const META = { light: '#f5f2ea', dark: '#0d1815', nursery: '#0b0907' };
 const listeners = new Set();
 let snapshot = null;
@@ -54,6 +54,7 @@ export function applyTheme() {
 export function setTheme(pref) {
     if (!THEMES.includes(pref)) return;
     write(KEYS.theme, pref);
+    write(KEYS.auto, '0'); // elegido a mano: no se quita solo al salir de /nursery
     emit();
 }
 
@@ -67,11 +68,27 @@ export function enterNursery() {
     const current = compute().pref;
     if (current !== 'nursery') write(KEYS.before, current);
     setTheme('nursery');
+    write(KEYS.auto, '1'); // activado por la pantalla /nursery: se quita al salir de ella
 }
 
 export function exitNursery() {
     const before = read(KEYS.before);
     setTheme(THEMES.includes(before) && before !== 'nursery' ? before : 'auto');
+}
+
+/** Pantallas que forman parte del modo nursery: /nursery y los formularios abiertos con ?nursery=1. */
+const inNursery = (url) => {
+    const { pathname, searchParams } = new URL(url, window.location.origin);
+    return pathname.startsWith('/nursery') || searchParams.get('nursery') === '1';
+};
+
+/**
+ * Si el modo nursery se activó entrando a /nursery y se llega a otra pantalla por cualquier camino (menú, botón
+ * atrás, reabrir la app), se vuelve al tema anterior. Si se eligió a mano en Ajustes, se respeta.
+ */
+export function leaveNurseryIfAuto(url) {
+    const { pref } = compute();
+    if (pref === 'nursery' && read(KEYS.auto) === '1' && !inNursery(url)) exitNursery();
 }
 
 function subscribe(fn) {
