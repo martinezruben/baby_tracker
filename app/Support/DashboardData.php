@@ -18,9 +18,13 @@ use App\Models\NotificationRule;
 use App\Models\PlayLog;
 use App\Models\Prescription;
 use App\Models\SleepLog;
+use Illuminate\Support\Collection;
 
 class DashboardData
 {
+    /** @var array<int, Collection> filas del esquema por bebé (se calculan una vez por petición) */
+    private array $vaccineRows = [];
+
     public function __construct(private FamilyClock $clock, private BreastFeedSession $breast) {}
 
     /**
@@ -113,7 +117,7 @@ class DashboardData
      * Marcas del día para la línea de tiempo de "Hoy": minuto del día (hora de la familia) de tomas,
      * sueños, pañales y medicinas.
      *
-     * @return array<int, array{kind: string, minute: int}>
+     * @return array<int, array{kind: string, minute: int, end?: int}> el sueño lleva también `end` (minuto en que terminó, o ahora si sigue)
      */
     public function dayMarks(Baby $baby): array
     {
@@ -122,13 +126,41 @@ class DashboardData
         $tz = $this->clock->timezone;
         $minute = fn ($at) => (int) $at->copy()->setTimezone($tz)->format('G') * 60 + (int) $at->copy()->setTimezone($tz)->format('i');
 
+        $nowMinute = $minute(now());
+
         return collect()
             ->concat(FeedLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->pluck('occurred_at')->map(fn ($a) => ['kind' => 'feed', 'minute' => $minute($a)]))
-            ->concat(SleepLog::where('baby_id', $baby->id)->whereBetween('started_at', [$from, $to])->pluck('started_at')->map(fn ($a) => ['kind' => 'sleep', 'minute' => $minute($a)]))
+            ->concat(SleepLog::where('baby_id', $baby->id)->whereBetween('started_at', [$from, $to])->get(['started_at', 'ended_at'])->map(fn ($l) => [
+                'kind' => 'sleep',
+                'minute' => $minute($l->started_at),
+                'end' => $l->ended_at ? max($minute($l->ended_at), $minute($l->started_at)) : $nowMinute,
+            ]))
             ->concat(DiaperLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->pluck('occurred_at')->map(fn ($a) => ['kind' => 'diaper', 'minute' => $minute($a)]))
             ->concat(MedicineLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->pluck('occurred_at')->map(fn ($a) => ['kind' => 'medicine', 'minute' => $minute($a)]))
             ->values()
             ->all();
+    }
+
+    private function vaccineRows(Baby $baby): Collection
+    {
+        return $this->vaccineRows[$baby->id] ??= VaccineSchedule::for($baby)->rows($baby);
+    }
+
+    /**
+     * Avance del esquema de vacunación para la tarjeta del Inicio.
+     *
+     * @return array{total: int, applied: int, overdue: int, upcoming: int}
+     */
+    public function vaccineSummary(Baby $baby): array
+    {
+        $rows = $this->vaccineRows($baby);
+
+        return [
+            'total' => $rows->count(),
+            'applied' => $rows->where('status', 'applied')->count(),
+            'overdue' => $rows->where('status', 'overdue')->count(),
+            'upcoming' => $rows->whereIn('status', ['soon', 'later'])->count(),
+        ];
     }
 
     /** Leche de biberón del rango en la unidad de la familia (los registros en otra unidad se convierten). */
@@ -206,7 +238,7 @@ class DashboardData
             ]);
 
         // Vacunas: la primera dosis vencida (si la hay) y la siguiente por aplicar.
-        $vaccines = VaccineSchedule::for($baby)->rows($baby)->whereIn('status', ['overdue', 'soon', 'later']);
+        $vaccines = $this->vaccineRows($baby)->whereIn('status', ['overdue', 'soon', 'later']);
         $nextVaccines = collect([$vaccines->firstWhere('status', 'overdue'), $vaccines->whereIn('status', ['soon', 'later'])->first()])
             ->filter()
             ->map(fn (array $r) => [

@@ -93,7 +93,7 @@ function RoutineTile({ slug, subtitle, active }) {
     const t = useT();
     const { kind, icon: Icon, available, href } = ACTIVITIES[slug];
     const colors = KINDS[kind];
-    const className = `relative flex h-[124px] flex-col items-start justify-between overflow-hidden rounded-3xl p-3.5 text-left ${colors.bg} ${
+    const className = `relative flex h-[148px] flex-col items-start justify-between overflow-hidden rounded-[28px] p-4 text-left ${colors.bg} ${
         active ? `border-2 ${colors.border}` : ''
     }`;
 
@@ -104,8 +104,8 @@ function RoutineTile({ slug, subtitle, active }) {
                 <Icon aria-hidden="true" className="size-6" strokeWidth={1.75} />
             </span>
             <span className="relative flex flex-col gap-0.5">
-                <span className="text-lg font-bold">{t(`registrar.tiles.${slug}`)}</span>
-                <span className={`text-[13px] text-ink-mid ${active ? 'font-semibold' : ''}`}>{available ? subtitle : t('common.soon')}</span>
+                <span className="text-[19px] font-semibold">{t(`registrar.tiles.${slug}`)}</span>
+                <span className={`text-[13px] text-ink-soft ${active ? 'font-semibold' : ''}`}>{available ? subtitle : t('common.soon')}</span>
             </span>
         </>
     );
@@ -125,7 +125,7 @@ function ListTile({ slug, subtitle }) {
     const t = useT();
     const { kind, icon: Icon, available, href } = ACTIVITIES[slug];
     const colors = KINDS[kind];
-    const className = 'flex min-h-[84px] items-center gap-3 rounded-[22px] bg-surface p-3 text-left shadow-card';
+    const className = 'flex min-h-[84px] items-center gap-3 rounded-3xl border border-line bg-surface p-3 text-left';
 
     const content = (
         <>
@@ -214,7 +214,7 @@ export default function Index({ baby, clock, sessions, last, lastBreastAt, nextA
                         <ChevronLeft aria-hidden="true" className="size-[22px]" strokeWidth={2} />
                     </Link>
                     <div className="flex flex-col items-center">
-                        <h1 className="text-[21px] font-bold">{t('registrar.title')}</h1>
+                        <h1 className="text-[21px] font-semibold">{t('registrar.title')}</h1>
                         <div className="text-[13px] text-ink-soft">{t('registrar.subtitle', { name: baby.first_name, time: `${format.localTime(clock.now).main} ${format.localTime(clock.now).suffix}`.trim() })}</div>
                     </div>
                     <span className="size-12" aria-hidden="true" />

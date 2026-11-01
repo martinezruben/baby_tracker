@@ -8,7 +8,7 @@ import { useSyncExternalStore } from 'react';
 export const THEMES = ['auto', 'light', 'dark', 'nursery'];
 
 const KEYS = { theme: 'kidu-theme', before: 'kidu-theme-before', brightness: 'kidu-brightness' };
-const META = { light: '#f3f4fa', dark: '#12162a', nursery: '#0b0907' };
+const META = { light: '#f5f2ea', dark: '#0d1815', nursery: '#0b0907' };
 const listeners = new Set();
 let snapshot = null;
 

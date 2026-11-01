@@ -32,6 +32,7 @@ class DashboardController extends Controller
             'last' => $data->lastTimes($baby),
             'growth' => $data->latestGrowth($baby),
             'marks' => $data->dayMarks($baby),
+            'vaccines' => $data->vaccineSummary($baby),
         ]);
     }
 }

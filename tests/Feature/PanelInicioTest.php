@@ -16,6 +16,8 @@ use App\Models\Medicine;
 use App\Models\MedicineLog;
 use App\Models\NotificationRule;
 use App\Models\SleepLog;
+use App\Models\Vaccination;
+use App\Models\VaccineDose;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -147,6 +149,29 @@ class PanelInicioTest extends TestCase
             ->has('marks', 2)
             ->where('marks.0', ['kind' => 'feed', 'minute' => 0])
             ->where('marks.1', ['kind' => 'diaper', 'minute' => 390]));
+    }
+
+    public function test_sleep_marks_carry_the_minute_it_ended_and_open_sleep_runs_until_now(): void
+    {
+        SleepLog::create($this->owner() + ['started_at' => '2026-11-03 04:30:00', 'ended_at' => '2026-11-03 06:15:00', 'duration_minutes' => 105, 'type' => SleepType::Nap]); // 00:30–02:15 local
+        SleepLog::create($this->owner() + ['started_at' => '2026-11-03 11:00:00', 'type' => SleepType::Nap]); // 07:00 local, sigue dormido (ahora 08:00)
+
+        $this->actingAs($this->mama)->get('/')->assertInertia(fn (Assert $page) => $page
+            ->where('marks.0', ['kind' => 'sleep', 'minute' => 30, 'end' => 135])
+            ->where('marks.1', ['kind' => 'sleep', 'minute' => 420, 'end' => 480]));
+    }
+
+    public function test_the_home_shows_the_vaccine_progress(): void
+    {
+        $family = $this->mama->family_id;
+        $due = fn (string $name, int $days) => VaccineDose::create(['family_id' => $family, 'vaccine_name' => $name, 'dose_label' => '1', 'age_days' => $days]);
+        $done = $due('BCG', 0);
+        $due('Penta', 60);   // nacida el 2026-06-01: vencida a 2026-07-31
+        $due('Polio', 400);  // por aplicar
+        Vaccination::create(['family_id' => $family, 'baby_id' => $this->baby()->id, 'vaccine_dose_id' => $done->id, 'vaccine_name' => 'BCG', 'administered_at' => '2026-06-02 12:00:00']);
+
+        $this->actingAs($this->mama)->get('/')->assertInertia(fn (Assert $page) => $page
+            ->where('vaccines', ['total' => 3, 'applied' => 1, 'overdue' => 1, 'upcoming' => 1]));
     }
 
     private function measure(Baby $baby, string $type, float $value, string $unit, string $on): void

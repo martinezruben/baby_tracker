@@ -156,7 +156,7 @@ export default function Bitacora({ tipo, dia, types, entries, next }) {
                 aria-pressed={selected}
                 onClick={() => setType(value)}
                 className={`flex min-h-11 shrink-0 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                    selected ? 'bg-primary font-semibold text-on-primary' : 'bg-surface font-medium text-ink'
+                    selected ? 'bg-ink font-semibold text-on-ink' : 'border border-line bg-surface font-medium text-ink'
                 }`}
             >
                 {label}
@@ -168,7 +168,7 @@ export default function Bitacora({ tipo, dia, types, entries, next }) {
         <AppLayout title={t('log.title')}>
             <div className="flex flex-col gap-5">
                 <header className="flex min-h-14 flex-col justify-center">
-                    <h1 className="text-2xl leading-tight font-bold">{t('log.title')}</h1>
+                    <h1 className="text-[34px] leading-tight font-semibold tracking-tight">{t('log.title')}</h1>
                     {baby && <div className="text-sm text-ink-soft">{t('log.subtitle', { name: baby.first_name })}</div>}
                 </header>
 
@@ -202,7 +202,7 @@ export default function Bitacora({ tipo, dia, types, entries, next }) {
                     groups.map((group) => (
                         <section key={group.key} aria-label={heading(group)} className="flex flex-col gap-2.5">
                             <h2 className="text-[15px] font-semibold text-ink-soft first-letter:uppercase">{heading(group)}</h2>
-                            <ul className="flex flex-col gap-2.5">
+                            <ul className="relative flex flex-col gap-2.5 before:absolute before:top-6 before:bottom-6 before:left-[35px] before:w-0.5 before:bg-line">
                                 {group.entries.map((entry) => (
                                     <Entry key={`${entry.type}-${entry.id}`} entry={entry} />
                                 ))}
