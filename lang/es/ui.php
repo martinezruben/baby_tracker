@@ -512,6 +512,8 @@ return [
         'disclaimer' => 'Referencia informativa basada en las tablas de :standard; no reemplaza la valoración del pediatra.',
     ],
     'log' => [
+        'export' => 'Descargar',
+        'records' => '1 registro|:n registros',
         'title' => 'Bitácora',
         'subtitle' => ':name · historial',
         'filters' => 'Filtrar por tipo',
@@ -531,6 +533,8 @@ return [
         'clear_day' => 'Quitar el filtro de día',
     ],
     'registrar' => [
+        'chip' => ':name · :time',
+        'heading' => '¿Qué quieres registrar?',
         'search' => 'Buscar actividad',
         'search_placeholder' => 'Buscar: biberón, vacuna, foto…',
         'no_results' => 'Sin resultados',
@@ -1172,6 +1176,7 @@ return [
         ],
     ],
     'calendario' => [
+        'of' => 'Calendario de :name',
         'title' => 'Calendario',
         'today' => 'Hoy',
         'prev' => 'Mes anterior',
@@ -1337,6 +1342,9 @@ return [
         ],
     ],
     'home' => [
+        'nap_of' => 'Siesta · :duration',
+        'sleeping_now' => 'Durmiendo ahora',
+        'logged_by' => 'Registró :name',
         'greet_morning' => 'Buenos días',
         'greet_afternoon' => 'Buenas tardes',
         'greet_evening' => 'Buenas noches',

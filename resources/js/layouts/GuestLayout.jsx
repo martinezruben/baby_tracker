@@ -2,7 +2,7 @@ import { Head } from '@inertiajs/react';
 import Sky from '../components/Sky';
 import { useT } from '../lib/i18n';
 
-export default function GuestLayout({ title, children }) {
+export default function GuestLayout({ title, children, plain = false }) {
     const t = useT();
 
     return (
@@ -16,7 +16,7 @@ export default function GuestLayout({ title, children }) {
                     <img src="/brand/kidu-mark.png" alt="" width="48" height="47" className="size-12 object-contain" />
                     <span className="text-xl font-semibold">{t('app.name')}</span>
                 </div>
-                <div className="rounded-3xl bg-surface p-6 shadow-sm">{children}</div>
+                <div className={plain ? 'flex flex-col' : 'rounded-3xl border border-line bg-surface p-6'}>{children}</div>
             </main>
         </>
     );

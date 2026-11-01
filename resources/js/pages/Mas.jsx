@@ -36,7 +36,7 @@ function Modules({ name, admin, badges }) {
 
 export default function Mas({ caretakers, slug, badges }) {
     const t = useT();
-    const { auth, babies, activeBabyId } = usePage().props;
+    const { auth, babies, activeBabyId, family } = usePage().props;
     const name = auth.caretaker.name;
     const babyName = babies.find((b) => b.id === activeBabyId)?.first_name ?? '';
 
@@ -48,7 +48,7 @@ export default function Mas({ caretakers, slug, badges }) {
                     <div className="relative flex size-16 items-center justify-center rounded-full bg-primary text-[28px] font-semibold text-on-primary">{name.slice(0, 1).toUpperCase()}</div>
                     <div className="relative">
                         <h1 className="text-[26px] leading-tight font-semibold">{name}</h1>
-                        <div className="text-sm text-ink-soft">{t(`more.role_${auth.caretaker.role}`)}</div>
+                        <div className="text-sm text-ink-soft">{t(`more.role_${auth.caretaker.role}`)} · {family.name}</div>
                     </div>
                 </header>
 

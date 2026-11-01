@@ -174,6 +174,24 @@ class PanelInicioTest extends TestCase
             ->where('vaccines', ['total' => 3, 'applied' => 1, 'overdue' => 1, 'upcoming' => 1]));
     }
 
+    public function test_today_entries_list_the_latest_records_with_who_logged_them(): void
+    {
+        FeedLog::create($this->owner() + ['occurred_at' => '2026-11-03 11:00:00', 'type' => FeedType::Bottle, 'amount' => 2, 'unit' => 'oz']);
+        SleepLog::create($this->owner() + ['started_at' => '2026-11-03 05:00:00', 'ended_at' => '2026-11-03 07:00:00', 'duration_minutes' => 120, 'type' => SleepType::Nap]);
+        $this->diaper('2026-11-03 09:00:00');
+        $this->diaper('2026-11-03 08:00:00');
+        $this->diaper('2026-11-03 07:30:00');
+        $this->diaper('2026-11-02 12:00:00'); // ayer: no entra
+
+        $this->actingAs($this->mama)->get('/')->assertInertia(fn (Assert $page) => $page
+            ->has('entries', 4)
+            ->where('entries.0.kind', 'feed')
+            ->where('entries.0.amount', 59)
+            ->where('entries.0.by', 'Mamá')
+            ->where('entries.1.kind', 'diaper')
+            ->where('entries.3.kind', 'diaper'));
+    }
+
     private function measure(Baby $baby, string $type, float $value, string $unit, string $on): void
     {
         Measurement::create(['family_id' => $baby->family_id, 'baby_id' => $baby->id, 'caretaker_id' => $this->mama->id, 'measured_on' => $on, 'type' => $type, 'value' => $value, 'unit' => $unit]);

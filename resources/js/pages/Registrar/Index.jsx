@@ -209,16 +209,16 @@ export default function Index({ baby, clock, sessions, last, lastBreastAt, nextA
     return (
         <AppLayout title={t('registrar.title')}>
             <div className="flex flex-col gap-5">
-                <header className="flex min-h-14 items-center justify-between">
-                    <Link href="/" aria-label={t('registrar.back_home')} className="flex size-12 items-center justify-center rounded-full bg-surface text-ink shadow-soft focus-visible:outline-2 focus-visible:outline-primary">
+                <header className="flex items-center justify-between">
+                    <Link href="/" aria-label={t('registrar.back_home')} className="flex size-12 items-center justify-center rounded-full border border-line bg-surface text-ink focus-visible:outline-2 focus-visible:outline-primary">
                         <ChevronLeft aria-hidden="true" className="size-[22px]" strokeWidth={2} />
                     </Link>
-                    <div className="flex flex-col items-center">
-                        <h1 className="text-[21px] font-semibold">{t('registrar.title')}</h1>
-                        <div className="text-[13px] text-ink-soft">{t('registrar.subtitle', { name: baby.first_name, time: `${format.localTime(clock.now).main} ${format.localTime(clock.now).suffix}`.trim() })}</div>
-                    </div>
-                    <span className="size-12" aria-hidden="true" />
+                    <span className="flex min-h-10 items-center gap-2 rounded-full border border-line bg-surface py-0 pr-3.5 pl-1.5 text-sm font-medium">
+                        <span aria-hidden="true" className="flex size-7 items-center justify-center rounded-full bg-vaccine text-[13px] font-semibold text-vaccine-ink">{baby.first_name.slice(0, 1).toUpperCase()}</span>
+                        {t('registrar.chip', { name: baby.first_name, time: `${format.localTime(clock.now).main} ${format.localTime(clock.now).suffix}`.trim() })}
+                    </span>
                 </header>
+                <h1 className="text-[34px] leading-[1.1] font-semibold tracking-tight">{t('registrar.heading')}</h1>
 
                 <label className="flex min-h-12 items-center gap-2 rounded-2xl bg-surface px-4 shadow-card focus-within:outline-2 focus-within:outline-primary">
                     <Search aria-hidden="true" className="size-5 shrink-0 text-ink-soft" strokeWidth={1.75} />
@@ -250,19 +250,24 @@ export default function Index({ baby, clock, sessions, last, lastBreastAt, nextA
                             <History aria-hidden="true" className="size-[18px]" strokeWidth={2} />
                             {t('registrar.repeat')}
                         </div>
-                        <ul className="-mr-5 flex gap-2 overflow-x-auto pr-5 pb-1 [scrollbar-width:none]">
-                            {repeatable.map((entry) => (
-                                <li key={entry.type} className="shrink-0">
-                                    <button
-                                        type="button"
-                                        onClick={() => router.post(`/registrar/${entry.type}/repetir`)}
-                                        className="flex min-h-12 items-center gap-2 rounded-full bg-surface px-4 text-sm font-semibold shadow-card focus-visible:outline-2 focus-visible:outline-primary"
-                                    >
-                                        <span aria-hidden="true" className={`size-2.5 rounded-[3px] ${dots[entry.type]}`} />
-                                        {repeatLabel(t, entry)}
-                                    </button>
-                                </li>
-                            ))}
+                        <ul className="grid grid-cols-2 gap-2.5">
+                            {repeatable.map((entry) => {
+                                const { kind, icon: Icon } = ACTIVITIES[entry.type];
+                                return (
+                                    <li key={entry.type}>
+                                        <button
+                                            type="button"
+                                            onClick={() => router.post(`/registrar/${entry.type}/repetir`)}
+                                            className="flex min-h-[60px] w-full items-center gap-2.5 rounded-[20px] border border-line bg-surface px-3.5 text-left focus-visible:outline-2 focus-visible:outline-primary"
+                                        >
+                                            <span aria-hidden="true" className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${KINDS[kind].bg} ${KINDS[kind].ink}`}>
+                                                <Icon className="size-[18px]" strokeWidth={1.75} />
+                                            </span>
+                                            <span className="min-w-0 truncate text-[15px] font-semibold">{repeatLabel(t, entry)}</span>
+                                        </button>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </section>
                 )}

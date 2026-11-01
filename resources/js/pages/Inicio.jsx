@@ -103,6 +103,7 @@ function DayRing({ marks, nowMinute, label, children }) {
             <svg viewBox="0 0 260 260" role="img" aria-label={label} className="size-full">
                 <circle cx="130" cy="130" r="117" fill="none" strokeWidth="6" strokeDasharray="1.5 29.2" transform="rotate(-90.4 130 130)" className="stroke-tick" />
                 <circle cx="130" cy="130" r={R} fill="none" strokeWidth="20" className="stroke-track" />
+                <circle cx="130" cy="130" r={R} fill="none" strokeWidth="3" strokeLinecap="round" strokeDasharray="1 4" className="stroke-ink opacity-30" />
                 <g transform="rotate(-90 130 130)" fill="none" strokeWidth="20">
                     <circle cx="130" cy="130" r={R} className="stroke-nightband" style={arc(0, 360)} />
                     <circle cx="130" cy="130" r={R} className="stroke-nightband" style={arc(1260, 1440)} />
@@ -282,6 +283,36 @@ function DayLine({ marks, nowMinute }) {
     );
 }
 
+const ENTRY_DOT = { feed: 'bg-chart-food', sleep: 'bg-chart-sleep', diaper: 'bg-chart-diaper', medicine: 'bg-chart-medicine' };
+
+/** Últimos registros de hoy: punto de color, qué fue, cuándo y quién lo anotó. */
+function TodayList({ entries }) {
+    const t = useT();
+    const format = useFormat();
+
+    const title = (e) => {
+        if (e.kind === 'feed') return [t(`home.feed_type.${e.type}`), e.amount ? `${String(e.amount).replace('.', ',')} ${e.unit}` : null].filter(Boolean).join(' · ');
+        if (e.kind === 'sleep') return e.minutes ? t('home.nap_of', { duration: durationLabel(t, e.minutes) }) : t('home.sleeping_now');
+        if (e.kind === 'diaper') return `${t('registrar.tiles.panal')} · ${t(`registrar.diaper.${e.type}`)}`;
+        return e.name ?? t('registrar.tiles.medicina');
+    };
+    const detail = (e) => (e.kind === 'sleep' && e.end ? `${format.time(e.at)} – ${format.time(e.end)}` : [format.time(e.at), e.by && t('home.logged_by', { name: e.by })].filter(Boolean).join(' · '));
+
+    return (
+        <ul className="-mb-1.5 border-t border-line">
+            {entries.map((e, i) => (
+                <li key={`${e.kind}-${e.at}-${i}`} className="flex min-h-[60px] items-center gap-3.5 border-b border-line py-2 last:border-b-0">
+                    <span aria-hidden="true" className={`size-3 shrink-0 rounded-full ${ENTRY_DOT[e.kind]}`} />
+                    <span className="flex min-w-0 flex-col leading-tight">
+                        <span className="truncate text-base font-semibold">{title(e)}</span>
+                        <span className="text-[13px] text-ink-soft">{detail(e)}</span>
+                    </span>
+                </li>
+            ))}
+        </ul>
+    );
+}
+
 const COUNTS = [
     ['feed', 'home.summary.feed', 'food', Milk],
     ['sleep', 'home.summary.sleep', 'sleep', Moon],
@@ -290,12 +321,12 @@ const COUNTS = [
     ['play', 'home.summary.play', 'growth', BabyIcon],
 ];
 
-function Summary({ summary, marks, clock }) {
+function Summary({ summary, marks, clock, entries }) {
     const t = useT();
     const nowMinute = Number(clock.now.slice(11, 13)) * 60 + Number(clock.now.slice(14, 16));
 
     const value = {
-        feed: summary.feed.count,
+        feed: summary.feed.amount > 0 ? `${summary.feed.count} · ${String(summary.feed.amount).replace('.', ',')} ${summary.feed.unit}` : summary.feed.count,
         sleep: summary.sleep.minutes > 0 ? durationLabel(t, summary.sleep.minutes) : '0',
         diaper: summary.diaper,
         medicine: summary.medicine,
@@ -331,18 +362,19 @@ function Summary({ summary, marks, clock }) {
             <div className={`${card} flex flex-col gap-4 p-[18px]`}>
                 {summary.range === 'hoy' && <DayLine marks={marks} nowMinute={nowMinute} />}
                 <ul className="grid grid-cols-2 gap-2.5">
-                    {COUNTS.map(([key, label, kind, Icon]) => (
-                        <li key={key} className="flex items-center gap-3 rounded-[20px] bg-canvas p-3">
-                            <span aria-hidden="true" className={`flex size-10 shrink-0 items-center justify-center rounded-full ${KINDS[kind].bg} ${KINDS[kind].ink}`}>
-                                <Icon className="size-5" strokeWidth={1.75} />
+                    {COUNTS.filter(([key]) => key !== 'play' || summary.play > 0).map(([key, label, kind, Icon]) => (
+                        <li key={key} className="flex items-center gap-2.5 rounded-[20px] bg-canvas p-2.5">
+                            <span aria-hidden="true" className={`flex size-9 shrink-0 items-center justify-center rounded-full ${KINDS[kind].bg} ${KINDS[kind].ink}`}>
+                                <Icon className="size-[18px]" strokeWidth={1.75} />
                             </span>
                             <span className="flex min-w-0 flex-col leading-tight">
-                                <span className="truncate text-xl font-semibold">{value[key]}</span>
-                                <span className="truncate text-[13px] text-ink-soft">{key === 'feed' && summary.feed.amount > 0 ? `${t(label)} · ${String(summary.feed.amount).replace('.', ',')} ${summary.feed.unit}` : t(label)}</span>
+                                <span className="truncate text-[19px] font-semibold">{value[key]}</span>
+                                <span className="truncate text-[13px] text-ink-soft">{t(label)}</span>
                             </span>
                         </li>
                     ))}
                 </ul>
+                {summary.range === 'hoy' && entries.length > 0 && <TodayList entries={entries} />}
             </div>
         </section>
     );
@@ -519,7 +551,7 @@ function Upcoming({ upcoming }) {
     );
 }
 
-export default function Inicio({ baby, clock, summary, sessions, upcoming, last, growth, marks, vaccines }) {
+export default function Inicio({ baby, clock, summary, sessions, upcoming, last, growth, marks, entries, vaccines }) {
     const t = useT();
     const { babies, activeBabyId } = usePage().props;
 
@@ -530,7 +562,7 @@ export default function Inicio({ baby, clock, summary, sessions, upcoming, last,
                 <ActiveSessions sessions={sessions} />
                 <Hero clock={clock} last={last} marks={marks} />
                 <QuickLog />
-                <Summary summary={summary} marks={marks} clock={clock} />
+                <Summary summary={summary} marks={marks} clock={clock} entries={entries} />
                 <Growth growth={growth} />
                 <Vaccines vaccines={vaccines} />
                 <Upcoming upcoming={upcoming} />

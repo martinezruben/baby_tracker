@@ -7,7 +7,7 @@ import GuestLayout from '../layouts/GuestLayout';
 import { useT } from '../lib/i18n';
 
 const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-const key = 'flex min-h-14 items-center justify-center rounded-2xl bg-canvas text-[26px] font-semibold active:bg-track focus-visible:outline-2 focus-visible:outline-primary';
+const key = 'flex min-h-14 items-center justify-center rounded-[22px] border border-line bg-surface text-[26px] font-semibold active:bg-track focus-visible:outline-2 focus-visible:outline-primary';
 
 /** PIN con puntos y teclado numérico grande; el campo oculto deja escribir con teclado y gestor de contraseñas. */
 function PinPad({ value, onChange, error }) {
@@ -97,7 +97,7 @@ export default function Entrar({ needsFamily, family, caretakers }) {
     };
 
     return (
-        <GuestLayout title={t('auth.login_title')}>
+        <GuestLayout title={t('auth.login_title')} plain>
             {restored && (
                 <div role="status" className="mb-4 rounded-2xl bg-vaccine p-4 text-base text-vaccine-ink">
                     <p className="font-semibold">{t('respaldos.restored_title')}</p>
@@ -105,7 +105,7 @@ export default function Entrar({ needsFamily, family, caretakers }) {
                     {restored.reset_pin.length > 0 && <p className="mt-1">{t('respaldos.restored_reset', { names: restored.reset_pin.join(', ') })}</p>}
                 </div>
             )}
-            <h1 className="text-[32px] leading-tight font-bold">{t('auth.welcome_back')}</h1>
+            <h1 className="text-[38px] leading-[1.05] font-semibold tracking-tight">{t('auth.welcome_back')}</h1>
             <p className="text-base text-ink-soft">{family.name}</p>
 
             {caretakers.length === 0 ? (
@@ -124,8 +124,8 @@ export default function Entrar({ needsFamily, family, caretakers }) {
                                         role="radio"
                                         aria-checked={selected}
                                         onClick={() => form.setData('caretaker_id', c.id)}
-                                        className={`relative flex min-h-[104px] flex-col items-center justify-center gap-2 rounded-3xl border-2 bg-canvas px-2 py-3 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                                            selected ? 'border-primary' : 'border-transparent'
+                                        className={`relative flex min-h-[104px] flex-col items-center justify-center gap-2 rounded-[28px] border-2 bg-surface px-2 py-3 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                                            selected ? 'border-primary' : 'border-line'
                                         }`}
                                     >
                                         {selected && (

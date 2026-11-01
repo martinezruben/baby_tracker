@@ -512,6 +512,8 @@ return [
         'disclaimer' => 'Informational reference based on :standard tables; it does not replace your pediatrician\'s assessment.',
     ],
     'log' => [
+        'export' => 'Download',
+        'records' => '1 record|:n records',
         'title' => 'Log',
         'subtitle' => ':name · history',
         'filters' => 'Filter by type',
@@ -531,6 +533,8 @@ return [
         'clear_day' => 'Remove the day filter',
     ],
     'registrar' => [
+        'chip' => ':name · :time',
+        'heading' => 'What do you want to log?',
         'search' => 'Search activities',
         'search_placeholder' => 'Search: bottle, vaccine, photo…',
         'no_results' => 'No results',
@@ -1172,6 +1176,7 @@ return [
         ],
     ],
     'calendario' => [
+        'of' => ":name's calendar",
         'title' => 'Calendar',
         'today' => 'Today',
         'prev' => 'Previous month',
@@ -1337,6 +1342,9 @@ return [
         ],
     ],
     'home' => [
+        'nap_of' => 'Nap · :duration',
+        'sleeping_now' => 'Sleeping now',
+        'logged_by' => 'Logged by :name',
         'greet_morning' => 'Good morning',
         'greet_afternoon' => 'Good afternoon',
         'greet_evening' => 'Good evening',

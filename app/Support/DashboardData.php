@@ -10,6 +10,7 @@ use App\Enums\PrescriptionStatus;
 use App\Models\ActiveBreastFeed;
 use App\Models\Appointment;
 use App\Models\Baby;
+use App\Models\Caretaker;
 use App\Models\DiaperLog;
 use App\Models\FeedLog;
 use App\Models\Measurement;
@@ -121,24 +122,62 @@ class DashboardData
      */
     public function dayMarks(Baby $baby): array
     {
+        return $this->day($baby)['marks'];
+    }
+
+    /**
+     * Lo registrado hoy, en dos vistas: las marcas (`marks`, para el anillo y la línea del día) y los
+     * últimos registros con su detalle (`entries`, para la lista de "Hoy").
+     *
+     * @return array{marks: array<int, array<string, mixed>>, entries: array<int, array<string, mixed>>}
+     */
+    public function day(Baby $baby): array
+    {
         [$from, $to] = $this->clock->range('hoy');
         $to = $to->subSecond();
         $tz = $this->clock->timezone;
+        $unit = $baby->family->settings->volume_unit ?? 'ml';
         $minute = fn ($at) => (int) $at->copy()->setTimezone($tz)->format('G') * 60 + (int) $at->copy()->setTimezone($tz)->format('i');
-
         $nowMinute = $minute(now());
 
-        return collect()
-            ->concat(FeedLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->pluck('occurred_at')->map(fn ($a) => ['kind' => 'feed', 'minute' => $minute($a)]))
-            ->concat(SleepLog::where('baby_id', $baby->id)->whereBetween('started_at', [$from, $to])->get(['started_at', 'ended_at'])->map(fn ($l) => [
+        $feeds = FeedLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->get();
+        $sleeps = SleepLog::where('baby_id', $baby->id)->whereBetween('started_at', [$from, $to])->get();
+        $diapers = DiaperLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->get();
+        $medicines = MedicineLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->with('medicine:id,name')->get();
+
+        $marks = collect()
+            ->concat($feeds->map(fn ($l) => ['kind' => 'feed', 'minute' => $minute($l->occurred_at)]))
+            ->concat($sleeps->map(fn ($l) => [
                 'kind' => 'sleep',
                 'minute' => $minute($l->started_at),
                 'end' => $l->ended_at ? max($minute($l->ended_at), $minute($l->started_at)) : $nowMinute,
             ]))
-            ->concat(DiaperLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->pluck('occurred_at')->map(fn ($a) => ['kind' => 'diaper', 'minute' => $minute($a)]))
-            ->concat(MedicineLog::where('baby_id', $baby->id)->whereBetween('occurred_at', [$from, $to])->pluck('occurred_at')->map(fn ($a) => ['kind' => 'medicine', 'minute' => $minute($a)]))
+            ->concat($diapers->map(fn ($l) => ['kind' => 'diaper', 'minute' => $minute($l->occurred_at)]))
+            ->concat($medicines->map(fn ($l) => ['kind' => 'medicine', 'minute' => $minute($l->occurred_at)]))
             ->values()
             ->all();
+
+        $names = Caretaker::whereIn('id', collect([$feeds, $sleeps, $diapers, $medicines])->flatten()->pluck('caretaker_id')->filter()->unique())->pluck('name', 'id');
+        $by = fn ($l) => $names[$l->caretaker_id] ?? null;
+
+        $entries = collect()
+            ->concat($feeds->map(fn ($l) => [
+                'kind' => 'feed', 'at' => $l->occurred_at->toIso8601String(), 'type' => $l->type->value,
+                'amount' => $l->type === FeedType::Bottle && $l->amount !== null ? Units::round(Units::volume((float) $l->amount, $l->unit, $unit), $unit) : null,
+                'unit' => $unit, 'by' => $by($l),
+            ]))
+            ->concat($sleeps->map(fn ($l) => [
+                'kind' => 'sleep', 'at' => $l->started_at->toIso8601String(), 'end' => $l->ended_at?->toIso8601String(),
+                'minutes' => $l->duration_minutes, 'by' => $by($l),
+            ]))
+            ->concat($diapers->map(fn ($l) => ['kind' => 'diaper', 'at' => $l->occurred_at->toIso8601String(), 'type' => $l->type->value, 'by' => $by($l)]))
+            ->concat($medicines->map(fn ($l) => ['kind' => 'medicine', 'at' => $l->occurred_at->toIso8601String(), 'name' => $l->medicine?->name, 'by' => $by($l)]))
+            ->sortByDesc('at')
+            ->take(4)
+            ->values()
+            ->all();
+
+        return ['marks' => $marks, 'entries' => $entries];
     }
 
     private function vaccineRows(Baby $baby): Collection
