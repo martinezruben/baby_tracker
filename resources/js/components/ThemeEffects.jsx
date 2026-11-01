@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
-import { applyTheme, useTheme } from '../lib/theme';
+import { router } from '@inertiajs/react';
+import { applyTheme, leaveNurseryIfAuto, useTheme } from '../lib/theme';
 
 /** Efectos globales del tema: aplica el tema, atenúa la pantalla y la mantiene encendida en modo nursery. */
 export default function ThemeEffects() {
     const { resolved, brightness } = useTheme();
 
     useEffect(() => {
+        leaveNurseryIfAuto(window.location.href);
         applyTheme();
+
+        return router.on('navigate', (event) => leaveNurseryIfAuto(event.detail.page.url));
     }, []);
 
     useEffect(() => {
