@@ -76,7 +76,7 @@ class VacunasTest extends TestCase
 
         $this->get('/vacunas')->assertInertia(fn (Assert $page) => $page
             ->component('Vacunas/Index')
-            ->where('counts', ['total' => 5, 'applied' => 1, 'overdue' => 1])
+            ->where('counts', ['total' => 5, 'applied' => 1, 'overdue' => 1, 'upcoming' => 3])
             ->where('doses.0.name', 'Al nacer')
             ->where('doses.0.due_on', '2026-09-03')
             ->where('doses.2.days_left', 0)

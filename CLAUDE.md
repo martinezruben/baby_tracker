@@ -80,6 +80,7 @@ Proyecto: Kidu Baby Tracker (Laravel + MySQL). Interfaz móvil primero, en espa�
 
 - El esquema (`VaccineDose`, por familia) es **dato**, no código: se carga desde la cartilla en `/vacunas/esquema` (una dosis, o pegando líneas "vacuna; dosis; edad; notas" con `VaccineScheduleImport`, todo o nada). No hay esquema precargado; no inventes edades ni dosis.
 - `VaccineSchedule` calcula el estado de cada dosis para un bebé desde su fecha de nacimiento: `applied`, `overdue`, `soon` (≤ 60 días) o `later`. Una aplicación (`Vaccination`) puede estar o no ligada a una dosis del esquema; una dosis se aplica una sola vez por bebé.
+- Pantalla `/vacunas` (`Vacunas/Index.jsx`): anillo de avance con Aplicadas / Por aplicar / Vencidas (`counts.upcoming`), tarjeta «Siguiente dosis» (la vencida más antigua o la próxima) y pestañas Esquema (una tarjeta por vacuna con barra de pasos y cada dosis), Pendientes (vencidas/próximas/más adelante) y Aplicadas (por fecha, más las vacunas fuera del esquema).
 - `SyncVaccineReminders` deja una regla por bebé y dosis pendiente (avisos 1 semana antes, 1 día antes y el día, a las 9:00 locales) y apaga la de las aplicadas, vencidas o borradas. Se llama al aplicar, deshacer, editar el esquema o importar; es idempotente.
 
 ## Calendario
