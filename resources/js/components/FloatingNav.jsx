@@ -16,6 +16,8 @@ export default function FloatingNav() {
             <Link
                 key={key}
                 href={href}
+                prefetch="mount"
+                cacheFor="15s"
                 aria-current={on ? 'page' : undefined}
                 className={`flex min-h-12 min-w-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl text-[12px] leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
                     on ? 'font-bold text-primary' : 'font-medium text-ink-soft'
@@ -37,6 +39,8 @@ export default function FloatingNav() {
             <div className="relative flex flex-1 justify-center">
                 <Link
                     href="/registrar"
+                    prefetch="mount"
+                    cacheFor="15s"
                     aria-label={t('nav.register')}
                     className="-mt-7 flex size-14 items-center justify-center rounded-full border-4 border-canvas bg-primary text-on-primary shadow-fab focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >

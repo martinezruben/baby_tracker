@@ -11,6 +11,7 @@ use App\Models\DiaperLog;
 use App\Models\Family;
 use App\Models\NotificationRule;
 use App\Support\Backup\BackupService;
+use App\Support\Installation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
@@ -65,6 +66,7 @@ class RespaldosTest extends TestCase
         foreach (array_reverse(app(BackupService::class)->tables()) as $table) {
             DB::table($table)->delete();
         }
+        Installation::forget(); // el "ya hay familia" se recuerda; tras vaciar la base se vuelve a mirar
         Storage::disk('local')->deleteDirectory('photos');
         Storage::disk('local')->deleteDirectory('appointments');
     }

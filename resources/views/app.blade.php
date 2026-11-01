@@ -25,6 +25,7 @@
         })();
     </script>
     <title inertia>{{ config('app.name', 'Kidu Baby Tracker') }}</title>
+    {{ Illuminate\Support\Facades\Vite::fonts() }}
     @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
     @inertiaHead

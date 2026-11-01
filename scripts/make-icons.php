@@ -39,7 +39,13 @@ $bgArr = [$br, $bgc, $bb];
 
 // Solo el carrito (el nombre "Kidu Baby Tracker" va como texto), con fondo transparente
 $mark = crop($src, 380, 115, 275, 270, true, $bgArr);
-save($mark, "$dir/brand/kidu-mark.png");
+// Se muestra a 48 px: 144 px (3x) bastan y pesan una fracción.
+$w = imagesx($mark);
+$h = imagesy($mark);
+$small = imagescale($mark, 144, (int) round(144 * $h / $w), IMG_BICUBIC);
+imagealphablending($small, false);
+imagesavealpha($small, true);
+save($small, "$dir/brand/kidu-mark.png");
 
 /** Icono cuadrado: carrito centrado sobre el color del logo. */
 function icon(GdImage $src, array $bg, int $size, float $glyph, bool $rounded): GdImage

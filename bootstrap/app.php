@@ -4,7 +4,7 @@ use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureSetupState;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SetLocale;
-use App\Models\Family;
+use App\Support\Installation;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Los botones de los avisos llevan enlaces firmados y no tienen sesión ni token CSRF.
         $middleware->validateCsrfTokens(except: ['avisos/*']);
         $middleware->alias(['setup' => EnsureSetupState::class, 'admin' => EnsureAdmin::class]);
-        $middleware->redirectGuestsTo(fn () => Family::query()->exists() ? route('login') : route('setup.show'));
+        $middleware->redirectGuestsTo(fn () => Installation::hasFamily() ? route('login') : route('setup.show'));
         $middleware->web(append: [
             SetLocale::class,
             HandleInertiaRequests::class,

@@ -1,5 +1,5 @@
 import '../css/app.css';
-import { createInertiaApp } from '@inertiajs/react';
+import { createInertiaApp, router } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 import ThemeEffects from './components/ThemeEffects';
 
@@ -18,6 +18,11 @@ createInertiaApp({
             </>,
         );
     },
+});
+
+// Las pantallas precargadas (ver FloatingNav) se descartan al guardar algo, para no mostrar datos viejos.
+router.on('before', (event) => {
+    if (event.detail.visit.method !== 'get') router.flushAll();
 });
 
 // Con la pantalla ya pintada y el navegador libre, se bajan en segundo plano las pantallas más usadas: al tocar
