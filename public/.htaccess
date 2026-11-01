@@ -24,11 +24,8 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# Rendimiento: comprime texto y deja que el navegador guarde para siempre los archivos con hash de /build.
-<IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml application/manifest+json
-</IfModule>
-
+# Rendimiento: el navegador guarda para siempre los archivos con hash de /build. La compresión se deja al servidor
+# (casi todos los hostings ya comprimen; duplicarla desde aquí puede dejar páginas en blanco).
 <IfModule mod_headers.c>
     <FilesMatch "\.(js|css|woff2?|png|webp|svg)$">
         Header set Cache-Control "public, max-age=31536000, immutable" "expr=%{REQUEST_URI} =~ m#^/build/#"
