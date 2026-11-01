@@ -22,21 +22,21 @@ export const KINDS = {
 /** Registro: slug de la URL -> icono y tipo. `available: false` = módulo aún sin construir. */
 export const ACTIVITIES = {
     biberon: { kind: 'food', icon: Milk, available: true },
-    pecho: { kind: 'food', icon: Heart, available: true },
+    pecho: { kind: 'medicine', icon: Heart, available: true },
     panal: { kind: 'diaper', icon: Baby, available: true },
     sueno: { kind: 'sleep', icon: Moon, available: true },
-    solidos: { kind: 'food', icon: Utensils, available: true },
-    extraccion: { kind: 'food', icon: Droplet, available: true },
-    bano: { kind: 'growth', icon: Bath, available: true },
-    juego: { kind: 'moment', icon: Globe, available: true },
+    solidos: { kind: 'vaccine', icon: Utensils, available: true },
+    extraccion: { kind: 'growth', icon: Droplet, available: true },
+    bano: { kind: 'diaper', icon: Bath, available: true },
+    juego: { kind: 'food', icon: Globe, available: true },
     medicina: { kind: 'medicine', icon: Pill, available: true },
     medida: { kind: 'growth', icon: Ruler, available: true },
     vacuna: { kind: 'vaccine', icon: Syringe, available: true, href: '/vacunas/aplicar' },
     cita: { kind: 'appointment', icon: Stethoscope, available: true, href: '/citas/nueva' },
-    hito: { kind: 'moment', icon: Star, available: true, href: '/eventos/nuevo' },
-    foto: { kind: 'moment', icon: Camera, available: true, href: '/fotos' },
-    nota: { kind: 'moment', icon: StickyNote, available: true },
-    animo: { kind: 'moment', icon: Smile, available: true },
+    hito: { kind: 'medicine', icon: Star, available: true, href: '/eventos/nuevo' },
+    foto: { kind: 'food', icon: Camera, available: true, href: '/fotos' },
+    nota: { kind: 'growth', icon: StickyNote, available: true },
+    animo: { kind: 'vaccine', icon: Smile, available: true },
 };
 
 export const GROUPS = {

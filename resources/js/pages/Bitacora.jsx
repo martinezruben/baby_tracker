@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { BookOpen, Pencil, Trash2, X } from 'lucide-react';
+import { BookOpen, Download, Pencil, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import Button from '../components/Button';
 import AppLayout from '../layouts/AppLayout';
@@ -63,6 +63,33 @@ function describe(t, format, entry) {
     }
 }
 
+/** Tomas, sueño y pañales del día, calculados con lo que ya se cargó. */
+function DaySummary({ entries }) {
+    const t = useT();
+    const feeds = entries.filter((e) => e.type === 'biberon' || e.type === 'pecho');
+    const bottle = entries.filter((e) => e.type === 'biberon');
+    const unit = bottle[0]?.data.unit;
+    const amount = bottle.reduce((sum, e) => sum + Number(e.data.amount), 0);
+    const sleep = entries.filter((e) => e.type === 'sueno').reduce((sum, e) => sum + (e.data.minutes ?? 0), 0);
+    const diapers = entries.filter((e) => e.type === 'panal').length;
+    const tiles = [
+        ['food', feeds.length ? `${feeds.length}${amount > 0 ? ` · ${String(Math.round(amount * 10) / 10).replace('.', ',')} ${unit}` : ''}` : '0', 'home.summary.feed'],
+        ['sleep', sleep > 0 ? durationLabel(t, sleep) : '0', 'home.summary.sleep'],
+        ['diaper', diapers, 'home.summary.diaper'],
+    ];
+
+    return (
+        <ul className="grid grid-cols-3 gap-2.5">
+            {tiles.map(([kind, value, label]) => (
+                <li key={label} className={`flex min-w-0 flex-col rounded-[18px] px-3 py-2.5 ${KINDS[kind].bg}`}>
+                    <span className="truncate text-lg font-semibold">{value}</span>
+                    <span className="text-xs text-ink-soft">{t(label)}</span>
+                </li>
+            ))}
+        </ul>
+    );
+}
+
 function dayKey(iso, timezone) {
     return new Intl.DateTimeFormat('en-CA', { timeZone: timezone }).format(new Date(iso));
 }
@@ -75,24 +102,23 @@ function Entry({ entry }) {
     const { title, detail } = describe(t, format, entry);
 
     return (
-        <li className="rounded-[22px] bg-surface shadow-card">
+        <li className="relative flex items-start gap-3.5">
+            <span aria-hidden="true" className={`relative z-[1] flex size-[46px] shrink-0 items-center justify-center rounded-full border-[3px] border-canvas box-content -m-[3px] ${KINDS[kind].bg} ${KINDS[kind].ink}`}>
+                <Icon className="size-[22px]" strokeWidth={1.75} />
+            </span>
+            <div className="min-w-0 grow rounded-[22px] border border-line bg-surface">
             <button
                 type="button"
                 aria-expanded={open}
                 onClick={() => setOpen(!open)}
-                className="flex min-h-[72px] w-full items-center gap-3 p-3 text-left focus-visible:outline-2 focus-visible:outline-primary"
+                className="flex min-h-[64px] w-full flex-col justify-center gap-1.5 px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-primary"
             >
-                <span className={`flex size-[46px] shrink-0 items-center justify-center rounded-2xl ${KINDS[kind].bg} ${KINDS[kind].ink}`}>
-                    <Icon aria-hidden="true" className="size-6" strokeWidth={1.75} />
+                <span className="flex items-baseline justify-between gap-2">
+                    <span className="min-w-0 text-[17px] font-semibold break-words">{title}</span>
+                    <span className="shrink-0 text-sm text-ink-soft">{format.time(entry.at)}</span>
                 </span>
-                <span className="flex min-w-0 grow flex-col gap-0.5">
-                    <span className="text-base font-bold break-words">{title}</span>
-                    {detail && <span className="line-clamp-2 text-[13px] break-words text-ink-soft">{detail}</span>}
-                </span>
-                <span className="flex shrink-0 flex-col items-end gap-0.5">
-                    <span className="text-sm font-semibold">{format.time(entry.at)}</span>
-                    {entry.by && <span className="max-w-20 truncate text-xs text-ink-soft">{entry.by}</span>}
-                </span>
+                {entry.type === 'sueno' && !entry.data.open && <span aria-hidden="true" className="h-2 rounded-full bg-chart-sleep" />}
+                {(detail || entry.by) && <span className="line-clamp-2 text-[13px] break-words text-ink-soft">{[detail, entry.by && t('home.logged_by', { name: entry.by })].filter(Boolean).join(' · ')}</span>}
             </button>
             {open && (
                 <div className="flex flex-wrap items-center gap-1 border-t border-line px-3 py-2">
@@ -115,6 +141,7 @@ function Entry({ entry }) {
                     </Button>
                 </div>
             )}
+            </div>
         </li>
     );
 }
@@ -156,7 +183,7 @@ export default function Bitacora({ tipo, dia, types, entries, next }) {
                 aria-pressed={selected}
                 onClick={() => setType(value)}
                 className={`flex min-h-11 shrink-0 items-center rounded-full px-5 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                    selected ? 'bg-primary font-semibold text-on-primary' : 'bg-surface font-medium text-ink'
+                    selected ? 'bg-ink font-semibold text-on-ink' : 'border border-line bg-surface font-medium text-ink'
                 }`}
             >
                 {label}
@@ -167,9 +194,14 @@ export default function Bitacora({ tipo, dia, types, entries, next }) {
     return (
         <AppLayout title={t('log.title')}>
             <div className="flex flex-col gap-5">
-                <header className="flex min-h-14 flex-col justify-center">
-                    <h1 className="text-2xl leading-tight font-bold">{t('log.title')}</h1>
-                    {baby && <div className="text-sm text-ink-soft">{t('log.subtitle', { name: baby.first_name })}</div>}
+                <header className="flex items-center gap-3">
+                    <div className="flex min-w-0 grow flex-col">
+                        {baby && <span className="text-sm text-ink-soft">{t('log.subtitle', { name: baby.first_name })}</span>}
+                        <h1 className="text-[34px] leading-tight font-semibold tracking-tight">{t('log.title')}</h1>
+                    </div>
+                    <a href="/reportes/exportar" aria-label={t('log.export')} className="flex size-12 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-ink focus-visible:outline-2 focus-visible:outline-primary">
+                        <Download aria-hidden="true" className="size-[22px]" strokeWidth={1.75} />
+                    </a>
                 </header>
 
                 {dia && (
@@ -201,8 +233,17 @@ export default function Bitacora({ tipo, dia, types, entries, next }) {
                 ) : (
                     groups.map((group) => (
                         <section key={group.key} aria-label={heading(group)} className="flex flex-col gap-2.5">
-                            <h2 className="text-[15px] font-semibold text-ink-soft first-letter:uppercase">{heading(group)}</h2>
-                            <ul className="flex flex-col gap-2.5">
+                            <div className="flex items-baseline justify-between">
+                                <h2 className="text-xl font-semibold first-letter:uppercase">
+                                    {heading(group)}
+                                    {(group.key === today || group.key === yesterday) && (
+                                        <span className="font-normal text-ink-soft"> · {new Intl.DateTimeFormat(format.locale, { weekday: 'long', day: 'numeric', month: 'short', timeZone: timezone }).format(new Date(group.at))}</span>
+                                    )}
+                                </h2>
+                                <span className="text-[13px] text-ink-soft">{t.choice('log.records', group.entries.length)}</span>
+                            </div>
+                            <DaySummary entries={group.entries} />
+                            <ul className="relative flex flex-col gap-2.5 before:absolute before:top-6 before:bottom-6 before:left-[22px] before:w-0.5 before:bg-line">
                                 {group.entries.map((entry) => (
                                     <Entry key={`${entry.type}-${entry.id}`} entry={entry} />
                                 ))}

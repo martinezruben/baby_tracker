@@ -9,75 +9,87 @@
     --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
 
     /* Base: estilo Aire, fondo frío y tarjetas blancas */
-    --color-canvas: #f3f4fa;
-    --color-surface-base: #f3f4fa;
+    --color-canvas: #f5f2ea;
+    --color-surface-base: #f5f2ea;
     --color-surface: #ffffff;
-    --color-ink: #1b2236;
-    --color-ink-mid: #3d465c;
-    --color-ink-soft: #566079;
-    --color-line: #e1e4ef;
-    --color-track: #e8eaf4;
-    --color-neutral-tile: #eceef6;
+    --color-ink: #14231f;
+    --color-ink-mid: #34443f;
+    --color-ink-soft: #52625c;
+    --color-line: #e6e1d4;
+    --color-track: #ece7da;
+    --color-neutral-tile: #e9e4d6;
 
     /* Marca: azul Aire */
-    --color-primary: #3a56f5;
-    --color-primary-dark: #2a42cc;
-    --color-accent: #ffd9c2;
-    --color-accent-ink: #1b2236;
-    --color-night: #2a3558;
-    --color-night-1: #34406a;
-    --color-night-2: #3f4c7c;
+    --color-primary: #1d6f65;
+    --color-primary-dark: #155a52;
+    --color-accent: #fbe6cc;
+    --color-accent-ink: #14231f;
+    --color-night: #17463f;
+    --color-night-1: #1e574f;
+    --color-night-2: #266860;
 
     /* Texto sobre relleno primario y sobre relleno de tinta (pastillas oscuras) */
     --color-on-primary: #ffffff;
     --color-on-ink: #ffffff;
-    --color-scrim: rgba(18, 24, 48, 0.45);
+    --color-scrim: rgba(12, 28, 24, 0.45);
 
     /* Estado */
-    --color-danger-ink: #b91c1c;
-    --color-danger-line: #fca5a5;
-    --color-danger-soft: #fee2e2;
-    --color-danger: #e0533d;
-    --color-live: #16a34a;
-    --color-live-soft: #4ade80;
+    --color-danger-ink: #a32d18;
+    --color-danger-line: #f0a090;
+    --color-danger-soft: #fbe0da;
+    --color-danger: #c9402a;
+    --color-live: #2fa36b;
+    --color-live-soft: #6fd3a0;
 
     /* Pastel por tipo de actividad: fondo / círculo decorativo / icono */
-    --color-food: #fde6d6;
-    --color-food-deco: #fbd3b8;
-    --color-food-ink: #b3400a;
-    --color-sleep: #ebe6fc;
-    --color-sleep-deco: #dcd3fa;
-    --color-sleep-ink: #5a36c9;
-    --color-diaper: #dfedfd;
-    --color-diaper-deco: #c8dffb;
-    --color-diaper-ink: #1560a8;
-    --color-medicine: #fde4ee;
-    --color-medicine-deco: #fbcddf;
-    --color-medicine-ink: #b3245f;
-    --color-vaccine: #dff5e6;
-    --color-vaccine-deco: #c6ecd2;
-    --color-vaccine-ink: #1a7a42;
-    --color-appointment: #e1e8fb;
-    --color-appointment-deco: #cdd8f7;
-    --color-appointment-ink: #2e47b3;
-    --color-growth: #fdf3c9;
-    --color-growth-deco: #fae9a0;
-    --color-growth-ink: #8a5a00;
-    --color-moment: #fde4ee;
-    --color-moment-deco: #fbcddf;
-    --color-moment-ink: #b3245f;
+    --color-food: #fce6da;
+    --color-food-deco: #f8d2be;
+    --color-food-ink: #a8461c;
+    --color-sleep: #ece6fb;
+    --color-sleep-deco: #ddd3f7;
+    --color-sleep-ink: #5a3eb0;
+    --color-diaper: #dfedf9;
+    --color-diaper-deco: #c9dff3;
+    --color-diaper-ink: #1c5f95;
+    --color-medicine: #fbe1ec;
+    --color-medicine-deco: #f6cadb;
+    --color-medicine-ink: #a3235f;
+    --color-vaccine: #ddf1e4;
+    --color-vaccine-deco: #c6e6d1;
+    --color-vaccine-ink: #1b6b3f;
+    --color-appointment: #e1e8f6;
+    --color-appointment-deco: #cbd7ee;
+    --color-appointment-ink: #34508f;
+    --color-growth: #f8edbf;
+    --color-growth-deco: #f0e096;
+    --color-growth-ink: #7a5600;
+    --color-moment: #ffe3d1;
+    --color-moment-deco: #ffd0b5;
+    --color-moment-ink: #9a4322;
 
     /* Colores de gráficos */
-    --color-chart-food: #f0670f;
-    --color-chart-sleep: #7a4fe0;
+    --color-chart-food: #e0703f;
+    --color-chart-sleep: #7a5ad6;
     --color-chart-diaper: #2f80e0;
-    --color-chart-medicine: #d83a82;
+    --color-chart-medicine: #d8478a;
     --color-chart-play: #e0a21b;
 
-    --shadow-card: 0 2px 10px rgba(27, 34, 54, 0.05);
-    --shadow-soft: 0 2px 8px rgba(27, 34, 54, 0.07);
-    --shadow-nav: 0 8px 28px rgba(27, 34, 54, 0.12);
-    --shadow-fab: 0 8px 20px rgba(58, 86, 245, 0.4);
+    --shadow-card: 0 2px 10px rgba(20, 35, 31, 0.06);
+    --shadow-soft: 0 2px 8px rgba(20, 35, 31, 0.08);
+    --shadow-nav: 0 10px 30px rgba(20, 35, 31, 0.16);
+    --shadow-fab: 0 8px 20px rgba(20, 35, 31, 0.22);
+
+    /* Cielo, anillo del día y curva de crecimiento (propuesta «Nido») */
+    --color-sky-1: #fbe6cc;
+    --color-sky-2: #ffffff;
+    --color-sun: #f6c177;
+    --color-cloud: #ffffff;
+    --color-star: #ffffff;
+    --color-tick: #cfc8b6;
+    --color-nightband: #d9d3e6;
+    --color-band-1: #e3efea;
+    --color-band-2: #bfdcd3;
+    --star-opacity: 0;
 }
 
 body {
@@ -112,58 +124,58 @@ select {
 
 :root[data-theme='dark'] {
     color-scheme: dark;
-    --color-canvas: #12162a;
-    --color-surface-base: #12162a;
-    --color-surface: #1c2138;
-    --color-ink: #eaedfb;
-    --color-ink-mid: #cdd2ea;
-    --color-ink-soft: #aab1cf;
-    --color-line: #2f3654;
-    --color-track: #272d49;
-    --color-neutral-tile: #262c47;
+    --color-canvas: #0d1815;
+    --color-surface-base: #0d1815;
+    --color-surface: #15241f;
+    --color-ink: #e8f1ed;
+    --color-ink-mid: #c5d6ce;
+    --color-ink-soft: #9db4ab;
+    --color-line: #243931;
+    --color-track: #1e322b;
+    --color-neutral-tile: #1e322b;
 
-    --color-primary: #8da0ff;
-    --color-primary-dark: #aab8ff;
-    --color-accent: #ffd9c2;
-    --color-accent-ink: #1b2236;
-    --color-night: #232b4c;
-    --color-night-1: #2c3560;
-    --color-night-2: #36406f;
-    --color-on-primary: #0f1430;
-    --color-on-ink: #12162a;
+    --color-primary: #5fc7b5;
+    --color-primary-dark: #7ad6c6;
+    --color-accent: #f0c79a;
+    --color-accent-ink: #2a1b0a;
+    --color-night: #183a44;
+    --color-night-1: #1f4a56;
+    --color-night-2: #275a68;
+    --color-on-primary: #06201b;
+    --color-on-ink: #0d1815;
     --color-scrim: rgba(0, 0, 0, 0.6);
 
-    --color-danger-ink: #ffa797;
+    --color-danger-ink: #ffb0a2;
     --color-danger-line: #8a3b2f;
-    --color-danger-soft: #4a2520;
+    --color-danger-soft: #4a2420;
     --color-danger: #f0735c;
-    --color-live: #4ade80;
+    --color-live: #4fd18e;
     --color-live-soft: #86efac;
 
-    --color-food: #4a2c1a;
-    --color-food-deco: #5c3822;
-    --color-food-ink: #ffb68a;
-    --color-sleep: #2e2b54;
-    --color-sleep-deco: #3b3770;
-    --color-sleep-ink: #c9bcf8;
-    --color-diaper: #1a3350;
-    --color-diaper-deco: #234468;
-    --color-diaper-ink: #9ccbf5;
-    --color-medicine: #4a2238;
-    --color-medicine-deco: #5c2c47;
-    --color-medicine-ink: #f5a9c9;
-    --color-vaccine: #1c3d2b;
-    --color-vaccine-deco: #254f38;
-    --color-vaccine-ink: #8fdcab;
-    --color-appointment: #262f58;
-    --color-appointment-deco: #303b6c;
-    --color-appointment-ink: #b3c1f5;
-    --color-growth: #463b17;
-    --color-growth-deco: #574a1e;
-    --color-growth-ink: #f2d98a;
-    --color-moment: #4a2238;
-    --color-moment-deco: #5c2c47;
-    --color-moment-ink: #f5a9c9;
+    --color-food: #3a2419;
+    --color-food-deco: #4d3020;
+    --color-food-ink: #ffb28a;
+    --color-sleep: #2a2447;
+    --color-sleep-deco: #352e5c;
+    --color-sleep-ink: #c9b9fa;
+    --color-diaper: #16324a;
+    --color-diaper-deco: #1e4263;
+    --color-diaper-ink: #9ccbf2;
+    --color-medicine: #43202f;
+    --color-medicine-deco: #552b3e;
+    --color-medicine-ink: #ffa9cb;
+    --color-vaccine: #1b3a2a;
+    --color-vaccine-deco: #244b37;
+    --color-vaccine-ink: #8fddad;
+    --color-appointment: #1f2d4a;
+    --color-appointment-deco: #293b5e;
+    --color-appointment-ink: #a9bdf0;
+    --color-growth: #3a3216;
+    --color-growth-deco: #4b411e;
+    --color-growth-ink: #f2da8c;
+    --color-moment: #3f2a1b;
+    --color-moment-deco: #523824;
+    --color-moment-ink: #ffc29e;
 
     --color-chart-food: #ff9a5c;
     --color-chart-sleep: #a58bf5;
@@ -175,6 +187,17 @@ select {
     --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.3);
     --shadow-nav: 0 8px 24px rgba(0, 0, 0, 0.5);
     --shadow-fab: 0 8px 20px rgba(0, 0, 0, 0.5);
+
+    --color-sky-1: #183a44;
+    --color-sky-2: #15241f;
+    --color-sun: #dce8ff;
+    --color-cloud: #1f3f46;
+    --color-star: #e8f1ff;
+    --color-tick: #33493f;
+    --color-nightband: #101f3a;
+    --color-band-1: #1c3a33;
+    --color-band-2: #2a5a4e;
+    --star-opacity: 1;
 }
 
 :root[data-theme='nursery'] {
@@ -243,6 +266,17 @@ select {
     --shadow-soft: none;
     --shadow-nav: 0 0 0 1px #3a2c19;
     --shadow-fab: none;
+
+    --color-sky-1: #1a140d;
+    --color-sky-2: #1a140d;
+    --color-sun: #3a2c19;
+    --color-cloud: #2a1f12;
+    --color-star: #b8894f;
+    --color-tick: #3a2c19;
+    --color-nightband: #2a1f12;
+    --color-band-1: #2a1f12;
+    --color-band-2: #3a2c19;
+    --star-opacity: 0.6;
 }
 
 /* Pantalla encendida pero tenue en modo nursery: velo negro sin interceptar toques. */

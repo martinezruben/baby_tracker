@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\ActiveBaby;
+use App\Support\BreastFeedSession;
+use App\Support\DashboardData;
+use App\Support\FamilyClock;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,6 +19,7 @@ class MoreController extends Controller
         return Inertia::render('Mas', [
             'caretakers' => $user->family->caretakers()->where('is_active', true)->count(),
             'slug' => $user->family->slug,
+            'badges' => ['vaccines' => (new DashboardData(FamilyClock::for($user->family), app(BreastFeedSession::class)))->vaccineSummary(ActiveBaby::for($request))['overdue']],
         ]);
     }
 

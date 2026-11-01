@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { Bell, BookOpen, ChevronLeft, ChevronRight, Heart, Milk, Moon, Pill, Plus, Stethoscope, Syringe, Baby, Star } from 'lucide-react';
+import { Bell, ChevronLeft, ChevronRight, Heart, Milk, Moon, Pill, Plus, Stethoscope, Syringe, Baby, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import AppLayout from '../layouts/AppLayout';
 import { KINDS } from '../lib/activities';
@@ -63,8 +63,15 @@ function DayPanel({ date, day, today }) {
     const COUNT_ICONS = { feed: Milk, sleep: Moon, diaper: Baby, medicine: Pill };
 
     return (
-        <section aria-live="polite" className="flex flex-col gap-3 rounded-3xl bg-surface p-4 shadow-card">
-            <h2 className="text-[19px] font-bold">{dayLong(date, format.locale)}</h2>
+        <section aria-live="polite" className="flex flex-col gap-3">
+            <div className="flex items-baseline justify-between">
+                <h2 className="text-xl font-semibold">{dayLong(date, format.locale)}</h2>
+                {hasCounts && (
+                    <Link href={`/bitacora?dia=${date}`} className="flex min-h-11 shrink-0 items-center text-[15px] font-semibold whitespace-nowrap text-primary">
+                        {t('calendario.log_link')}
+                    </Link>
+                )}
+            </div>
 
             {items.length === 0 && !hasCounts && <p className="text-[15px] text-ink-soft">{t('calendario.empty')}</p>}
 
@@ -74,15 +81,13 @@ function DayPanel({ date, day, today }) {
                         const { icon: Icon, kind } = ITEM_STYLES[item.kind];
                         return (
                             <li key={`${item.kind}-${item.id}`}>
-                                <Link href={item.href} className="flex items-center gap-3 rounded-2xl bg-canvas p-2 pr-3 focus-visible:outline-2 focus-visible:outline-primary">
-                                    <span className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${KINDS[kind].bg} ${KINDS[kind].ink}`}>
-                                        <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
-                                    </span>
+                                <Link href={item.href} className="flex min-h-[68px] items-center gap-3.5 rounded-3xl border border-line bg-surface px-4 focus-visible:outline-2 focus-visible:outline-primary">
+                                    <span className="w-[68px] shrink-0 text-sm whitespace-nowrap text-ink-soft">{item.at ? format.time(item.at) : t('calendario.all_day')}</span>
+                                    <span aria-hidden="true" className={`w-1 shrink-0 self-stretch rounded-full ${KINDS[kind].chip} my-3.5`} />
+                                    <Icon aria-hidden="true" className={`size-5 shrink-0 ${KINDS[kind].ink}`} strokeWidth={1.75} />
                                     <span className="flex min-w-0 grow flex-col">
                                         <span className="text-[15px] font-bold break-words">{item.title}</span>
-                                        <span className="text-[13px] text-ink-soft">
-                                            {t(`calendario.kinds.${item.kind}`)} · {item.at ? format.time(item.at) : t('calendario.all_day')}
-                                        </span>
+                                        <span className="text-[13px] text-ink-soft">{t(`calendario.kinds.${item.kind}`)}</span>
                                     </span>
                                     <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${STATE_STYLES[item.state]}`}>{t(`calendario.states.${item.state}`)}</span>
                                 </Link>
@@ -107,10 +112,6 @@ function DayPanel({ date, day, today }) {
                             );
                         })}
                     </ul>
-                    <Link href={`/bitacora?dia=${date}`} className="inline-flex min-h-12 items-center gap-2 self-start text-[15px] font-semibold text-primary">
-                        <BookOpen aria-hidden="true" className="size-4" />
-                        {t('calendario.log_link')}
-                    </Link>
                 </div>
             )}
 
@@ -132,7 +133,8 @@ function DayPanel({ date, day, today }) {
 
 export default function Calendario({ today, data }) {
     const t = useT();
-    const { locale } = usePage().props;
+    const { locale, babies, activeBabyId } = usePage().props;
+    const baby = babies.find((b) => b.id === activeBabyId);
     const { month, days } = data;
     const currentMonth = today.slice(0, 7);
     const [selected, setSelected] = useState(month === currentMonth ? today : null);
@@ -155,33 +157,36 @@ export default function Calendario({ today, data }) {
 
     const cells = [...Array(offset).fill(null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1)];
 
-    const navButton = 'flex size-12 items-center justify-center rounded-full bg-surface text-ink shadow-soft focus-visible:outline-2 focus-visible:outline-primary';
+    const navButton = 'flex size-12 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-ink focus-visible:outline-2 focus-visible:outline-primary';
     const summary = (day) => (day && (day.items.length || Object.keys(day.counts).length) ? t.choice('calendario.events_count', day.items.length + Object.keys(day.counts).length) : t('calendario.no_events'));
 
     return (
         <AppLayout title={t('calendario.title')}>
             <div className="flex flex-col gap-4">
-                <header className="flex items-center justify-between gap-2">
-                    <button type="button" aria-label={t('calendario.prev')} onClick={() => go(shiftMonth(month, -1))} className={navButton}>
-                        <ChevronLeft aria-hidden="true" className="size-6" strokeWidth={2} />
-                    </button>
-                    <div className="flex min-w-0 flex-col items-center">
-                        <h1 className="text-xl font-bold">{monthLabel(month, locale)}</h1>
+                <header className="flex items-center gap-2.5">
+                    <div className="flex min-w-0 grow flex-col">
+                        {baby && <span className="text-sm text-ink-soft">{t('calendario.of', { name: baby.first_name })}</span>}
+                        <h1 className="text-[34px] leading-tight font-semibold tracking-tight" aria-label={monthLabel(month, locale)}>
+                            {new Intl.DateTimeFormat(locale, { month: 'long', timeZone: 'UTC' }).format(new Date(`${month}-01T12:00:00Z`)).replace(/^./, (c) => c.toUpperCase())} <span className="font-normal text-ink-soft">{y}</span>
+                        </h1>
                         {month !== currentMonth && (
-                            <button type="button" onClick={() => go(currentMonth)} className="min-h-8 text-sm font-semibold text-primary">
+                            <button type="button" onClick={() => go(currentMonth)} className="min-h-8 self-start text-sm font-semibold text-primary">
                                 {t('calendario.today')}
                             </button>
                         )}
                     </div>
+                    <button type="button" aria-label={t('calendario.prev')} onClick={() => go(shiftMonth(month, -1))} className={navButton}>
+                        <ChevronLeft aria-hidden="true" className="size-6" strokeWidth={2} />
+                    </button>
                     <button type="button" aria-label={t('calendario.next')} onClick={() => go(shiftMonth(month, 1))} className={navButton}>
                         <ChevronRight aria-hidden="true" className="size-6" strokeWidth={2} />
                     </button>
                 </header>
 
-                <section className="rounded-3xl bg-surface p-3 shadow-card">
+                <section className="flex flex-col gap-1.5 rounded-[32px] border border-line bg-surface px-3 pt-4 pb-3">
                     <div className="grid grid-cols-7 text-center text-xs font-semibold text-ink-soft" aria-hidden="true">
                         {weekdays.map((w, i) => (
-                            <span key={i} className="py-1.5 uppercase">
+                            <span key={i} className="py-1.5 font-medium uppercase">
                                 {w.narrow}
                             </span>
                         ))}
@@ -204,35 +209,43 @@ export default function Calendario({ today, data }) {
                                     aria-current={isToday ? 'date' : undefined}
                                     aria-label={`${dayLong(date, locale)}, ${summary(day)}`}
                                     onClick={() => setSelected(date)}
-                                    className={`mx-auto flex h-14 w-full max-w-12 flex-col items-center justify-center gap-1 rounded-2xl text-[15px] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary ${
-                                        isSelected ? 'bg-primary font-bold text-on-primary' : isToday ? 'font-bold ring-2 ring-primary ring-inset' : 'font-medium hover:bg-canvas'
-                                    }`}
+                                    className="mx-auto flex min-h-[52px] w-full flex-col items-center gap-[3px] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
                                 >
-                                    <span>{n}</span>
+                                    <span
+                                        className={`flex size-10 items-center justify-center rounded-full text-base ${
+                                            isToday && isSelected
+                                                ? 'bg-primary font-semibold text-on-primary'
+                                                : isSelected
+                                                  ? 'border-2 border-primary font-semibold'
+                                                  : isToday
+                                                    ? 'bg-primary font-semibold text-on-primary'
+                                                    : 'font-normal'
+                                        }`}
+                                    >
+                                        {n}
+                                    </span>
                                     <span className="flex h-1.5 items-center gap-0.5" aria-hidden="true">
                                         {dots.slice(0, 4).map(({ key, kind }) => (
-                                            <span key={key} className={`size-1.5 rounded-full ${KINDS[kind].chip} ${isSelected ? 'ring-1 ring-white' : ''}`} />
+                                            <span key={key} className={`size-[5px] rounded-full ${KINDS[kind].chip}`} />
                                         ))}
                                     </span>
                                 </button>
                             );
                         })}
                     </div>
-                </section>
-
-                {selected ? <DayPanel date={selected} day={days[selected]} today={today} /> : <p className="text-center text-[15px] text-ink-soft">{t('calendario.day_hint')}</p>}
-
-                <details className="rounded-2xl bg-surface px-4 py-2 shadow-card">
-                    <summary className="flex min-h-12 cursor-pointer items-center text-[15px] font-semibold">{t('calendario.legend.title')}</summary>
-                    <ul className="flex flex-wrap gap-x-4 gap-y-2 pb-2 text-sm">
+                    <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 pt-2 pb-1 text-[13px] text-ink-soft">
                         {[['appointment', 'appointment'], ['vaccine', 'vaccine'], ['medicine', 'medicine'], ['life_event', 'moment'], ['feed', 'food'], ['sleep', 'sleep'], ['diaper', 'diaper']].map(([key, kind]) => (
                             <li key={key} className="flex items-center gap-1.5">
-                                <span aria-hidden="true" className={`size-2.5 rounded-full ${KINDS[kind].chip}`} />
+                                <span aria-hidden="true" className={`size-2 rounded-full ${KINDS[kind].chip}`} />
                                 {t(`calendario.legend.${key}`)}
                             </li>
                         ))}
                     </ul>
-                </details>
+                </section>
+
+                {selected ? <DayPanel date={selected} day={days[selected]} today={today} /> : <p className="text-center text-[15px] text-ink-soft">{t('calendario.day_hint')}</p>}
+
+
             </div>
         </AppLayout>
     );

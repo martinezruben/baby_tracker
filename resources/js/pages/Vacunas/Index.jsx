@@ -51,14 +51,14 @@ function ProgressRing({ applied, total }) {
     const pct = total ? applied / total : 0;
 
     return (
-        <div role="progressbar" aria-label={t('vacunas.progress', { applied, total })} aria-valuemin={0} aria-valuemax={total} aria-valuenow={applied} className="relative size-[92px] shrink-0">
+        <div role="progressbar" aria-label={t('vacunas.progress', { applied, total })} aria-valuemin={0} aria-valuemax={total} aria-valuenow={applied} className="relative size-[110px] shrink-0">
             <svg viewBox="0 0 92 92" className="size-full -rotate-90" aria-hidden="true">
                 <circle cx="46" cy="46" r={r} fill="none" strokeWidth="9" className="stroke-track" />
                 <circle cx="46" cy="46" r={r} fill="none" strokeWidth="9" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - pct)} className="stroke-vaccine-ink" />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
-                <span className="text-2xl font-bold">{applied}</span>
-                <span className="text-xs text-ink-soft">/ {total}</span>
+                <span className="text-[30px] font-semibold">{applied}</span>
+                <span className="text-[13px] text-ink-soft">{t('home.of_total', { total })}</span>
             </div>
         </div>
     );
@@ -66,9 +66,9 @@ function ProgressRing({ applied, total }) {
 
 function Stat({ value, label, tone }) {
     return (
-        <div className={`flex min-h-14 flex-col justify-center rounded-2xl px-3 ${tone}`}>
-            <span className="text-xl leading-tight font-bold">{value}</span>
-            <span className="text-xs leading-tight">{label}</span>
+        <div className={`flex min-h-10 items-center justify-between rounded-2xl px-3.5 ${tone}`}>
+            <span className="text-sm">{label}</span>
+            <span className="text-xl font-semibold">{value}</span>
         </div>
     );
 }
@@ -80,17 +80,18 @@ function NextDose({ dose }) {
     const overdue = dose.status === 'overdue';
 
     return (
-        <section aria-label={t('vacunas.next')} className={`flex flex-col gap-3 rounded-3xl p-4 ${overdue ? 'bg-danger-soft' : 'bg-vaccine'}`}>
-            <div className={`text-xs font-semibold ${overdue ? 'text-danger-ink' : 'text-vaccine-ink'}`}>{overdue ? t('vacunas.next_overdue') : t('vacunas.next')}</div>
+        <section aria-label={t('vacunas.next')} className={`relative flex flex-col gap-3.5 overflow-hidden rounded-[32px] p-5 ${overdue ? 'bg-danger-soft' : 'bg-vaccine'}`}>
+            <span aria-hidden="true" className={`absolute -top-8 -right-8 size-32 rounded-full opacity-10 ${overdue ? 'bg-danger-ink' : 'bg-vaccine-ink'}`} />
+            <div className={`relative text-[13px] font-semibold ${overdue ? 'text-danger-ink' : 'text-vaccine-ink'}`}>{overdue ? t('vacunas.next_overdue') : t('vacunas.next')}</div>
             <div>
-                <div className="text-xl leading-tight font-bold break-words">{[dose.name, dose.label].filter(Boolean).join(' · ')}</div>
-                <div className="text-sm text-ink-mid">
+                <div className="relative text-[26px] leading-[1.15] font-semibold break-words">{[dose.name, dose.label].filter(Boolean).join(' · ')}</div>
+                <div className="relative text-[15px] text-ink-soft">
                     {doseAgeLabel(t, dose.age_days)} · {dueText(t, format.locale, dose)}
                 </div>
             </div>
             <Link
                 href={`/vacunas/aplicar?dosis=${dose.dose_id}`}
-                className="inline-flex min-h-12 items-center justify-center gap-2 self-start rounded-full bg-primary px-5 text-[15px] font-semibold text-on-primary hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="relative flex min-h-14 w-full items-center justify-center gap-2.5 rounded-full bg-primary text-[17px] font-semibold text-on-primary hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
                 <Plus aria-hidden="true" className="size-4" />
                 {t('vacunas.apply')}
@@ -113,16 +114,14 @@ function DoseLine({ dose, showName = false }) {
     }[dose.status];
 
     return (
-        <li className="flex flex-col gap-2 border-t border-line py-3 first:border-t-0 first:pt-0 last:pb-0">
-            <div className="flex items-start gap-3">
+        <li className="relative flex flex-col gap-2 border-t border-line py-3 first:border-t-0 first:pt-0 last:pb-0">
+            {!applied && <Link href={`/vacunas/aplicar?dosis=${dose.dose_id}`} aria-label={`${t('vacunas.apply')}: ${[dose.name, dose.label].filter(Boolean).join(' · ')}`} className="absolute inset-0 rounded-2xl focus-visible:outline-2 focus-visible:outline-primary" />}
+            <div className="flex min-h-[44px] items-center gap-3">
                 <span aria-hidden="true" className={`flex size-9 shrink-0 items-center justify-center rounded-full ${marker}`}>
                     {applied ? <Check className="size-5" strokeWidth={2.5} /> : dose.status === 'overdue' ? <Syringe className="size-[18px]" strokeWidth={2} /> : <Clock className="size-[18px]" strokeWidth={2} />}
                 </span>
                 <span className="flex min-w-0 grow flex-col gap-0.5">
-                    <span className="flex flex-wrap items-center gap-x-2 text-base font-semibold break-words">
-                        {label}
-                        <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[dose.status]}`}>{t(`vacunas.status.${dose.status}`)}</span>
-                    </span>
+                    <span className="text-base font-semibold break-words">{label}</span>
                     <span className="text-[13px] text-ink-soft">
                         {doseAgeLabel(t, dose.age_days)}
                         {' · '}
@@ -131,19 +130,12 @@ function DoseLine({ dose, showName = false }) {
                     {applied && <Details v={dose.vaccination} />}
                     {!applied && dose.notes && <span className="text-[13px] text-ink-soft">{dose.notes}</span>}
                 </span>
+                <span className={`shrink-0 rounded-full px-3 py-1.5 text-[13px] font-semibold ${STATUS_STYLES[dose.status]}`}>{t(`vacunas.status.${dose.status}`)}</span>
             </div>
-            {applied ? (
+            {applied && (
                 <div className="flex justify-end">
                     <DeleteButton vaccination={dose.vaccination} />
                 </div>
-            ) : (
-                <Link
-                    href={`/vacunas/aplicar?dosis=${dose.dose_id}`}
-                    className="ml-12 inline-flex min-h-12 items-center justify-center gap-2 self-start rounded-full border border-primary px-5 text-[15px] font-semibold text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                >
-                    <Plus aria-hidden="true" className="size-4" />
-                    {t('vacunas.apply')}
-                </Link>
             )}
         </li>
     );
@@ -255,22 +247,20 @@ export default function Index({ schedule_name, has_schedule, counts, doses, extr
     return (
         <AppLayout title={t('vacunas.title')}>
             <div className="flex flex-col gap-5">
-                <Link href="/" className="inline-flex min-h-12 items-center gap-2 self-start text-base font-medium text-primary">
-                    <ArrowLeft aria-hidden="true" className="size-4" />
-                    {t('nav.home')}
-                </Link>
-
-                <header className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h1 className="text-2xl leading-tight font-bold">{t('vacunas.title')}</h1>
-                        {baby && <div className="text-sm text-ink-soft">{t('vacunas.subtitle', { name: baby.first_name, schedule: schedule_name })}</div>}
+                <header className="flex items-center gap-3">
+                    <Link href="/mas" aria-label={t('nav.more')} className="flex size-12 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-ink focus-visible:outline-2 focus-visible:outline-primary">
+                        <ArrowLeft aria-hidden="true" className="size-[22px]" strokeWidth={2} />
+                    </Link>
+                    <div className="flex min-w-0 grow flex-col">
+                        {baby && <span className="truncate text-sm text-ink-soft">{t('vacunas.subtitle', { name: baby.first_name, schedule: schedule_name })}</span>}
+                        <h1 className="text-[34px] leading-tight font-semibold tracking-tight">{t('vacunas.title')}</h1>
                     </div>
                     <Link
                         href="/vacunas/aplicar"
-                        className="inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-5 text-[15px] font-semibold text-on-primary hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                        aria-label={t('vacunas.apply_new')}
+                        className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                     >
-                        <Plus aria-hidden="true" className="size-5" />
-                        {t('vacunas.apply_new')}
+                        <Plus aria-hidden="true" className="size-6" strokeWidth={2.25} />
                     </Link>
                 </header>
 
@@ -295,12 +285,10 @@ export default function Index({ schedule_name, has_schedule, counts, doses, extr
                         <section className="flex flex-col gap-4 rounded-3xl bg-surface p-4 shadow-card">
                             <div className="flex items-center gap-4">
                                 <ProgressRing applied={counts.applied} total={counts.total} />
-                                <div className="grid min-w-0 grow grid-cols-1 gap-2">
+                                <div className="flex min-w-0 grow flex-col gap-2">
                                     <Stat value={counts.applied} label={t('vacunas.stat.applied')} tone="bg-vaccine text-vaccine-ink" />
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <Stat value={counts.upcoming} label={t('vacunas.stat.upcoming')} tone="bg-appointment text-appointment-ink" />
-                                        <Stat value={counts.overdue} label={t('vacunas.stat.overdue')} tone={counts.overdue > 0 ? 'bg-danger-soft text-danger-ink' : 'bg-track text-ink-soft'} />
-                                    </div>
+                                    <Stat value={counts.overdue} label={t('vacunas.stat.overdue')} tone={counts.overdue > 0 ? 'bg-danger-soft text-danger-ink' : 'bg-track text-ink-soft'} />
+                                    <Stat value={counts.upcoming} label={t('vacunas.stat.upcoming')} tone="bg-track text-ink" />
                                 </div>
                             </div>
                             <Link href="/vacunas/esquema" className="inline-flex min-h-12 items-center gap-2 self-start text-[15px] font-semibold text-primary">

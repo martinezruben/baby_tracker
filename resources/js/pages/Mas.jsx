@@ -1,5 +1,6 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import { ChevronRight, LogOut, Users } from 'lucide-react';
+import Sky from '../components/Sky';
 import AppLayout from '../layouts/AppLayout';
 import { KINDS, MODULES } from '../lib/activities';
 import { useT } from '../lib/i18n';
@@ -10,7 +11,7 @@ function Icon({ kind, children }) {
     return <span className={`flex size-[46px] shrink-0 items-center justify-center rounded-2xl ${KINDS[kind].bg} ${KINDS[kind].ink}`}>{children}</span>;
 }
 
-function Modules({ name, admin }) {
+function Modules({ name, admin, badges }) {
     const t = useT();
 
     return (
@@ -20,8 +21,9 @@ function Modules({ name, admin }) {
                 {MODULES.map(({ key, icon: ModuleIcon, kind, href }) => (
                     <li key={key} className="flex justify-center">
                         <Link href={key === 'settings' && !admin ? '/ajustes/dispositivo' : href} className="flex flex-col items-center gap-2 focus-visible:outline-2 focus-visible:outline-primary">
-                            <span className={`flex size-[58px] items-center justify-center rounded-[20px] ${KINDS[kind].bg} ${KINDS[kind].ink}`}>
-                                <ModuleIcon aria-hidden="true" className="size-[26px]" strokeWidth={1.75} />
+                            <span className={`relative flex size-[66px] items-center justify-center rounded-3xl ${KINDS[kind].bg} ${KINDS[kind].ink}`}>
+                                <ModuleIcon aria-hidden="true" className="size-7" strokeWidth={1.75} />
+                                {badges?.[key] > 0 && <span className="absolute -top-1 -right-1 flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-danger-ink px-1.5 text-xs font-bold text-canvas">{badges[key]}</span>}
                             </span>
                             <span className="text-[13px] font-medium">{t(`home.modules.${key}`)}</span>
                         </Link>
@@ -32,24 +34,25 @@ function Modules({ name, admin }) {
     );
 }
 
-export default function Mas({ caretakers, slug }) {
+export default function Mas({ caretakers, slug, badges }) {
     const t = useT();
-    const { auth, babies, activeBabyId } = usePage().props;
+    const { auth, babies, activeBabyId, family } = usePage().props;
     const name = auth.caretaker.name;
     const babyName = babies.find((b) => b.id === activeBabyId)?.first_name ?? '';
 
     return (
         <AppLayout title={t('nav.more')}>
             <div className="flex flex-col gap-5">
-                <header className="flex min-h-14 items-center gap-3">
-                    <div className="flex size-[52px] items-center justify-center rounded-full bg-sleep text-xl font-bold text-sleep-ink">{name.slice(0, 1).toUpperCase()}</div>
-                    <div>
-                        <h1 className="text-2xl leading-tight font-bold">{name}</h1>
-                        <div className="text-sm text-ink-soft">{t(`more.role_${auth.caretaker.role}`)}</div>
+                <header className="relative flex items-center gap-3.5 overflow-hidden rounded-[32px] border border-line bg-gradient-to-br from-sky-1 to-sky-2 p-5">
+                    <Sky className="opacity-70" />
+                    <div className="relative flex size-16 items-center justify-center rounded-full bg-primary text-[28px] font-semibold text-on-primary">{name.slice(0, 1).toUpperCase()}</div>
+                    <div className="relative">
+                        <h1 className="text-[26px] leading-tight font-semibold">{name}</h1>
+                        <div className="text-sm text-ink-soft">{t(`more.role_${auth.caretaker.role}`)} · {family.name}</div>
                     </div>
                 </header>
 
-                <Modules name={babyName} admin={auth.caretaker.role === 'admin'} />
+                <Modules name={babyName} admin={auth.caretaker.role === 'admin'} badges={badges} />
 
                 <section className="flex flex-col gap-3">
                     {caretakers > 1 && (

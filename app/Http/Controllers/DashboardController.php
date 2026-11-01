@@ -21,6 +21,7 @@ class DashboardController extends Controller
         $data = new DashboardData($clock, app(BreastFeedSession::class));
 
         $today = $data->summary($baby, 'hoy');
+        $day = $data->day($baby);
 
         return Inertia::render('Inicio', [
             'baby' => $baby->only(['id', 'first_name', 'birth_date']),
@@ -31,7 +32,9 @@ class DashboardController extends Controller
             'upcoming' => $data->upcoming($baby),
             'last' => $data->lastTimes($baby),
             'growth' => $data->latestGrowth($baby),
-            'marks' => $data->dayMarks($baby),
+            'marks' => $day['marks'],
+            'entries' => $day['entries'],
+            'vaccines' => $data->vaccineSummary($baby),
         ]);
     }
 }

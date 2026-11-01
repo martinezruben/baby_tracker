@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f3f4fa">
+    <meta name="theme-color" content="#f5f2ea">
     <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -20,7 +20,7 @@
                 theme = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             }
             document.documentElement.setAttribute('data-theme', theme);
-            var meta = { light: '#f3f4fa', dark: '#12162a', nursery: '#0b0907' }[theme];
+            var meta = { light: '#f5f2ea', dark: '#0d1815', nursery: '#0b0907' }[theme];
             document.querySelector('meta[name="theme-color"]').setAttribute('content', meta);
         })();
     </script>
