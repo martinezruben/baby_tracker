@@ -108,6 +108,8 @@ class RendimientoTest extends TestCase
         $this->assertStringContainsString("'/build/assets/'", $sw);
         $this->assertStringContainsString("request.method !== 'GET'", $sw);
         $this->assertStringContainsString('self.location.origin', $sw); // nada de otros orígenes
+        $this->assertStringContainsString("cache: 'reload'", $sw); // no se guarda una copia rota de la caché HTTP
+        $this->assertStringContainsString("'kidu-assets-v2'", $sw);
         $this->assertStringNotContainsString("caches.open('kidu-pages", $sw); // los datos nunca se guardan
     }
 
