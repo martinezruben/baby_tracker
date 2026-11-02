@@ -80,20 +80,7 @@ class VaccineController extends Controller
             'vaccine_dose_id' => ['nullable', Rule::exists(VaccineDose::class, 'id')->where('family_id', $baby->family_id), $this->notAppliedYet($baby)],
             'vaccine_name' => ['nullable', 'required_without:vaccine_dose_id', 'string', 'max:80'],
             'dose_label' => ['nullable', 'string', 'max:40'],
-            'administered_at' => [
-                'required',
-                'date_format:Y-m-d\TH:i',
-                function (string $attribute, mixed $value, Closure $fail) use ($clock) {
-                    try {
-                        $at = $clock->parse((string) $value);
-                    } catch (\Throwable) {
-                        return;
-                    }
-                    if ($at->greaterThan(now()->addMinutes(5))) {
-                        $fail(trans('ui.validation.not_future'));
-                    }
-                },
-            ],
+            'administered_at' => ['required', 'date_format:Y-m-d\TH:i', $this->notFuture($clock)],
             'lot' => ['nullable', 'string', 'max:60'],
             'place' => ['nullable', 'string', 'max:120'],
             'administered_by' => ['nullable', 'string', 'max:120'],
@@ -125,6 +112,52 @@ class VaccineController extends Controller
         ]);
     }
 
+    /** El mismo formulario de aplicar, con lo guardado, para corregir fecha, lote, lugar, quién la puso y notas. */
+    public function edit(Request $request, Vaccination $vaccination): Response
+    {
+        abort_unless($vaccination->family_id === $request->user()->family_id, 404);
+        $clock = FamilyClock::for($request->user()->family);
+
+        return Inertia::render('Vacunas/Form', [
+            'baby' => $vaccination->baby->only(['id', 'first_name']),
+            'clock' => ['now' => $clock->now()->format(FamilyClock::LOCAL_FORMAT), 'timezone' => $clock->timezone],
+            'pending' => [],
+            'selected' => null,
+            'record' => $this->vaccinationData($vaccination) + [
+                'vaccine_dose_id' => $vaccination->vaccine_dose_id,
+                'administered_local' => $clock->toLocal($vaccination->administered_at),
+            ],
+        ]);
+    }
+
+    public function update(Request $request, Vaccination $vaccination): RedirectResponse
+    {
+        abort_unless($vaccination->family_id === $request->user()->family_id, 404);
+        $clock = FamilyClock::for($request->user()->family);
+        $linked = $vaccination->vaccine_dose_id !== null;
+
+        $data = $request->validate([
+            // La dosis del esquema no cambia: para otra, se elimina y se registra de nuevo.
+            'vaccine_name' => [$linked ? 'nullable' : 'required', 'string', 'max:80'],
+            'dose_label' => ['nullable', 'string', 'max:40'],
+            'administered_at' => ['required', 'date_format:Y-m-d\TH:i', $this->notFuture($clock)],
+            'lot' => ['nullable', 'string', 'max:60'],
+            'place' => ['nullable', 'string', 'max:120'],
+            'administered_by' => ['nullable', 'string', 'max:120'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ], trans('ui.validation'), trans('ui.vacunas.fields'));
+
+        $vaccination->update([
+            'administered_at' => $clock->parse($data['administered_at']),
+            'lot' => $data['lot'] ?? null,
+            'place' => $data['place'] ?? null,
+            'administered_by' => $data['administered_by'] ?? null,
+            'notes' => $data['notes'] ?? null,
+        ] + ($linked ? [] : ['vaccine_name' => trim($data['vaccine_name']), 'dose_label' => $data['dose_label'] ?? null]));
+
+        return redirect()->route('vaccines.index')->with('status', trans('ui.vacunas.updated'));
+    }
+
     public function destroy(Request $request, Vaccination $vaccination, SyncVaccineReminders $sync): RedirectResponse
     {
         abort_unless($vaccination->family_id === $request->user()->family_id, 404);
@@ -146,6 +179,21 @@ class VaccineController extends Controller
         $sync->handle($vaccination->baby);
 
         return redirect()->route('vaccines.index')->with('status', trans('ui.vacunas.restored'));
+    }
+
+    /** La fecha de aplicación no puede ser futura (se toleran 5 minutos de diferencia de reloj). */
+    private function notFuture(FamilyClock $clock): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail) use ($clock) {
+            try {
+                $at = $clock->parse((string) $value);
+            } catch (\Throwable) {
+                return;
+            }
+            if ($at->greaterThan(now()->addMinutes(5))) {
+                $fail(trans('ui.validation.not_future'));
+            }
+        };
     }
 
     /** Una dosis del esquema solo se aplica una vez a cada bebé. */

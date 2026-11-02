@@ -50,6 +50,22 @@ export default function Preferencias({ prefs, languages, timezones }) {
                     {chips('time_format', t('ajustes.prefs.time_format'), [{ value: '12', label: t('ajustes.prefs.h12') }, { value: '24', label: t('ajustes.prefs.h24') }])}
                 </Section>
 
+                <Section title={t('ajustes.prefs.vaccines')}>
+                    <Field
+                        label={t('ajustes.prefs.vaccine_repeat')}
+                        type="number"
+                        inputMode="numeric"
+                        min={0}
+                        max={60}
+                        value={data.vaccine_repeat_days}
+                        onChange={(e) => setData('vaccine_repeat_days', e.target.value === '' ? '' : Number(e.target.value))}
+                        error={errors.vaccine_repeat_days}
+                    />
+                    <p className="-mt-1 text-sm text-ink-soft">{t('ajustes.prefs.vaccine_repeat_help')}</p>
+                    <Field label={t('ajustes.prefs.vaccine_time')} type="time" value={data.vaccine_notify_time} onChange={(e) => setData('vaccine_notify_time', e.target.value)} error={errors.vaccine_notify_time} />
+                    <p className="-mt-1 text-sm text-ink-soft">{t('ajustes.prefs.vaccine_time_help')}</p>
+                </Section>
+
                 <Section title={t('ajustes.prefs.units')}>
                     {chips('volume_unit', t('ajustes.prefs.volume'), [{ value: 'ml', label: 'ml' }, { value: 'oz', label: 'oz' }])}
                     <p className="-mt-2 text-sm text-ink-soft">{t('ajustes.prefs.volume_help')}</p>

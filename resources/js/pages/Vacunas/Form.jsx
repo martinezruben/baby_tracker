@@ -7,31 +7,34 @@ import RegistersAs from '../../components/form/RegistersAs';
 import SheetLayout from '../../layouts/SheetLayout';
 import { useT } from '../../lib/i18n';
 
-export default function Form({ baby, clock, pending, selected }) {
+export default function Form({ baby, clock, pending, selected, record = null }) {
     const t = useT();
-    const initial = pending.find((p) => p.id === selected)?.id ?? pending[0]?.id ?? '';
+    const editing = record !== null;
+    const linked = editing && record.vaccine_dose_id !== null;
+    const initial = editing ? (record.vaccine_dose_id ?? '') : (pending.find((p) => p.id === selected)?.id ?? pending[0]?.id ?? '');
 
     const form = useForm({
         vaccine_dose_id: initial,
-        vaccine_name: '',
-        dose_label: '',
-        administered_at: clock.now,
-        lot: '',
-        place: '',
-        administered_by: '',
-        notes: '',
+        vaccine_name: record?.name ?? '',
+        dose_label: record?.label ?? '',
+        administered_at: record?.administered_local ?? clock.now,
+        lot: record?.lot ?? '',
+        place: record?.place ?? '',
+        administered_by: record?.administered_by ?? '',
+        notes: record?.notes ?? '',
     });
     const { data, setData, errors } = form;
     const isOther = data.vaccine_dose_id === '';
 
     return (
         <SheetLayout
-            title={t('vacunas.form.title')}
-            subtitle={baby.first_name}
+            title={editing ? t('vacunas.edit_title') : t('vacunas.form.title')}
+            subtitle={editing ? [record.name, record.label].filter(Boolean).join(' · ') : baby.first_name}
             kind="vaccine"
             icon={Syringe}
             closeHref="/vacunas"
             actionLabel={t('vacunas.form.save')}
+            editing={editing}
             disabled={isOther && !data.vaccine_name.trim()}
             processing={form.processing}
             onSubmit={(e) => {
@@ -46,24 +49,29 @@ export default function Form({ baby, clock, pending, selected }) {
                     administered_by: d.administered_by || null,
                     notes: d.notes || null,
                 }));
-                form.post('/vacunas');
+                if (editing) form.put(`/vacunas/${record.id}`);
+                else form.post('/vacunas');
             }}
         >
-            {pending.length === 0 && <p className="rounded-[20px] bg-canvas p-4 text-base">{t('vacunas.form.none_pending')}</p>}
+            {!editing && pending.length === 0 && <p className="rounded-[20px] bg-canvas p-4 text-base">{t('vacunas.form.none_pending')}</p>}
 
+            {editing && linked && <p className="rounded-[20px] bg-canvas p-4 text-base font-semibold">{[record.name, record.label].filter(Boolean).join(' · ')}</p>}
+
+            {!editing && (
             <ChoiceChips
                 label={t('vacunas.form.which')}
                 value={data.vaccine_dose_id}
                 onChange={(v) => setData('vaccine_dose_id', v)}
                 options={[...pending.map((p) => ({ value: p.id, label: [p.name, p.label].filter(Boolean).join(' · ') })), { value: '', label: t('vacunas.form.other') }]}
             />
+            )}
             {errors.vaccine_dose_id && (
                 <p role="alert" className="-mt-3 text-sm font-medium text-danger-ink">
                     {errors.vaccine_dose_id}
                 </p>
             )}
 
-            {isOther && (
+            {isOther && !linked && (
                 <>
                     <Field label={t('vacunas.form.name')} value={data.vaccine_name} onChange={(e) => setData('vaccine_name', e.target.value)} error={errors.vaccine_name} maxLength={80} />
                     <Field label={t('vacunas.form.label')} optional={t('common.optional')} placeholder={t('vacunas.form.label_ph')} value={data.dose_label} onChange={(e) => setData('dose_label', e.target.value)} maxLength={40} />

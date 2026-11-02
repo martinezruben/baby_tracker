@@ -217,6 +217,50 @@ class VacunasTest extends TestCase
         $this->assertSame(0, Vaccination::count());
     }
 
+    public function test_a_registered_vaccine_can_be_edited_and_the_scheduled_dose_stays_linked(): void
+    {
+        $dose = $this->dose('BCG', 0);
+        $baby = $this->mama->family->babies()->first();
+        $this->post('/vacunas', ['vaccine_dose_id' => $dose->id, 'administered_at' => '2026-09-04T09:00']);
+        $v = Vaccination::firstOrFail();
+
+        $this->get("/vacunas/{$v->id}/editar")->assertInertia(fn (Assert $page) => $page
+            ->component('Vacunas/Form')
+            ->where('record.id', $v->id)
+            ->where('record.vaccine_dose_id', $dose->id)
+            ->where('record.administered_local', '2026-09-04T09:00'));
+
+        $this->put("/vacunas/{$v->id}", [
+            'vaccine_name' => 'Otro nombre', 'dose_label' => 'X', 'administered_at' => '2026-09-05T10:30',
+            'lot' => 'L-77', 'place' => 'Clínica', 'administered_by' => 'Dra. Pérez', 'notes' => 'Sin reacción',
+        ])->assertRedirect(route('vaccines.index'))->assertSessionHas('status');
+
+        $v->refresh();
+        $this->assertSame($dose->id, $v->vaccine_dose_id);            // la dosis del esquema no cambia
+        $this->assertSame('BCG', $v->vaccine_name);                   // ni su nombre
+        $this->assertSame('2026-09-05 14:30:00', $v->administered_at->format('Y-m-d H:i:s')); // 10:30 locales
+        $this->assertSame(['L-77', 'Clínica', 'Dra. Pérez', 'Sin reacción'], [$v->lot, $v->place, $v->administered_by, $v->notes]);
+
+        $this->put("/vacunas/{$v->id}", ['administered_at' => '2027-01-01T10:00'])->assertSessionHasErrors('administered_at'); // futuro
+    }
+
+    public function test_an_off_schedule_vaccine_can_change_its_name_and_other_families_cannot_edit(): void
+    {
+        $this->post('/vacunas', ['vaccine_name' => 'Gripe', 'administered_at' => '2026-10-01T09:00']);
+        $v = Vaccination::firstOrFail();
+
+        $this->put("/vacunas/{$v->id}", ['vaccine_name' => 'Influenza', 'dose_label' => 'Anual', 'administered_at' => '2026-10-01T09:00'])->assertSessionHasNoErrors();
+        $this->assertSame(['Influenza', 'Anual'], [$v->fresh()->vaccine_name, $v->fresh()->dose_label]);
+        $this->put("/vacunas/{$v->id}", ['vaccine_name' => '', 'administered_at' => '2026-10-01T09:00'])->assertSessionHasErrors('vaccine_name');
+
+        $stranger = app(SetupFamily::class)->handle([
+            'family_name' => 'Otra', 'language' => 'es', 'admin_name' => 'Ana', 'pin' => '369258',
+            'baby_first_name' => 'Leo', 'baby_birth_date' => '2026-06-01',
+        ]);
+        $this->actingAs($stranger)->get("/vacunas/{$v->id}/editar")->assertNotFound();
+        $this->put("/vacunas/{$v->id}", ['vaccine_name' => 'X', 'administered_at' => '2026-10-01T09:00'])->assertNotFound();
+    }
+
     public function test_deleting_an_entry_can_be_restored_and_stays_inside_the_family(): void
     {
         $dose = $this->dose('Vacuna A', 61);
@@ -243,6 +287,7 @@ class VacunasTest extends TestCase
 
     public function test_every_pending_future_dose_gets_one_reminder_at_9am_local_with_three_notices(): void
     {
+        $this->mama->family->settings->update(['vaccine_repeat_days' => 0]); // sin repetir las vencidas
         $soon = $this->dose('A los 3 meses', 120, '1.ª dosis');   // 2027-01-01
         $this->dose('Al nacer', 0);                                // vencida: sin recordatorio
         $this->dose('Hoy mismo', 61);                              // hoy: sí (09:00 local aún no pasó)
@@ -258,6 +303,59 @@ class VacunasTest extends TestCase
         $this->assertEqualsCanonicalizing([$this->mama->id, $this->papa->id], $rule->recipients()->pluck('caretakers.id')->all());
         $this->assertSame(3, $rule->occurrences()->count());
         $this->assertSame('2026-12-25 13:00:00', NotificationTarget::whereHas('occurrence', fn ($q) => $q->where('notification_rule_id', $rule->id))->min('next_send_at')); // 1 semana antes
+    }
+
+    public function test_overdue_doses_repeat_every_n_days_at_the_chosen_hour_until_applied(): void
+    {
+        // Hoy 2026-11-03 08:00 locales. «Al nacer» venció el 2026-09-03; el aviso cae a las 18:30 locales (22:30 UTC).
+        $this->mama->family->settings->update(['vaccine_repeat_days' => 10, 'vaccine_notify_time' => '18:30']);
+        $dose = $this->dose('Al nacer', 0);
+        $baby = $this->mama->family->babies()->first();
+
+        app(SyncVaccineReminders::class)->handle($baby);
+
+        $rule = NotificationRule::where('subject_id', $dose->id)->firstOrFail();
+        $this->assertTrue($rule->is_active);
+        $this->assertTrue($rule->event_at->equalTo('2026-09-03 22:30:00'));
+        $fires = NotificationTarget::whereHas('occurrence', fn ($q) => $q->where('notification_rule_id', $rule->id))->orderBy('next_send_at')->pluck('next_send_at')->map(fn ($d) => (string) $d)->unique()->values();
+        $this->assertSame('2026-11-12 22:30:00', $fires->first()); // 2026-09-03 + 70 días: el primero que aún no pasó
+        $this->assertSame('2026-11-22 22:30:00', $fires[1]);       // y luego cada 10 días
+        $this->assertLessThanOrEqual(7, $fires->count());          // dentro de la ventana de 60 días
+
+        // Aplicada: deja de avisar.
+        Vaccination::create(['family_id' => $baby->family_id, 'baby_id' => $baby->id, 'vaccine_dose_id' => $dose->id, 'vaccine_name' => 'Al nacer', 'administered_at' => '2026-11-03 12:00:00']);
+        app(SyncVaccineReminders::class)->handle($baby);
+        $this->assertFalse($rule->fresh()->is_active);
+        $this->assertSame(0, NotificationTarget::whereHas('occurrence', fn ($q) => $q->where('notification_rule_id', $rule->id))->where('status', 'pending')->count());
+    }
+
+    public function test_with_zero_repeat_days_overdue_doses_stay_silent_and_changing_the_rhythm_keeps_what_was_sent(): void
+    {
+        $this->mama->family->settings->update(['vaccine_repeat_days' => 0]);
+        $dose = $this->dose('Al nacer', 0);
+        $baby = $this->mama->family->babies()->first();
+        app(SyncVaccineReminders::class)->handle($baby);
+        $this->assertSame(0, NotificationRule::where('subject_id', $dose->id)->where('is_active', true)->count());
+
+        $this->mama->family->settings->update(['vaccine_repeat_days' => 7]);
+        app(SyncVaccineReminders::class)->handle($baby->fresh());
+        $rule = NotificationRule::where('subject_id', $dose->id)->firstOrFail();
+        $this->assertTrue($rule->is_active);
+        $before = $rule->occurrences()->where('status', 'active')->count();
+
+        // Un ritmo más lento quita las repeticiones que sobran sin reprogramar todo.
+        $this->mama->family->settings->update(['vaccine_repeat_days' => 30]);
+        app(SyncVaccineReminders::class)->handle($baby->fresh());
+        $this->assertLessThan($before, $rule->occurrences()->where('status', 'active')->count());
+    }
+
+    public function test_the_daily_command_resyncs_every_baby(): void
+    {
+        $this->dose('Al nacer', 0);
+
+        $this->artisan('vaccines:sync')->expectsOutputToContain('Bebés sincronizados: 1')->assertSuccessful();
+
+        $this->assertSame(1, NotificationRule::where('is_active', true)->count()); // vencida + repetición por defecto (7 días)
     }
 
     public function test_sync_is_idempotent_and_follows_applications_deletions_and_undo(): void

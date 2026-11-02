@@ -1055,6 +1055,9 @@ return [
         ],
     ],
     'vacunas' => [
+        'updated' => 'Vacuna actualizada',
+        'edit' => 'Editar',
+        'edit_title' => 'Editar vacuna',
         'next' => 'Siguiente dosis',
         'next_overdue' => 'Dosis pendiente más antigua',
         'single_dose' => 'Dosis única',
@@ -1299,6 +1302,11 @@ return [
             'edit' => 'Editar',
         ],
         'prefs' => [
+            'vaccines' => 'Avisos de vacunas',
+            'vaccine_repeat' => 'Repetir el aviso cada (días)',
+            'vaccine_repeat_help' => 'Para las dosis vencidas que siguen sin aplicarse. Con 0 no se repite.',
+            'vaccine_time' => 'Hora de los avisos',
+            'vaccine_time_help' => 'Hora local a la que salen todos los avisos de vacunas.',
             'title' => 'Preferencias',
             'family_name' => 'Nombre de la familia',
             'language' => 'Idioma',
@@ -1339,6 +1347,8 @@ return [
             'height_unit' => 'unidad de talla',
             'temperature_unit' => 'unidad de temperatura',
             'growth_chart_standard' => 'curvas de crecimiento',
+            'vaccine_repeat_days' => 'repetición de avisos de vacunas',
+            'vaccine_notify_time' => 'hora de los avisos de vacunas',
         ],
     ],
     'home' => [

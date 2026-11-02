@@ -105,6 +105,7 @@ class UnidadLecheTest extends TestCase
             'family_name' => $this->mama->family->name, 'language' => $s->language, 'timezone' => $s->timezone, 'time_format' => $s->time_format,
             'volume_unit' => $s->volume_unit, 'weight_unit' => $s->weight_unit, 'height_unit' => $s->height_unit,
             'temperature_unit' => $s->temperature_unit, 'growth_chart_standard' => $s->growth_chart_standard,
+            'vaccine_repeat_days' => $s->vaccine_repeat_days, 'vaccine_notify_time' => $s->vaccine_notify_time,
         ];
     }
 }

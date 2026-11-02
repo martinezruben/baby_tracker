@@ -16,11 +16,11 @@ class VaccineSchedule
 {
     public const SOON_DAYS = 60;
 
-    public function __construct(private FamilyClock $clock) {}
+    public function __construct(private FamilyClock $clock, private string $notifyTime = '09:00') {}
 
     public static function for(Baby $baby): self
     {
-        return new self(FamilyClock::for($baby->family));
+        return new self(FamilyClock::for($baby->family), $baby->family->settings->vaccine_notify_time ?? '09:00');
     }
 
     /**
@@ -56,9 +56,11 @@ class VaccineSchedule
             ->values();
     }
 
-    /** Hora a la que se avisa el día de la dosis. */
+    /** Instante (UTC) en que se avisa el día de la dosis: la hora local elegida en Ajustes > Preferencias. */
     public function dueAt(CarbonImmutable $dueOn): CarbonImmutable
     {
-        return $dueOn->setTime(9, 0)->utc();
+        [$hour, $minute] = array_map('intval', explode(':', $this->notifyTime)) + [0, 0];
+
+        return $dueOn->setTime($hour, $minute)->utc();
     }
 }
