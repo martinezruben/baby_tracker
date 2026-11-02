@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, Check, ClipboardList, Clock, Plus, Syringe } from 'lucide-react';
+import { ArrowLeft, Check, ClipboardList, Clock, Pencil, Plus, Syringe } from 'lucide-react';
 import { useState } from 'react';
 import Button from '../../components/Button';
 import AppLayout from '../../layouts/AppLayout';
@@ -27,6 +27,19 @@ function Details({ v }) {
     const t = useT();
     const parts = [v.lot && t('vacunas.detail.lot', { lot: v.lot }), v.place && t('vacunas.detail.place', { place: v.place }), v.administered_by && t('vacunas.detail.by', { name: v.administered_by }), v.notes].filter(Boolean);
     return parts.length > 0 ? <span className="text-[13px] break-words text-ink-soft">{parts.join(' · ')}</span> : null;
+}
+
+function EditLink({ vaccination }) {
+    const t = useT();
+    return (
+        <Link
+            href={`/vacunas/${vaccination.id}/editar`}
+            className="inline-flex min-h-12 items-center gap-2 rounded-full px-4 text-[15px] font-semibold text-primary focus-visible:outline-2 focus-visible:outline-primary"
+        >
+            <Pencil aria-hidden="true" className="size-4" />
+            {t('vacunas.edit')}
+        </Link>
+    );
 }
 
 function DeleteButton({ vaccination }) {
@@ -133,7 +146,8 @@ function DoseLine({ dose, showName = false }) {
                 <span className={`shrink-0 rounded-full px-3 py-1.5 text-[13px] font-semibold ${STATUS_STYLES[dose.status]}`}>{t(`vacunas.status.${dose.status}`)}</span>
             </div>
             {applied && (
-                <div className="flex justify-end">
+                <div className="flex flex-wrap justify-end">
+                    <EditLink vaccination={dose.vaccination} />
                     <DeleteButton vaccination={dose.vaccination} />
                 </div>
             )}
@@ -212,7 +226,8 @@ function Extra({ extra }) {
                                 <Details v={v} />
                             </span>
                         </div>
-                        <div className="flex justify-end">
+                        <div className="flex flex-wrap justify-end">
+                            <EditLink vaccination={v} />
                             <DeleteButton vaccination={v} />
                         </div>
                     </li>

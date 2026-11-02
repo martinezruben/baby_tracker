@@ -132,6 +132,8 @@ Route::middleware('setup:required')->group(function () {
             Route::post('/esquema/dosis', [VaccineScheduleController::class, 'store'])->name('schedule.store');
             Route::delete('/esquema/dosis/{dose}', [VaccineScheduleController::class, 'destroy'])->name('schedule.destroy');
             Route::post('/esquema/importar', [VaccineScheduleController::class, 'import'])->name('schedule.import');
+            Route::get('/{vaccination}/editar', [VaccineController::class, 'edit'])->whereNumber('vaccination')->name('edit');
+            Route::put('/{vaccination}', [VaccineController::class, 'update'])->whereNumber('vaccination')->name('update');
             Route::post('/{id}/restaurar', [VaccineController::class, 'restore'])->whereNumber('id')->name('restore');
             Route::delete('/{vaccination}', [VaccineController::class, 'destroy'])->name('destroy');
         });

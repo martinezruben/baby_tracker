@@ -295,7 +295,7 @@ class AjustesTest extends TestCase
     {
         $this->put('/ajustes/preferencias', [
             'family_name' => 'Los Ruiz', 'language' => 'en', 'timezone' => 'America/New_York', 'time_format' => '24',
-            'volume_unit' => 'oz', 'weight_unit' => 'lb', 'height_unit' => 'in', 'temperature_unit' => 'F', 'growth_chart_standard' => 'cdc',
+            'volume_unit' => 'oz', 'weight_unit' => 'lb', 'height_unit' => 'in', 'temperature_unit' => 'F', 'growth_chart_standard' => 'cdc', 'vaccine_repeat_days' => 3, 'vaccine_notify_time' => '18:30',
         ])->assertSessionHasNoErrors();
 
         $s = $this->mama->family->settings->fresh();
@@ -307,7 +307,7 @@ class AjustesTest extends TestCase
 
     public function test_preferences_validation(): void
     {
-        $ok = ['family_name' => 'Ruiz', 'language' => 'es', 'timezone' => 'America/Santo_Domingo', 'time_format' => '12', 'volume_unit' => 'ml', 'weight_unit' => 'kg', 'height_unit' => 'cm', 'temperature_unit' => 'C', 'growth_chart_standard' => 'who'];
+        $ok = ['family_name' => 'Ruiz', 'language' => 'es', 'timezone' => 'America/Santo_Domingo', 'time_format' => '12', 'volume_unit' => 'ml', 'weight_unit' => 'kg', 'height_unit' => 'cm', 'temperature_unit' => 'C', 'growth_chart_standard' => 'who', 'vaccine_repeat_days' => 7, 'vaccine_notify_time' => '09:00'];
 
         $this->put('/ajustes/preferencias', ['timezone' => 'Marte/Olimpo'] + $ok)->assertSessionHasErrors('timezone');
         $this->put('/ajustes/preferencias', ['language' => 'klingon'] + $ok)->assertSessionHasErrors('language');
@@ -327,9 +327,24 @@ class AjustesTest extends TestCase
         $this->put('/ajustes/preferencias', [
             'family_name' => 'Ruiz', 'language' => 'es', 'timezone' => 'Europe/Madrid', 'time_format' => '24', 'volume_unit' => 'ml',
             'weight_unit' => 'kg', 'height_unit' => 'cm', 'temperature_unit' => 'C', 'growth_chart_standard' => 'who',
+            'vaccine_repeat_days' => 7, 'vaccine_notify_time' => '09:00',
         ]);
 
         $this->assertTrue($rule->fresh()->event_at->equalTo('2027-01-01 08:00:00')); // 09:00 en Madrid (UTC+1)
+    }
+
+    public function test_vaccine_alert_settings_are_validated_and_saved(): void
+    {
+        $ok = ['family_name' => 'Ruiz', 'language' => 'es', 'timezone' => 'America/Santo_Domingo', 'time_format' => '12', 'volume_unit' => 'ml', 'weight_unit' => 'kg', 'height_unit' => 'cm', 'temperature_unit' => 'C', 'growth_chart_standard' => 'who'];
+
+        $this->put('/ajustes/preferencias', $ok + ['vaccine_repeat_days' => 61, 'vaccine_notify_time' => '09:00'])->assertSessionHasErrors('vaccine_repeat_days');
+        $this->put('/ajustes/preferencias', $ok + ['vaccine_repeat_days' => -1, 'vaccine_notify_time' => '09:00'])->assertSessionHasErrors('vaccine_repeat_days');
+        $this->put('/ajustes/preferencias', $ok + ['vaccine_repeat_days' => 5, 'vaccine_notify_time' => '25:00'])->assertSessionHasErrors('vaccine_notify_time');
+        $this->put('/ajustes/preferencias', $ok + ['vaccine_repeat_days' => 0, 'vaccine_notify_time' => '07:15'])->assertSessionHasNoErrors();
+
+        $s = $this->mama->family->settings->fresh();
+        $this->assertSame([0, '07:15'], [(int) $s->vaccine_repeat_days, $s->vaccine_notify_time]);
+        $this->get('/ajustes/preferencias')->assertInertia(fn (Assert $page) => $page->where('prefs.vaccine_repeat_days', 0)->where('prefs.vaccine_notify_time', '07:15'));
     }
 
     public function test_every_caretaker_can_pick_their_own_language(): void

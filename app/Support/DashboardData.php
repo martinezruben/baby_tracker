@@ -277,6 +277,7 @@ class DashboardData
             ]);
 
         // Vacunas: la primera dosis vencida (si la hay) y la siguiente por aplicar.
+        $schedule = VaccineSchedule::for($baby);
         $vaccines = $this->vaccineRows($baby)->whereIn('status', ['overdue', 'soon', 'later']);
         $nextVaccines = collect([$vaccines->firstWhere('status', 'overdue'), $vaccines->whereIn('status', ['soon', 'later'])->first()])
             ->filter()
@@ -284,7 +285,7 @@ class DashboardData
                 'id' => $r['dose']->id,
                 'kind' => 'vaccine',
                 'title' => trim($r['dose']->vaccine_name.' '.$r['dose']->dose_label),
-                'at' => $r['due_on']->setTime(9, 0)->utc()->toIso8601String(),
+                'at' => $schedule->dueAt($r['due_on'])->toIso8601String(),
                 'href' => '/vacunas',
                 'overdue' => $r['status'] === 'overdue',
             ]);

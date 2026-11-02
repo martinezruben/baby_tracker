@@ -1055,6 +1055,9 @@ return [
         ],
     ],
     'vacunas' => [
+        'updated' => 'Vaccine updated',
+        'edit' => 'Edit',
+        'edit_title' => 'Edit vaccine',
         'next' => 'Next dose',
         'next_overdue' => 'Oldest overdue dose',
         'single_dose' => 'Single dose',
@@ -1299,6 +1302,11 @@ return [
             'edit' => 'Edit',
         ],
         'prefs' => [
+            'vaccines' => 'Vaccine alerts',
+            'vaccine_repeat' => 'Repeat the alert every (days)',
+            'vaccine_repeat_help' => 'For overdue doses that are still not given. 0 means no repeat.',
+            'vaccine_time' => 'Alert time',
+            'vaccine_time_help' => 'Local time at which every vaccine alert goes out.',
             'title' => 'Preferences',
             'family_name' => 'Family name',
             'language' => 'Language',
@@ -1339,6 +1347,8 @@ return [
             'height_unit' => 'length unit',
             'temperature_unit' => 'temperature unit',
             'growth_chart_standard' => 'growth charts',
+            'vaccine_repeat_days' => 'vaccine alert repeat',
+            'vaccine_notify_time' => 'vaccine alert time',
         ],
     ],
     'home' => [

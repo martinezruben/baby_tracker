@@ -95,6 +95,27 @@ class NotificationScheduler
     }
 
     /**
+     * Cancela los avisos pendientes de los desfases que ya no se quieren, sin tocar los demás (ni lo ya enviado).
+     *
+     * @param  array<int, int>  $offsets  desfases que se conservan
+     */
+    public function cancelOffsetsNotIn(NotificationRule $rule, array $offsets): void
+    {
+        DB::transaction(function () use ($rule, $offsets) {
+            $rule->occurrences()
+                ->where('status', OccurrenceStatus::Active)
+                ->whereNotIn('offset_minutes', $offsets)
+                ->get()
+                ->each(function (NotificationOccurrence $occurrence) {
+                    $occurrence->targets()
+                        ->where('status', TargetStatus::Pending)
+                        ->update(['status' => TargetStatus::Cancelled, 'next_send_at' => null]);
+                    $occurrence->update(['status' => OccurrenceStatus::Cancelled]);
+                });
+        });
+    }
+
+    /**
      * Suma a un cuidador a una regla y le crea los avisos de lo que todavía no ha pasado.
      * Sirve para quien se une a la familia (o se reactiva) con citas, tomas y vacunas ya programadas.
      */

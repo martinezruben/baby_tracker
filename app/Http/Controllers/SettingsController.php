@@ -43,6 +43,8 @@ class SettingsController extends Controller
                 'height_unit' => $s->height_unit,
                 'temperature_unit' => $s->temperature_unit,
                 'growth_chart_standard' => $s->growth_chart_standard,
+                'vaccine_repeat_days' => (int) $s->vaccine_repeat_days,
+                'vaccine_notify_time' => $s->vaccine_notify_time,
             ],
             'languages' => self::LANGUAGES,
             'timezones' => timezone_identifiers_list(),
@@ -61,17 +63,21 @@ class SettingsController extends Controller
             'height_unit' => ['required', Rule::in(['cm', 'in'])],
             'temperature_unit' => ['required', Rule::in(['C', 'F'])],
             'growth_chart_standard' => ['required', Rule::in(['who', 'cdc'])],
+            'vaccine_repeat_days' => ['required', 'integer', 'between:0,60'],
+            'vaccine_notify_time' => ['required', 'date_format:H:i'],
         ], trans('ui.validation'), trans('ui.ajustes.fields'));
 
         $family = $request->user()->family;
         $settings = $family->settings;
-        $timezoneChanged = $settings->timezone !== $data['timezone'];
+        $remindersChanged = $settings->timezone !== $data['timezone']
+            || (int) $settings->vaccine_repeat_days !== (int) $data['vaccine_repeat_days']
+            || $settings->vaccine_notify_time !== $data['vaccine_notify_time'];
 
         $family->update(['name' => $data['family_name']]);
         $settings->update(collect($data)->except('family_name')->all());
 
-        // Los avisos de vacunas salen a las 9:00 locales: si cambia la zona horaria, se reprograman.
-        if ($timezoneChanged) {
+        // Los avisos de vacunas dependen de la zona horaria, de la hora elegida y de cada cuántos días se repiten.
+        if ($remindersChanged) {
             $family->babies()->get()->each(fn (Baby $baby) => $sync->handle($baby));
         }
 
